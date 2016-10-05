@@ -1,14 +1,14 @@
 'use strict';
 
-const wordpress = false;
-const host      = 'wp-webpack.local';  // set if WordPress
-const theme     = {
-	name: 'Boilerplate',
-	version: '1.0',
-	author: 'ArtOfMySelf <email@artofmyself.com>',
-	authorURI: 'http://www.artofmyself.com',
-    description: 'Boilerplate WP Theme'
-};
+//const wordpress = false;
+// const cfg.host      = 'wp-webpack.local';  // set if WordPress
+// const theme     = {
+// 	name: 'Boilerplate',
+// 	version: '1.0',
+// 	author: 'ArtOfMySelf <email@artofmyself.com>',
+// 	authorURI: 'http://www.artofmyself.com',
+//     description: 'Boilerplate WP Theme'
+// };
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 import path          from 'path';                 import del         from 'del';
@@ -24,49 +24,51 @@ import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
 
+import * as cfg from './project.config'
+
 const browser   = browserSync.create();
-const hashOpts  = { hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>'  };
-const serveOpts = wordpress ? { open: false, host, proxy: host, server: false }
-                            : { open: 'localhost', server: { baseDir: './build' } };
+// const hashOpts  = { hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>'  };
+// const serveOpts = wordpress ? { open: false, cfg.host, proxy: cfg.host, server: false }
+//                             : { open: 'localhost', server: { baseDir: './' + cfg.paths.build } };
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 // DEVELOPMENT
 // Server, Sass, Webpack, SVG, WP Theme
 //////////////////////////////////////////////////////
-export const delCSS = () => del(['build/css'])
-export const delJS = () => del(['build/js'])
+export const delCSS = () => del([cfg.paths.css.dest])
+export const delJS = () => del([cfg.paths.js.dest])
 ////////////////////////////////
 // SERVER
 export function server() {
     browser.init({
         ghostmode: false, // mirror events on devices
-        open: serveOpts.open,
-        host: serveOpts.host,
-        proxy: serveOpts.proxy,
-        server: serveOpts.server
+        open: cfg.server.open,
+        host: cfg.server.host,
+        proxy: cfg.server.proxy,
+        server: cfg.server.server
     });
 
-    gulp.watch('src/scss/**/*.scss', gulp.series( delCSS, styles ));
-    gulp.watch('src/js/**/*.js',     gulp.series( delJS, scripts ));
+    gulp.watch(`${cfg.paths.scss.src}/**/*.scss`, gulp.series( delCSS, styles ));
+    gulp.watch(`${cfg.paths.js.src}/**/*.js`,     gulp.series( delJS, scripts ));
 
-    gulp.watch('src/includes/**/*.php', copy.copyWP);
-    gulp.watch('src/assets/img/**/*',   copy.copyIMG);
-    gulp.watch('src/**/*.html',         copy.copyHTML);
-    gulp.watch('src/*.php',             copy.copyPHP);
+    //gulp.watch('src/includes/**/*.php', copy.copyWP);
+    gulp.watch(cfg.paths.img.src,   copy.copyIMG);
+    gulp.watch(cfg.paths.html.src,         copy.copyHTML);
+    gulp.watch(cfg.paths.php.src,             copy.copyPHP);
 
-    gulp.watch('src/assets/icons/*',    svg);
-    gulp.watch('theme.config.js',       WPtheme);
+    gulp.watch(cfg.paths.svg.src,    svg);
+    ///gulp.watch('theme.config.js',       WPtheme);
 
-    gulp.watch('build/assets/**/*').on('change', browser.reload);
-    gulp.watch('build/**/*.html')  .on('change', browser.reload);
-    gulp.watch('build/**/*.php')   .on('change', browser.reload);
+    gulp.watch(`${cfg.build}/${cfg.assets}/**/*`).on('change', browser.reload);
+    gulp.watch(cfg.paths.html.dest)  .on('change', browser.reload);
+    gulp.watch(cfg.paths.php.dest)   .on('change', browser.reload);
 };
 
 
 //////////////////////////////////
 // WEBPACK
 export function scripts() {
-    return gulp.src('src/js/main.js')
+    return gulp.src(cfg.paths.js.main)
 		.pipe(plumber({ errorHandler: notify.onError({
 				title: 'Webpack Error',
 	        	message: '<%= error.message %>',
@@ -77,16 +79,16 @@ export function scripts() {
 				this.emit('end');
 			})
 		)
-		.pipe(gulpif(wordpress, hash(hashOpts)))
-        .pipe(gulp.dest('build/js'))
-        .pipe(browser.stream({match: '**/*.js'}))     // Inject Bundle
+		.pipe(gulpif(cfg.wp, hash(cfg.hashOpts)))
+        .pipe(gulp.dest(cfg.paths.js.dest))
+        .pipe(browser.stream({ match: '**/*.js' }))     // Inject Bundle
 };
 
 
 //////////////////////////////////
 // SASS
 export function styles() {
-    return gulp.src('src/scss/main.scss')
+    return gulp.src(cfg.paths.scss.main)
         .pipe(maps.init())
         .pipe(sass().on('error', notify.onError({
 			title: 'Sass Error',
@@ -94,8 +96,8 @@ export function styles() {
 		})))
         .pipe(autoprefixer({ browsers: ['> 0.1%', 'IE 10'], cascade: false }))
         .pipe(maps.write('./'))
-        .pipe(gulpif(wordpress, hash(hashOpts)))
-        .pipe(gulp.dest('build/css'))
+        .pipe(gulpif(cfg.wp, hash(cfg.hashOpts)))
+        .pipe(gulp.dest(cfg.paths.css.dest))
         .pipe(browser.stream({match: '**/*.css'}))     // Inject Sass/CSS
 };
 
@@ -103,7 +105,7 @@ export function styles() {
 ////////////////////////////////
 // SVG
 export function svg() {
-    return gulp.src('src/assets/icons/*.svg')
+    return gulp.src(cfg.paths.svg.src)
         //.pipe(rename({prefix: 'icon-'}))
         .pipe(svgmin( (file) => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
@@ -117,21 +119,21 @@ export function svg() {
             };
         }))
         .pipe(svgstore({ inlineSvg: true }))
-        .pipe(gulp.dest('build/assets/icons'))
+        .pipe(gulp.dest(cfg.paths.svg.dest))
 };
 
 //////////////////////////////////
 // FONTS
 export function woff() {
-    return gulp.src(['src/assets/fonts/*.ttf'])
+    return gulp.src([cfg.paths.fonts.src])
         .pipe(ttf2woff())
-        .pipe(gulp.dest('build/assets/fonts'));
+        .pipe(gulp.dest(cfg.paths.fonts.dest));
 };
 
 export function woff2() {
-    return gulp.src(['src/assets/fonts/*.ttf'])
+    return gulp.src([cfg.paths.fonts.dest])
         .pipe(ttf2woff2())
-        .pipe(gulp.dest('build/assets/fonts'));
+        .pipe(gulp.dest(cfg.paths.fonts.dest));
 };
 
 ////////////////////////////////
@@ -147,7 +149,7 @@ export function WPtheme() {
 */`;
 
     return new Promise(res => {
-        fs.writeFile('build/style.css', content);
+        fs.writeFile(`${cfg.paths.build}/style.css`, content);
         res();
     });
 };
@@ -156,13 +158,13 @@ export function WPtheme() {
 // COPY
 
 export const copy = {
-    copyHTML() { return gulp.src(['src/**/*.html']) .pipe(gulp.dest('build')) },
-    copyPHP() { return gulp.src(['src/**/*.php'])  .pipe(gulp.dest('build')) },
-    copyIMG() { return gulp.src(['src/assets/img/**/*'])  .pipe(gulp.dest('build/assets/img')) },
-    copyWP() { return gulp.src(['src/includes/**/*.php']) .pipe(gulp.dest('build/includes')) }
+    copyHTML() { return gulp.src([cfg.paths.html.src]) .pipe(gulp.dest(cfg.paths.build)) },
+    copyPHP() { return gulp.src([cfg.paths.php.src])  .pipe(gulp.dest(cfg.paths.build)) },
+    copyIMG() { return gulp.src([cfg.paths.img.src])  .pipe(gulp.dest(cfg.paths.img.dest)) },
+    //copyWP() { return gulp.src(['src/includes/**/*.php']) .pipe(gulp.dest('build/includes')) }
 }
 
-export const copyAll = gulp.parallel(copy.copyHTML, copy.copyPHP, copy.copyIMG, copy.copyWP);
+export const copyAll = gulp.parallel(copy.copyHTML, copy.copyPHP, copy.copyIMG/*, copy.copyWP*/);
 
 //////////////////////////////////////////////////////
 // PRODUCTION
@@ -171,26 +173,26 @@ export const copyAll = gulp.parallel(copy.copyHTML, copy.copyPHP, copy.copyIMG, 
 
 // MIN CSS
 export function minCSS() {
-    return gulp.src('build/css/*.css')
+    return gulp.src(cfg.paths.css.src)
 		.pipe(maps.init({ loadMaps: true }))
 		.pipe(cleanCSS())
 		.pipe(maps.write('./'))
-        .pipe(gulp.dest('build/css'))
+        .pipe(gulp.dest(cfg.paths.css.dest))
 };
 
 // MIN JS
 export function minJS() {
-    return gulp.src('build/js/*.js')
+    return gulp.src(cfg.paths.js.srcMin)
 		.pipe(maps.init({ loadMaps: true }))
 		.pipe(babel())
 		.pipe(uglify())
 		.pipe(maps.write('./'))
-        .pipe(gulp.dest('build/js'))
+        .pipe(gulp.dest(cfg.paths.js.dest))
 };
 
 // MIN HTML + INJECT in HTML/wordpress FUNCTIONS
 export function minHTML() {
-    return gulp.src('build/**/*.html')
+    return gulp.src(cfg.paths.html.dest)
         .pipe( htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
@@ -198,27 +200,27 @@ export function minHTML() {
             removeScriptTypeAttributes: true,
             removeComments: true
         }))
-        .pipe(gulp.dest('build'))
+        .pipe(gulp.dest(cfg.paths.build))
 };
 
 export function injectFiles() {
 
-    let mainCSS  = gulp.src(['build/css/main.*.css'], { read: false });
-    let vendorJS = gulp.src(['build/js/vendor.*.js'], { read: false });
-    let mainJS 	 = gulp.src(['build/js/main.*.js'],   { read: false });
+    let mainCSS  = gulp.src([cfg.paths.inj.css], { read: false });
+    let vendorJS = gulp.src([cfg.paths.inj.jsVendor], { read: false });
+    let mainJS 	 = gulp.src([cfg.paths.inj.jsMain],   { read: false });
 
-    return gulp.src('src/**/*.html')
+    return gulp.src(cfg.paths.html.src)
         .pipe(inject(series(mainCSS, vendorJS, mainJS), { relative: true }))
-        .pipe(gulp.dest('build'))
+        .pipe(gulp.dest(cfg.paths.build))
 };
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-const dev = wordpress ? gulp.series(gulp.parallel(copyAll, styles, scripts, svg, WPtheme), server)
+const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, svg, WPtheme), server)
                       : gulp.series(gulp.parallel(copyAll, styles, scripts, svg), server);
 export { dev };
 
-const build = wordpress ? gulp.parallel(minCSS, minJS)
+const build = cfg.wp ? gulp.parallel(minCSS, minJS)
                         : gulp.series(gulp.parallel(minCSS, minJS), injectFiles, minHTML); // minHTML after inject to not delete tags
 export { build };
 
