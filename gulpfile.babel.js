@@ -33,8 +33,8 @@ const serveOpts = wordpress ? { open: false, host, proxy: host, server: false }
 // DEVELOPMENT
 // Server, Sass, Webpack, SVG, WP Theme
 //////////////////////////////////////////////////////
-const delCSS = () => { del(['build/css']) }
-const delJS = () => { del(['build/js']) }
+export const delCSS = () => del(['build/css'])
+export const delJS = () => del(['build/js'])
 ////////////////////////////////
 // SERVER
 export function server() {
@@ -146,9 +146,9 @@ export function WPtheme() {
     Description: ${theme.description}
 */`;
 
-    return new Promise( (resolve) => {
+    return new Promise(res => {
         fs.writeFile('build/style.css', content);
-        resolve();
+        res();
     });
 };
 
