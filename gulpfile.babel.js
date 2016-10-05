@@ -1,3 +1,8 @@
+// TODO
+/*
+* Only copy added/changed/deleted images
+*/
+
 'use strict';
 
 import path          from 'path';                 import del         from 'del';
@@ -12,6 +17,8 @@ import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-
 import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-inject';
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
+import changed		 from 'gulp-changed';		  import imagemin	 from 'gulp-imagemin';
+
 
 import * as cfg from './project.config'
 
@@ -23,6 +30,7 @@ const browser   = browserSync.create();
 //////////////////////////////////////////////////////
 export const delCSS = () => del([cfg.paths.css.dest])
 export const delJS = () => del([cfg.paths.js.dest])
+export const delIMG = path => del([cfg.paths.img.dest])
 ////////////////////////////////
 // SERVER
 export function server() {
@@ -36,18 +44,19 @@ export function server() {
 
     gulp.watch(`${cfg.paths.scss.src}/**/*.scss`, gulp.series( delCSS, styles ));
     gulp.watch(`${cfg.paths.js.src}/**/*.js`,     gulp.series( delJS, scripts ));
+    gulp.watch(cfg.paths.img.src,     			  gulp.series( delIMG, copy.img ));
 
     //gulp.watch('src/includes/**/*.php', copy.copyWP);
-    gulp.watch(cfg.paths.img.src,  copy.copyIMG);
-    gulp.watch(cfg.paths.html.src, copy.copyHTML);
-    gulp.watch(cfg.paths.php.src,  copy.copyPHP);
+    gulp.watch(cfg.paths.html.src,  copy.html);
+    gulp.watch(cfg.paths.php.src,   copy.php);
+	gulp.watch(cfg.paths.icons.src, icons);
 
-    gulp.watch(cfg.paths.svg.src, svg);
     ///gulp.watch('theme.config.js',       WPtheme);
 
-    gulp.watch(`${cfg.build}/${cfg.assets}/**/*`).on('change', browser.reload);
-    gulp.watch(cfg.paths.html.dest).on('change', browser.reload);
-    gulp.watch(cfg.paths.php.dest).on('change', browser.reload);
+    gulp.watch(cfg.paths.img.dest)  .on('change', browser.reload);
+    gulp.watch(cfg.paths.icons.dest).on('change', browser.reload);
+    gulp.watch(cfg.paths.html.dest) .on('change', browser.reload);
+    gulp.watch(cfg.paths.php.dest)  .on('change', browser.reload);
 };
 
 
@@ -89,11 +98,12 @@ export function styles() {
 
 
 ////////////////////////////////
-// SVG
-export function svg() {
-    return gulp.src(cfg.paths.svg.src)
+// SVG ICONS
+export function icons() {
+    return gulp.src(cfg.paths.icons.src)
         //.pipe(rename({prefix: 'icon-'}))
-        .pipe(svgmin( (file) => {
+		.pipe(changed(cfg.paths.assets))
+        .pipe(svgmin(file => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
             return {
                 plugins: [{
@@ -105,19 +115,33 @@ export function svg() {
             };
         }))
         .pipe(svgstore({ inlineSvg: true }))
-        .pipe(gulp.dest(cfg.paths.svg.dest))
+        .pipe(gulp.dest(cfg.paths.icons.dest))
 };
 
+
+////////////////////////////////
+// IMAGES
+// export function img() {
+//     return gulp.src(cfg.paths.img.src)
+// 		//.pipe(changed(cfg.paths.img.dest))
+//         .pipe(imagemin())
+//         .pipe(gulp.dest(cfg.paths.img.dest));
+// };
+
+
+
 //////////////////////////////////
-// FONTS
+// FONTS ( npm i -g gulp-ttf2woff gulp-ttf2woff2 )
 export function woff() {
     return gulp.src([cfg.paths.fonts.src])
+		.pipe(changed(cfg.paths.fonts.dest))
         .pipe(ttf2woff())
         .pipe(gulp.dest(cfg.paths.fonts.dest));
 };
 
 export function woff2() {
     return gulp.src([cfg.paths.fonts.dest])
+		.pipe(changed(cfg.paths.fonts.dest))
         .pipe(ttf2woff2())
         .pipe(gulp.dest(cfg.paths.fonts.dest));
 };
@@ -144,13 +168,17 @@ export function WPtheme() {
 // COPY
 
 export const copy = {
-    copyHTML() { return gulp.src([cfg.paths.html.src]) .pipe(gulp.dest(cfg.paths.build)) },
-    copyPHP() { return gulp.src([cfg.paths.php.src])  .pipe(gulp.dest(cfg.paths.build)) },
-    copyIMG() { return gulp.src([cfg.paths.img.src])  .pipe(gulp.dest(cfg.paths.img.dest)) },
+    html() {
+		return gulp.src([cfg.paths.html.src])
+			.pipe(changed(cfg.paths.build))
+			.pipe(gulp.dest(cfg.paths.build))
+	},
+    php() { return gulp.src([cfg.paths.php.src])  .pipe(gulp.dest(cfg.paths.build)) },
+    img() { return gulp.src([cfg.paths.img.src])  .pipe(gulp.dest(cfg.paths.img.dest)) },
     //copyWP() { return gulp.src(['src/includes/**/*.php']) .pipe(gulp.dest('build/includes')) }
 }
 
-export const copyAll = gulp.parallel(copy.copyHTML, copy.copyPHP, copy.copyIMG/*, copy.copyWP*/);
+export const copyAll = gulp.parallel(copy.html, copy.php, copy.img/*, copy.copyWP*/);
 
 //////////////////////////////////////////////////////
 // PRODUCTION
@@ -191,7 +219,7 @@ export function minHTML() {
 
 export function injection() {
 
-    let mainCSS  = gulp.src([cfg.paths.inj.css], { read: false });
+    let mainCSS  = gulp.src([cfg.paths.inj.css], 	  { read: false });
     let vendorJS = gulp.src([cfg.paths.inj.jsVendor], { read: false });
     let mainJS 	 = gulp.src([cfg.paths.inj.jsMain],   { read: false });
 
@@ -202,8 +230,8 @@ export function injection() {
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, svg, WPtheme), server)
-                   : gulp.series(gulp.parallel(copyAll, styles, scripts, svg), server);
+const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, icons, WPtheme), server)
+                   : gulp.series(gulp.parallel(copyAll, styles, scripts, icons), server);
 export { dev };
 
 const build = cfg.wp ? gulp.parallel(minCSS, minJS)
