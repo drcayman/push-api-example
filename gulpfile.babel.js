@@ -1,16 +1,5 @@
 'use strict';
 
-//const wordpress = false;
-// const cfg.host      = 'wp-webpack.local';  // set if WordPress
-// const theme     = {
-// 	name: 'Boilerplate',
-// 	version: '1.0',
-// 	author: 'ArtOfMySelf <email@artofmyself.com>',
-// 	authorURI: 'http://www.artofmyself.com',
-//     description: 'Boilerplate WP Theme'
-// };
-////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////
 import path          from 'path';                 import del         from 'del';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
@@ -27,9 +16,6 @@ import gulpif        from 'gulp-if';              import series      from 'strea
 import * as cfg from './project.config'
 
 const browser   = browserSync.create();
-// const hashOpts  = { hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>'  };
-// const serveOpts = wordpress ? { open: false, cfg.host, proxy: cfg.host, server: false }
-//                             : { open: 'localhost', server: { baseDir: './' + cfg.paths.build } };
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -52,16 +38,16 @@ export function server() {
     gulp.watch(`${cfg.paths.js.src}/**/*.js`,     gulp.series( delJS, scripts ));
 
     //gulp.watch('src/includes/**/*.php', copy.copyWP);
-    gulp.watch(cfg.paths.img.src,   copy.copyIMG);
-    gulp.watch(cfg.paths.html.src,         copy.copyHTML);
-    gulp.watch(cfg.paths.php.src,             copy.copyPHP);
+    gulp.watch(cfg.paths.img.src,  copy.copyIMG);
+    gulp.watch(cfg.paths.html.src, copy.copyHTML);
+    gulp.watch(cfg.paths.php.src,  copy.copyPHP);
 
-    gulp.watch(cfg.paths.svg.src,    svg);
+    gulp.watch(cfg.paths.svg.src, svg);
     ///gulp.watch('theme.config.js',       WPtheme);
 
     gulp.watch(`${cfg.build}/${cfg.assets}/**/*`).on('change', browser.reload);
-    gulp.watch(cfg.paths.html.dest)  .on('change', browser.reload);
-    gulp.watch(cfg.paths.php.dest)   .on('change', browser.reload);
+    gulp.watch(cfg.paths.html.dest).on('change', browser.reload);
+    gulp.watch(cfg.paths.php.dest).on('change', browser.reload);
 };
 
 
@@ -193,7 +179,7 @@ export function minJS() {
 // MIN HTML + INJECT in HTML/wordpress FUNCTIONS
 export function minHTML() {
     return gulp.src(cfg.paths.html.dest)
-        .pipe( htmlmin({
+        .pipe(htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
@@ -203,7 +189,7 @@ export function minHTML() {
         .pipe(gulp.dest(cfg.paths.build))
 };
 
-export function injectFiles() {
+export function injection() {
 
     let mainCSS  = gulp.src([cfg.paths.inj.css], { read: false });
     let vendorJS = gulp.src([cfg.paths.inj.jsVendor], { read: false });
@@ -217,11 +203,11 @@ export function injectFiles() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, svg, WPtheme), server)
-                      : gulp.series(gulp.parallel(copyAll, styles, scripts, svg), server);
+                   : gulp.series(gulp.parallel(copyAll, styles, scripts, svg), server);
 export { dev };
 
 const build = cfg.wp ? gulp.parallel(minCSS, minJS)
-                        : gulp.series(gulp.parallel(minCSS, minJS), injectFiles, minHTML); // minHTML after inject to not delete tags
+                     : gulp.series(gulp.parallel(minCSS, minJS), injection, minHTML); // minHTML after inject to not delete tags
 export { build };
 
 export default dev;
