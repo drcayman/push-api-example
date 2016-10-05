@@ -4,7 +4,6 @@ import webpack from 'webpack'
 
 module.exports = {
     output: {
-        //filename: 'main.js',
         path: '/build',
         filename: '[name].js',
     },
@@ -34,14 +33,6 @@ module.exports = {
                     ) === 0
                 )
              }
-        }),
-        // new webpack.optimize.CommonsChunkPlugin({
-        //     name: 'webpack',
-        //     chunks: ['vendor']
-        // }),
-        // new webpack.ProvidePlugin({
-        //     'Promise': 'exports?global.Promise!es6-promise',
-        //     'window.fetch': 'exports?self.fetch!whatwg-fetch'
-        // })
+        })
     ]
 }

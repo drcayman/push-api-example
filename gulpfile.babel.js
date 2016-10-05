@@ -1,6 +1,8 @@
 // TODO
 /*
 * Only copy added/changed/deleted images
+* Make use of imagemin
+* Test hashing again
 */
 
 'use strict';
@@ -18,7 +20,6 @@ import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
 import changed		 from 'gulp-changed';		  import imagemin	 from 'gulp-imagemin';
-
 
 import * as cfg from './project.config'
 
@@ -129,7 +130,6 @@ export function icons() {
 // };
 
 
-
 //////////////////////////////////
 // FONTS ( npm i -g gulp-ttf2woff gulp-ttf2woff2 )
 export function woff() {
@@ -180,11 +180,11 @@ export const copy = {
 
 export const copyAll = gulp.parallel(copy.html, copy.php, copy.img/*, copy.copyWP*/);
 
+
 //////////////////////////////////////////////////////
 // PRODUCTION
 // Minification, Hashing, Injection
 //////////////////////////////////////////////////////
-
 // MIN CSS
 export function minCSS() {
     return gulp.src(cfg.paths.css.src)
