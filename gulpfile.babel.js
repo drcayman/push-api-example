@@ -63,37 +63,6 @@ export function server() {
 
 
 //////////////////////////////////
-// README
-export function readme() {
-
-    return new Promise(resolve => {
-
-        if( exists('README.md') ) {
-            resolve();
-        }
-        else {
-            prompt.message = ('');
-            prompt.delimiter = colors.gray(' ==>');
-
-            prompt.start();
-            prompt.get([{ name: 'project', description: 'Name des Projekts'.green + '*'.red, required: true },
-                        { name: 'author', description: 'Ersteller des Projekts'.green + '*'.red, required: true },
-                        { name: 'url', description: 'URL (http://)'.green, pattern: /^https?:\/\// },
-                        { name: 'server', description: 'Server'.green },
-                        { name: 'cms', description: 'CMS'.green, default: 'Typo3' },
-                        { name: 'notes', description: 'Notizen'.green }
-                ], (err, res) => {
-
-                fs.writeFile('./README.md', cfg.readme(res), () => resolve());
-            })
-        }
-
-    });
-
-}
-
-
-//////////////////////////////////
 // WEBPACK
 export function scripts() {
     return gulp.src(cfg.paths.js.main)
@@ -178,27 +147,45 @@ export function woff2() {
         .pipe(gulp.dest(cfg.paths.fonts.dest));
 };
 
+
+//////////////////////////////////
+// README
+export function readme() {
+
+    return new Promise(resolve => {
+
+        if( exists('README.md') ) { resolve() }
+        else {
+            prompt.message = ('');
+            prompt.delimiter = colors.gray(' ==>');
+
+            prompt.start();
+            prompt.get([{ name: 'project', description: 'Name des Projekts'.green + '*'.red, required: true },
+                        { name: 'author',  description: 'Ersteller des Projekts'.green + '*'.red, required: true },
+                        { name: 'url',     description: 'URL (http://)'.green, pattern: /^https?:\/\// },
+                        { name: 'server',  description: 'Server'.green },
+                        { name: 'cms',     description: 'CMS'.green, default: 'Typo3' },
+                        { name: 'notes',   description: 'Notizen'.green }
+                ], (err, res) => {
+
+                fs.writeFile('./README.md', cfg.readme(res), () => resolve());
+            })
+        }
+    });
+}
+
+
 ////////////////////////////////
 // THEME CONFIG
-export function WPtheme() {
-    const content =
-`/*
-    Theme Name: ${theme.name}
-    Version: ${theme.version}
-    Author: ${theme.author}
-    Author URI: ${theme.authorURI}
-    Description: ${theme.description}
-*/`;
-
+export function theme() {
     return new Promise(res => {
-        fs.writeFile(`${cfg.paths.build}/style.css`, content);
-        res();
+        fs.writeFile(`${cfg.paths.build}/style.css`, cfg.theme, () => res());
     });
 };
 
+
 ////////////////////////////////
 // COPY
-
 export const copy = {
     html() {
 		return gulp.src([cfg.paths.html.src])
@@ -261,7 +248,7 @@ export function injection() {
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, icons, WPtheme), server)
+const dev = cfg.wp ? gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons, theme), server)
                    : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
 export { dev };
 

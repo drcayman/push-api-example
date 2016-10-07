@@ -3,13 +3,15 @@ export const wp = false;
 
 export const host = 'wp-webpack.local';  // set if WordPress
 
-export const theme = {
-	name: 'Boilerplate',
-	version: '1.0',
-	author: 'ArtOfMySelf <email@artofmyself.com>',
-	authorURI: 'http://www.artofmyself.com',
-    description: 'Boilerplate WP Theme'
-};
+export const theme = `
+/*
+Theme Name: Boilerplate
+Version: 1.0
+Author: Pascal Klau <email@artofmyself.com>
+Author URI: http://www.artofmyself.com
+Description: Boilerplate WP Theme
+*/`;
+
 
 
 export const readme = res => {
@@ -39,6 +41,22 @@ _${res.url}_
 * ${res.notes}`
 
 }
+
+
+export const server =
+    wp ? {
+        open: false,
+        host,
+        proxy: host,
+        server: false
+    }
+    : {
+        open: 'localhost',
+        server: {
+            baseDir: './' + paths.build
+        }
+    };
+
 
 
 export const paths = {
@@ -91,18 +109,3 @@ export const hashOpts = {
     hashLength: 3,
     template: '<%= name %>.<%= hash %><%= ext %>'
 };
-
-
-export const server =
-    wp ? {
-        open: false,
-        host,
-        proxy: host,
-        server: false
-    }
-    : {
-        open: 'localhost',
-        server: {
-            baseDir: './' + paths.build
-        }
-    };
