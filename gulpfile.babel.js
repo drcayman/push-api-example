@@ -8,6 +8,7 @@
 'use strict';
 
 import path          from 'path';                 import del         from 'del';
+import exists        from 'fs-exists-sync';       import prompt      from 'prompt';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
 import webpackConfig from './webpack.config';	  import plumber	 from 'gulp-plumber';
@@ -19,7 +20,7 @@ import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-
 import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-inject';
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
-import changed		 from 'gulp-changed';
+import changed		 from 'gulp-changed';         import colors      from 'colors'
 
 import * as cfg from './project.config'
 
@@ -59,6 +60,37 @@ export function server() {
     gulp.watch(cfg.paths.html.dest) .on('change', browser.reload);
     gulp.watch(cfg.paths.php.dest)  .on('change', browser.reload);
 };
+
+
+//////////////////////////////////
+// README
+export function readme() {
+
+    return new Promise(resolve => {
+
+        if( exists('README.md') ) {
+            resolve();
+        }
+        else {
+            prompt.message = ('');
+            prompt.delimiter = colors.gray(' ==>');
+
+            prompt.start();
+            prompt.get([{ name: 'project', description: 'Name des Projekts'.green + '*'.red, required: true },
+                        { name: 'author', description: 'Ersteller des Projekts'.green + '*'.red, required: true },
+                        { name: 'url', description: 'URL (http://)'.green, pattern: /^https?:\/\// },
+                        { name: 'server', description: 'Server'.green },
+                        { name: 'cms', description: 'CMS'.green, default: 'Typo3' },
+                        { name: 'notes', description: 'Notizen'.green }
+                ], (err, res) => {
+
+                fs.writeFile('./README.md', cfg.readme(res), () => resolve());
+            })
+        }
+
+    });
+
+}
 
 
 //////////////////////////////////
@@ -230,7 +262,7 @@ export function injection() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 const dev = cfg.wp ? gulp.series(gulp.parallel(copyAll, styles, scripts, icons, WPtheme), server)
-                   : gulp.series(gulp.parallel(copyAll, styles, scripts, icons), server);
+                   : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
 export { dev };
 
 const build = cfg.wp ? gulp.parallel(minCSS, minJS)
