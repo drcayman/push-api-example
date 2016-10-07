@@ -43,21 +43,6 @@ _${res.url}_
 }
 
 
-export const server =
-    wp ? {
-        open: false,
-        host,
-        proxy: host,
-        server: false
-    }
-    : {
-        open: 'localhost',
-        server: {
-            baseDir: './' + paths.build
-        }
-    };
-
-
 
 export const paths = {
 	build: 'build',
@@ -103,6 +88,23 @@ export const paths = {
 		jsMain: 'build/js/main.*.js'
 	}
 }
+
+
+
+export const server =
+    wp ? {
+        open: false,
+        host,
+        proxy: host,
+        server: false
+    }
+    : {
+        open: 'localhost',
+        server: {
+            baseDir: './' + paths.build
+        }
+    };
+
 
 
 export const hashOpts = {
