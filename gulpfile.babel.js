@@ -11,7 +11,7 @@ import path          from 'path';                 import del         from 'del';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
 import webpackConfig from './webpack.config';	  import plumber	 from 'gulp-plumber';
-import babel 		 from 'gulp-babel';			  import notify      from 'gulp-notify';
+import notify        from 'gulp-notify';          import imagemin	 from 'gulp-imagemin';
 import maps          from 'gulp-sourcemaps';	  import uglify      from 'gulp-uglify';
 import autoprefixer  from 'gulp-autoprefixer';    import cleanCSS    from 'gulp-clean-css';
 import svgstore      from 'gulp-svgstore';        import svgmin      from 'gulp-svgmin';
@@ -19,7 +19,7 @@ import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-
 import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-inject';
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
-import changed		 from 'gulp-changed';		  import imagemin	 from 'gulp-imagemin';
+import changed		 from 'gulp-changed';
 
 import * as cfg from './project.config'
 
@@ -198,7 +198,6 @@ export function minCSS() {
 export function minJS() {
     return gulp.src(cfg.paths.js.srcMin)
 		.pipe(maps.init({ loadMaps: true }))
-		.pipe(babel())
 		.pipe(uglify())
 		.pipe(maps.write('./'))
         .pipe(gulp.dest(cfg.paths.js.dest))

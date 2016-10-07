@@ -6,6 +6,8 @@ import esPolyfill from 'es-dynamic-polyfill'
 //
 //
 
+[1,2,3,4].includes(3)
+
 esPolyfill({
     fills: 'fetch, Promise',
     options: 'gated',

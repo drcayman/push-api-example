@@ -15,9 +15,8 @@ module.exports = {
             exclude: /node_modules/,
             loader: 'babel',
             query: {
-                babelrc: false,
-                plugins: ['transform-es2015-modules-commonjs',
-                          'transform-strict-mode']
+                presets: ['es2015'],
+                plugins: ['transform-strict-mode']
             }
         }]
     },
