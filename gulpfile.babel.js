@@ -11,9 +11,9 @@ import path          from 'path';                 import del         from 'del';
 import exists        from 'fs-exists-sync';       import prompt      from 'prompt';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
-import webpackConfig from './webpack.config';	  import plumber	 from 'gulp-plumber';
+import plumber	     from 'gulp-plumber';
 import notify        from 'gulp-notify';          import imagemin	 from 'gulp-imagemin';
-import maps          from 'gulp-sourcemaps';	  import uglify      from 'gulp-uglify';
+import maps          from 'gulp-sourcemaps';
 import autoprefixer  from 'gulp-autoprefixer';    import cleanCSS    from 'gulp-clean-css';
 import svgstore      from 'gulp-svgstore';        import svgmin      from 'gulp-svgmin';
 import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-ttf2woff';
@@ -21,10 +21,12 @@ import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
 import changed		 from 'gulp-changed';         import colors      from 'colors'
+import yargs          from 'yargs'
 
-import * as cfg from './project.config'
+import * as cfg    from './project.config'
 
-const browser   = browserSync.create();
+const browser = browserSync.create();
+const argv    = yargs.argv
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -71,11 +73,7 @@ export function scripts() {
 	        	message: '<%= error.message %>',
 			})
 		}))
-		.pipe(webpack(webpackConfig)
-			.on('error', function handleError() {
-				this.emit('end');
-			})
-		)
+		.pipe(webpack( require('./webpack.config') ))
 		.pipe(gulpif(cfg.wp, hash(cfg.hashOpts)))
         .pipe(gulp.dest(cfg.paths.js.dest))
         .pipe(browser.stream({ match: '**/*.js' }))     // Inject Bundle
@@ -92,8 +90,9 @@ export function styles() {
 	        message: 'Error: <%= error.message %>',
 		})))
         .pipe(autoprefixer({ browsers: ['> 0.1%', 'IE 10'], cascade: false }))
-        .pipe(maps.write('./'))
         .pipe(gulpif(cfg.wp, hash(cfg.hashOpts)))
+        .pipe(gulpif(argv.production, cleanCSS()))
+        .pipe(maps.write('./'))
         .pipe(gulp.dest(cfg.paths.css.dest))
         .pipe(browser.stream({match: '**/*.css'}))     // Inject Sass/CSS
 };
@@ -194,30 +193,8 @@ export const copy = {
 export const copyAll = gulp.parallel(copy.html, copy.php, copy.img/*, copy.copyWP*/);
 
 
-//////////////////////////////////////////////////////
-// PRODUCTION
-// Minification, Hashing, Injection
-//////////////////////////////////////////////////////
-// MIN CSS
-export function minCSS() {
-    return gulp.src(cfg.paths.css.src)
-		.pipe(maps.init({ loadMaps: true }))
-		.pipe(cleanCSS())
-		.pipe(maps.write('./'))
-        .pipe(gulp.dest(cfg.paths.css.dest))
-};
-
-// MIN JS
-export function minJS() {
-    return gulp.src(cfg.paths.js.srcMin)
-		.pipe(maps.init({ loadMaps: true }))
-		.pipe(uglify())
-		.pipe(maps.write('./'))
-        .pipe(gulp.dest(cfg.paths.js.dest))
-};
-
 // MIN HTML + INJECT in HTML/wordpress FUNCTIONS
-export function minHTML() {
+export function html() {
     return gulp.src(cfg.paths.html.dest)
         .pipe(htmlmin({
             collapseWhitespace: true,
@@ -228,6 +205,7 @@ export function minHTML() {
         }))
         .pipe(gulp.dest(cfg.paths.build))
 };
+
 
 export function injection() {
 
@@ -245,7 +223,7 @@ export function injection() {
 export const dev = cfg.wp ? gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons, theme), server)
                    : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
 
-export const build = cfg.wp ? gulp.parallel(minCSS, minJS)
-                     : gulp.series(gulp.parallel(minCSS, minJS), injection, minHTML); // minHTML after inject to not delete tags
+export const build = cfg.wp ? gulp.parallel(minCSS)
+                     : gulp.series(gulp.parallel(styles, scripts), injection, html); // minHTML after inject to not delete tags
 
 export default dev;

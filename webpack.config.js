@@ -1,5 +1,32 @@
 import path from 'path'
 import webpack from 'webpack'
+import yargs from 'yargs'
+
+const argv = yargs.argv
+
+
+const Common =
+    new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        minChunks: function (module, count) {
+            return (
+                module.resource &&
+                /\.js$/.test(module.resource) &&
+                module.resource.indexOf(
+                    path.join(__dirname, '/node_modules')
+                ) === 0
+            )
+         }
+    })
+
+
+const Uglify =
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        },
+        comments: /sourceMappingURL/g
+    })
 
 
 module.exports = {
@@ -20,18 +47,5 @@ module.exports = {
             }
         }]
     },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: function (module, count) {
-                return (
-                    module.resource &&
-                    /\.js$/.test(module.resource) &&
-                    module.resource.indexOf(
-                        path.join(__dirname, '/node_modules')
-                    ) === 0
-                )
-             }
-        })
-    ]
+    plugins: argv.production ? [Common, Uglify] : [Common]
 }
