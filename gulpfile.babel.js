@@ -133,18 +133,12 @@ export function icons() {
 
 //////////////////////////////////
 // FONTS ( npm i -g gulp-ttf2woff gulp-ttf2woff2 )
-export function woff() {
+export function fonts() {
     return gulp.src([cfg.paths.fonts.src])
 		.pipe(changed(cfg.paths.fonts.dest))
-        .pipe(ttf2woff())
-        .pipe(gulp.dest(cfg.paths.fonts.dest));
-};
-
-export function woff2() {
-    return gulp.src([cfg.paths.fonts.dest])
-		.pipe(changed(cfg.paths.fonts.dest))
-        .pipe(ttf2woff2())
-        .pipe(gulp.dest(cfg.paths.fonts.dest));
+        .pipe(ttf2woff({ clone: true }))
+        .pipe(ttf2woff2({ clone: true }))
+        .pipe(gulp.dest(cfg.paths.fonts.dest))
 };
 
 
@@ -248,12 +242,10 @@ export function injection() {
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-const dev = cfg.wp ? gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons, theme), server)
+export const dev = cfg.wp ? gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons, theme), server)
                    : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
-export { dev };
 
-const build = cfg.wp ? gulp.parallel(minCSS, minJS)
+export const build = cfg.wp ? gulp.parallel(minCSS, minJS)
                      : gulp.series(gulp.parallel(minCSS, minJS), injection, minHTML); // minHTML after inject to not delete tags
-export { build };
 
 export default dev;
