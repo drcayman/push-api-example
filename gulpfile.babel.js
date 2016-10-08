@@ -11,17 +11,16 @@ import path          from 'path';                 import del         from 'del';
 import exists        from 'fs-exists-sync';       import prompt      from 'prompt';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
-import plumber	     from 'gulp-plumber';
+import plumber	     from 'gulp-plumber';         import yargs       from 'yargs'
 import notify        from 'gulp-notify';          import imagemin	 from 'gulp-imagemin';
-import maps          from 'gulp-sourcemaps';
+import maps          from 'gulp-sourcemaps';      import colors      from 'colors'
 import autoprefixer  from 'gulp-autoprefixer';    import cleanCSS    from 'gulp-clean-css';
 import svgstore      from 'gulp-svgstore';        import svgmin      from 'gulp-svgmin';
 import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-ttf2woff';
 import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-inject';
 import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
-import changed		 from 'gulp-changed';         import colors      from 'colors'
-import yargs          from 'yargs'
+import changed		 from 'gulp-changed';
 
 import * as cfg    from './project.config'
 
@@ -221,9 +220,9 @@ export function injection() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = cfg.wp ? gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons, theme), server)
-                   : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
+                          : gulp.series(readme, gulp.parallel(copyAll, styles, scripts, icons), server);
 
-export const build = cfg.wp ? gulp.parallel(minCSS)
-                     : gulp.series(gulp.parallel(styles, scripts), injection, html); // minHTML after inject to not delete tags
+export const build = cfg.wp ? gulp.parallel(styles, scripts)
+                            : gulp.series(gulp.parallel(styles, scripts), injection, html); // minHTML after inject to not delete tags
 
 export default dev;
