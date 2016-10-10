@@ -8,11 +8,9 @@ const argv = yargs.argv
 const Common =
     new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
-        minChunks: function (module, count) {
+        minChunks(module, count) {
             return (
-                module.resource &&
-                /\.js$/.test(module.resource) &&
-                module.resource.indexOf(
+                module.resource && /\.js$/.test(module.resource) && module.resource.indexOf(
                     path.join(__dirname, '/node_modules')
                 ) === 0
             )
@@ -22,17 +20,19 @@ const Common =
 
 const Uglify =
     new webpack.optimize.UglifyJsPlugin({
-        compress: {
-            warnings: false
-        },
+        compress: { warnings: false },
         comments: /sourceMappingURL/g
     })
 
 
 module.exports = {
+    entry: {
+        main: './src/js/main.js',
+        other: './src/js/test.js'
+    },
     output: {
-        path: '/build',
         filename: '[name].js',
+        path: '/build'
     },
     devtool: 'source-map',
     bail: false,

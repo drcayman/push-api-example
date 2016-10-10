@@ -46,7 +46,7 @@ _${res.url}_
 
 export const paths = {
 	build: 'build',
-	assets: 'assets',
+	srcAssets: 'src/assets',
 	buildAssets: 'build/assets',
 	scss: {
 		main: 'src/scss/main.scss',
@@ -71,11 +71,11 @@ export const paths = {
 		dest: 'build/assets/icons'
 	},
 	fonts: {
-		src: 'src/assets/fonts/*.ttf',
+		src: 'src/assets/fonts',
 		dest: 'build/assets/fonts'
 	},
 	html: {
-		src: 'src/**/*.html',
+		src: ['src/**/*.html', 'src/**/*.php'],
 		dest: 'build/**/*.html'
 	},
 	php: {
