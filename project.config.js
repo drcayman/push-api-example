@@ -16,10 +16,10 @@ Description: Boilerplate WP Theme
 
 // SERVER OPTIONS
 export const serve = {
-		ghostmode: false,
-        open: false,
-        //proxy: 'bp.local',
-		server: './build' // set false when MAMP
+	ghostmode: false,
+    open: false,
+    //proxy: 'bp.local',
+	server: './build' // set false when MAMP
 };
 
 
@@ -54,48 +54,50 @@ _${res.url}_
 
 
 // PATH DEFINITION
-export const paths = {
-	build: 'build',
-	srcAssets: 'src/assets',
-	buildAssets: 'build/assets',
-	scss: {
-		main: 'src/scss/main.scss',
-		src: 'src/scss',
-	},
-	css: {
-		src: 'build/css/*.css',
-		dest: 'build/css'
-	},
-	js: {
-		main: 'src/js/main.js',
-		src: 'src/js',
-		dest: 'build/js'
-	},
-	img: {
-		src: 'src/assets/img/**/*',
-		dest: 'build/assets/img'
-	},
-	icons: {
-		src: 'src/assets/icons/icon-*.svg',
-		dest: 'build/assets/icons'
-	},
-	fonts: {
-		src: 'src/assets/fonts',
-		dest: 'build/assets/fonts'
-	},
-	html: {
-		src: ['src/**/*.html', 'src/**/*.php'],
-		dest: 'build/**/*.html'
-	},
-	php: {
-		src: 'src/**/*.php',
-		dest: 'build/**/*.php'
-	},
-	inj: {
-		css: 'build/css/main.*.css',
-		jsVendor: 'build/js/vendor.*.js',
-		jsMain: 'build/js/main.*.js'
-	}
+export const src = {
+	fonts: 'src/assets/fonts',
+	icons: 'src/assets/icons/icon-*.svg',
+	img:   'src/assets/img/**/*',
+	js:    'src/js',
+	scss:  'src/scss'
+}
+export const build = 'build'
+export const dest  = {
+	fonts: `${build}/assets/fonts`,
+	icons: `${build}/assets/icons`,
+	img:   `${build}/assets/img`,
+	js:    `${build}/js`,
+	scss:  `${build}/css`
+}
+
+
+inj: {
+	css: 'build/css/main.*.css',
+	jsVendor: 'build/js/vendor.*.js',
+	jsMain: 'build/js/main.*.js'
+}
+
+	//
+	// scss: { src: 'src/scss', dest: 'build/css' },
+	// js: {   src: 'src/js',   dest: 'build/js'  },
+	//
+	// img: {
+	// 	src: 'src/assets/img/**/*',
+	//  	dest: 'build/assets/img'
+	// },
+	//
+	// icons: {
+	// 	src: 'src/assets/icons/icon-*.svg',
+	// 	dest: 'build/assets/icons'
+	// },
+	//
+	// fonts: { src: 'src/assets/fonts',
+	// 	    dest: 'build/assets/fonts'
+	// },
+	//
+	// misc: { src: ['src/**/*', 'src/**/*'] },
+
+
 }
 
 
