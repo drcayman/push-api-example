@@ -23,7 +23,7 @@ import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
 import changed		 from 'gulp-changed';         import gutil from 'gulp-util';
 
-import { wp, theme, src, dest, build, readme, serve, hashOpts } from './project.config'
+import { wp, theme, src, dest, build as buildFolder, readme, serve, hashOpts } from './project.config'
 
 const browser = browserSync.create()
 const argv    = yargs.argv
@@ -65,7 +65,7 @@ export function server() {
 
     // Watch Images
     gulp.watch(src.img, gulp.series(img))
-        .on('unlink', (path, stats) => del(path.replace('src', 'build')))
+        .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
 
 
     // Watch Misc
@@ -75,7 +75,7 @@ export function server() {
 
     // Watch non processed Files
     gulp.watch('src/**/*', copy.misc)
-        .on('unlink', (path, stats) => del(path.replace('src', 'build')))
+        .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
 };
 
 
@@ -188,7 +188,7 @@ export function createReadme() {
 // THEME CONFIG
 export function createTheme() {
     return new Promise(res => {
-        fs.writeFile(`${build}/style.css`, theme, () => res());
+        fs.writeFile(`${buildFolder}/style.css`, theme, () => res());
     });
 };
 
@@ -202,7 +202,7 @@ export const copy = {
     },
     misc() {
         return gulp.src(['src/assets/**/*', '!src/assets/img/**/*', '!src/assts/fonts', '!src/assets/fonts/**, favicons/**}'])
-            .pipe(gulp.dest(`${build}/assets`))
+            .pipe(gulp.dest(`${buildFolder}/assets`))
     }
 
 }
@@ -216,16 +216,16 @@ export function html() {
     let vendor  = gulp.src(`${dest.js}/vendor.*.css`, { read: false });
     let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
 
-    return gulp.src(`${build}/**/*.html`)
-        .pipe(gulpif(!wp, inject(series(styles, vendor, scripts), { relative: true }))
+    return gulp.src(`${buildbuildFolder}/**/*.html`)
+        .pipe(gulpif(!wp, inject(series(styles, vendor, scripts), { relative: true })))
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true,
             removeComments: true
-        }))
-        .pipe(gulp.dest(build))
+        })))
+        .pipe(gulp.dest(buildFolder))
 };
 
 
@@ -234,7 +234,7 @@ export function html() {
 //
 //     return gulp.src(`${paths.src}/**/*.html`)
 //         .pipe(inject(series(mainCSS, vendorJS, mainJS), { relative: true }))
-//         .pipe(gulp.dest(build))
+//         .pipe(gulp.dest(buildbuildFolder))
 // };
 
 ////////////////////////////////////////////////////////

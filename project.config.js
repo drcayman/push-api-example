@@ -71,36 +71,6 @@ export const dest  = {
 }
 
 
-inj: {
-	css: 'build/css/main.*.css',
-	jsVendor: 'build/js/vendor.*.js',
-	jsMain: 'build/js/main.*.js'
-}
-
-	//
-	// scss: { src: 'src/scss', dest: 'build/css' },
-	// js: {   src: 'src/js',   dest: 'build/js'  },
-	//
-	// img: {
-	// 	src: 'src/assets/img/**/*',
-	//  	dest: 'build/assets/img'
-	// },
-	//
-	// icons: {
-	// 	src: 'src/assets/icons/icon-*.svg',
-	// 	dest: 'build/assets/icons'
-	// },
-	//
-	// fonts: { src: 'src/assets/fonts',
-	// 	    dest: 'build/assets/fonts'
-	// },
-	//
-	// misc: { src: ['src/**/*', 'src/**/*'] },
-
-
-}
-
-
 // HASH OPTIONS
 export const hashOpts = {
     hashLength: 3,
