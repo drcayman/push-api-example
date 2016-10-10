@@ -27,8 +27,7 @@ const Uglify =
 
 module.exports = {
     entry: {
-        main: './src/js/main.js',
-        other: './src/js/test.js'
+        main: './src/js/main.js'
     },
     output: {
         filename: '[name].js',

@@ -49,30 +49,40 @@ export function server() {
         server: server.server
     });
 
-    gulp.watch(`${paths.scss.src}/**/*.scss`, gulp.series( delCSS, styles ));
-    gulp.watch(`${paths.js.src}/**/*.js`,     gulp.series( delJS, scripts ));
 
-    // Watch Icons
-    gulp.watch(paths.icons.src, icons);
+    // Watch Sass
+    gulp.watch(`${paths.scss.src}/**/*.scss`, styles)
+        .on('change', () => del(paths.css.dest));
 
 
-    // Watch Images
-    const watchIMG = gulp.watch(paths.img.src, gulp.series(img))
-    watchIMG.on('unlink', (path, stats) => del(path.replace('src', 'build')))
+    // Watch JS
+    gulp.watch(`${paths.js.src}/**/*.js`, scripts)
+        .on('change', () => del(paths.js.dest));
 
 
     // Watch Fonts
-    gulp.watch(paths.fonts.src + '/**/*', gulp.series( delFonts, fonts.copy, fonts ));
+    gulp.watch(paths.fonts.src + '/**/*', gulp.parallel(fonts, copy.fonts))
+        .on('unlink', () => del(paths.fonts.dest))
+
+
+    // Watch Icons
+    gulp.watch(paths.icons.src, icons)
+        .on('change', () => del(paths.icons.dest))
+
+
+    // Watch Images
+    gulp.watch(paths.img.src, gulp.series(img))
+        .on('unlink', (path, stats) => del(path.replace('src', 'build')))
 
 
     // Watch HTML/PHP
-    const watchHTML = gulp.watch(paths.html.src, copy.html)
-    watchHTML.on('unlink', (path, stats) => del(path.replace('src', 'build')))
+    gulp.watch(paths.html.src, copy.html)
+        .on('unlink', (path, stats) => del(path.replace('src', 'build')))
 
 
-    // Watch misc Assets
-    const watchMisc = gulp.watch(paths.misc, copy.misc)
-    watchMisc.on('unlink', (path, stats) => del(path.replace('src', 'build')))
+    // Watch non processed Files
+    gulp.watch(paths.misc, copy.misc)
+        .on('unlink', (path, stats) => del(path.replace('src', 'build')))
 
 
 };
@@ -88,7 +98,7 @@ export function bundle() {
 	        	message: '<%= error.message %>',
 			})
 		}))
-		.pipe(webpack( require('./webpack.config') ))
+		.pipe(webpack(require('./webpack.config')))
 		.pipe(gulpif(wp, hash(hashOpts)))
         .pipe(gulp.dest(paths.js.dest))
         .pipe(browser.stream({ match: '**/*.js' }))     // Inject Bundle
@@ -151,8 +161,8 @@ export function img() {
 export function fonts() {
     return gulp.src(paths.fonts.src + '/**/*.ttf')
 		.pipe(changed(paths.fonts.dest))
-        .pipe(ttf2woff())
-        .pipe(ttf2woff2())
+        .pipe(ttf2woff({ clone: true }))
+        .pipe(ttf2woff2({ clone: true }))
         .pipe(gulp.dest(paths.fonts.dest))
 };
 

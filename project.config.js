@@ -58,7 +58,6 @@ export const paths = {
 	},
 	js: {
 		main: 'src/js/main.js',
-		srcMin: 'build/js/*.js',
 		src: 'src/js',
 		dest: 'build/js'
 	},
