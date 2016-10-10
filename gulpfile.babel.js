@@ -1,13 +1,14 @@
 // TODO
 /*
-* Only copy added/changed/deleted images
-* Make use of imagemin
-* Test hashing again
+* FTP Upload
+* Favicon Generator
+* Hashing Tests
+* Vue Loader w/ Webpack
 */
 
 'use strict';
 
-import path          from 'path';                 import deleteData  from 'del';
+import path          from 'path';                 import delData     from 'del';
 import exists        from 'fs-exists-sync';       import prompt      from 'prompt';
 import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
 import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
@@ -22,33 +23,25 @@ import hash          from 'gulp-hash';            import fs          from 'fs';
 import gulpif        from 'gulp-if';              import series      from 'stream-series';
 import changed		 from 'gulp-changed';         import gutil from 'gulp-util';
 
-import { wp, theme, paths, readme, sever, hashOpts } from './project.config'
+import { wp, theme, paths, readme, serve, hashOpts } from './project.config'
 
-const browser = browserSync.create();
+const browser = browserSync.create()
 const argv    = yargs.argv
-////////////////////////////////////////////////////////
+
+export const del = path => delData(path)
 ////////////////////////////////////////////////////////
 // DEVELOPMENT
 // Server, Sass, Webpack, SVG, WP Theme
 //////////////////////////////////////////////////////
-export const delCSS = () => deleteData([paths.css.dest])
-export const delJS  = () => deleteData([paths.js.dest])
-export const delFonts = () => deleteData([paths.fonts.dest])
-export const delHTML = () => deleteData([paths.html.dest, paths.php.dest])
-
-
-export const del = path => deleteData(path)
 ////////////////////////////////
 // SERVER
 export function server() {
     browser.init({
-        ghostmode: false, // mirror events on devices
-        open: server.open,
-        host: server.host,
-        proxy: server.proxy,
-        server: server.server
+        ghostmode: serve.ghostmode,
+        open: serve.open,
+        proxy: serve.proxy,
+        server: serve.server
     });
-
 
     // Watch Sass
     gulp.watch(`${paths.scss.src}/**/*.scss`, styles)
@@ -61,7 +54,7 @@ export function server() {
 
 
     // Watch Fonts
-    gulp.watch(paths.fonts.src + '/**/*', gulp.parallel(fonts, copy.fonts))
+    gulp.watch(`${paths.fonts.src}/**/*`, gulp.parallel(fonts, copy.fonts))
         .on('unlink', () => del(paths.fonts.dest))
 
 
@@ -83,15 +76,13 @@ export function server() {
     // Watch non processed Files
     gulp.watch(paths.misc, copy.misc)
         .on('unlink', (path, stats) => del(path.replace('src', 'build')))
-
-
 };
 
 
 
 //////////////////////////////////
 // WEBPACK
-export function bundle() {
+export function scripts() {
     return gulp.src(paths.js.main)
 		.pipe(plumber({ errorHandler: notify.onError({
 				title: 'Webpack Error',
@@ -103,7 +94,7 @@ export function bundle() {
         .pipe(gulp.dest(paths.js.dest))
         .pipe(browser.stream({ match: '**/*.js' }))     // Inject Bundle
 };
-export const scripts = gulp.series(delJS, bundle);
+//export const scripts = gulp.series(del(paths.js.dest), bundle);
 
 
 //////////////////////////////////
@@ -120,7 +111,7 @@ export function styles() {
         .pipe(gulpif(argv.production, cleanCSS()))
         .pipe(maps.write('./'))
         .pipe(gulp.dest(paths.css.dest))
-        .pipe(browser.stream({match: '**/*.css'}))     // Inject Sass/CSS
+        .pipe(browser.stream({ match: '**/*.css' }))
 };
 
 
@@ -129,7 +120,6 @@ export function styles() {
 export function icons() {
     return gulp.src(paths.icons.src)
         //.pipe(rename({prefix: 'icon-'}))
-        .changed(paths.icons.dest)
         .pipe(svgmin(file => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
             return {
@@ -157,7 +147,7 @@ export function img() {
 
 
 //////////////////////////////////
-// FONTS ( npm i -g gulp-ttf2woff gulp-ttf2woff2 )
+// FONTS
 export function fonts() {
     return gulp.src(paths.fonts.src + '/**/*.ttf')
 		.pipe(changed(paths.fonts.dest))
@@ -206,11 +196,6 @@ export function createTheme() {
 ////////////////////////////////
 // COPY
 export const copy = {
-    html() {
-		return gulp.src(paths.html.src)
-			.pipe(changed(paths.build))
-			.pipe(gulp.dest(paths.build))
-	},
     fonts() {
         return gulp.src(paths.fonts.src + '/**/*')
             .pipe(gulp.dest(paths.fonts.dest))

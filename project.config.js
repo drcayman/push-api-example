@@ -1,8 +1,9 @@
 
+// IF WORDPRESS
 export const wp = false;
 
-export const host = 'wp-webpack.local';  // set if WordPress
 
+// WORDPRESS THEME
 export const theme = `
 /*
 Theme Name: Boilerplate
@@ -13,7 +14,16 @@ Description: Boilerplate WP Theme
 */`;
 
 
+// SERVER OPTIONS
+export const serve = {
+		ghostmode: false,
+        open: false,
+        //proxy: 'bp.local',
+		server: './build' // set false when MAMP
+};
 
+
+// README FILE
 export const readme = res => {
 
 	let today = new Date(),
@@ -43,7 +53,7 @@ _${res.url}_
 }
 
 
-
+// PATH DEFINITION
 export const paths = {
 	build: 'build',
 	srcAssets: 'src/assets',
@@ -89,23 +99,7 @@ export const paths = {
 }
 
 
-
-export const server =
-    wp ? {
-        open: false,
-        host,
-        proxy: host,
-        server: false
-    }
-    : {
-        open: 'localhost',
-        server: {
-            baseDir: './' + paths.build
-        }
-    };
-
-
-
+// HASH OPTIONS
 export const hashOpts = {
     hashLength: 3,
     template: '<%= name %>.<%= hash %><%= ext %>'
