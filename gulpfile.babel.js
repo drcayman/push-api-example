@@ -1,6 +1,7 @@
 // TODO
 /*
 * FTP Upload
+* switch Stream for proper Reload
 * Favicon Generator
 * Hashing Tests
 * Vue Loader w/ Webpack
@@ -25,15 +26,16 @@ import changed		 from 'gulp-changed';         import gutil from 'gulp-util';
 
 import { wp, theme, src, dest, build as buildFolder, readme, serve, hashOpts } from './project.config'
 
-const browser = browserSync.create()
-const argv    = yargs.argv
+const browser  = browserSync.create()
+const argv     = yargs.argv
+const miscGlob = ['src/**/*', `!${src.scss}{/**}`,    `!${src.js}{/**}`,
+                              `!${src.img}{/**/*}`,   `!${src.fonts}{/**}`,
+                              `!${src.icons}{/**/*}`, `!${src.favicons}{/**}`]
 
 export const del = path => delData(path)
 ////////////////////////////////////////////////////////
 // DEVELOPMENT
-// Server, Sass, Webpack, SVG, WP Theme
 //////////////////////////////////////////////////////
-////////////////////////////////
 // SERVER
 export function server() {
     browser.init({
@@ -45,12 +47,16 @@ export function server() {
 
     // Watch Sass
     gulp.watch(`${src.scss}/**/*.scss`, styles)
-        .on('change', () => del(dest.scss));
+        .on('change', () => del(dest.scss))
 
 
     // Watch JS
     gulp.watch(`${src.js}/**/*.js`, scripts)
-        .on('change', () => del(dest.js));
+        .on('change', (cb) => del(dest.js))
+
+
+    // Reload after JS
+    gulp.watch(`${dest.js}/**/*`, browser.reload)
 
 
     // Watch Fonts
@@ -64,20 +70,14 @@ export function server() {
 
 
     // Watch Images
-    gulp.watch(src.img, gulp.series(img))
+    gulp.watch(src.img, gulp.series(images))
         .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
 
 
     // Watch Misc
-    // gulp.watch('src/**/*', copy.html)
-    //     .on('unlink', (path, stats) => del(path.replace('src', 'build')))
-
-
-    // Watch non processed Files
-    gulp.watch('src/**/*', copy.misc)
+    gulp.watch(miscGlob, copy.misc)
         .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
 };
-
 
 
 //////////////////////////////////
@@ -92,9 +92,8 @@ export function scripts() {
 		.pipe(webpack(require('./webpack.config')))
 		.pipe(gulpif(wp, hash(hashOpts)))
         .pipe(gulp.dest(dest.js))
-        .pipe(browser.stream({ match: '**/*.js' }))     // Inject Bundle
+        .pipe(browser.stream())
 };
-//export const scripts = gulp.series(del(dest.js), bundle);
 
 
 //////////////////////////////////
@@ -118,7 +117,7 @@ export function styles() {
 ////////////////////////////////
 // SVG ICONS
 export function icons() {
-    return gulp.src(src.icons)
+    return gulp.src(`${src.icons}/icon-*.svg`)
         //.pipe(rename({prefix: 'icon-'}))
         .pipe(svgmin(file => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
@@ -138,8 +137,8 @@ export function icons() {
 
 ////////////////////////////////
 // IMAGES
-export function img() {
-    return gulp.src(src.img)
+export function images() {
+    return gulp.src(`${src.img}/**/*`)
 		.pipe(changed(dest.img))
         .pipe(imagemin())
         .pipe(gulp.dest(dest.img));
@@ -188,7 +187,7 @@ export function createReadme() {
 // THEME CONFIG
 export function createTheme() {
     return new Promise(res => {
-        fs.writeFile(`${buildFolder}/style.css`, theme, () => res());
+        if( wp ) fs.writeFile(`${buildFolder}/style.css`, theme, () => res());
     });
 };
 
@@ -196,27 +195,25 @@ export function createTheme() {
 ////////////////////////////////
 // COPY
 export const copy = {
-    fonts() {
-        return gulp.src(src.fonts + '/**/*')
-            .pipe(gulp.dest(dest.fonts))
-    },
+    fonts() { return gulp.src(src.fonts + '/**/*').pipe(gulp.dest(dest.fonts)) },
     misc() {
-        return gulp.src(['src/assets/**/*', '!src/assets/img/**/*', '!src/assts/fonts', '!src/assets/fonts/**, favicons/**}'])
-            .pipe(gulp.dest(`${buildFolder}/assets`))
+        return gulp.src(miscGlob)
+            .pipe(changed(buildFolder))
+            .pipe(gulp.dest(buildFolder))
     }
-
 }
-export const copyAll = gulp.parallel(/*copy.html, copy.fonts,*/ copy.misc);
+export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 
 
-// MIN HTML + INJECT in HTML/wordpress FUNCTIONS
+////////////////////////////////
+// MIN HTML + INJECT
 export function html() {
 
     let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false });
     let vendor  = gulp.src(`${dest.js}/vendor.*.css`, { read: false });
     let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
 
-    return gulp.src(`${buildbuildFolder}/**/*.html`)
+    return gulp.src(`${buildFolder}/**/*.html`)
         .pipe(gulpif(!wp, inject(series(styles, vendor, scripts), { relative: true })))
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
@@ -229,20 +226,12 @@ export function html() {
 };
 
 
-// export function injection() {
-//
-//
-//     return gulp.src(`${paths.src}/**/*.html`)
-//         .pipe(inject(series(mainCSS, vendorJS, mainJS), { relative: true }))
-//         .pipe(gulp.dest(buildbuildFolder))
-// };
-
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = gulp.series(createReadme,
-                   gulp.parallel(copyAll, styles, scripts, icons, fonts),
-                   server);
+                   gulp.parallel(copyAll, styles, scripts, icons, fonts, images),
+                   server)
 
-export const build = gulp.series(gulp.parallel(styles, scripts), html); // minHTML after inject to not delete tags
+export const build = gulp.series(gulp.parallel(styles, scripts), html)
 
-export default dev;
+export default dev

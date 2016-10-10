@@ -55,14 +55,16 @@ _${res.url}_
 
 // PATH DEFINITION
 export const src = {
+	favicons: 'src/assets/favicons',
 	fonts: 'src/assets/fonts',
-	icons: 'src/assets/icons/icon-*.svg',
-	img:   'src/assets/img/**/*',
+	icons: 'src/assets/icons',
+	img:   'src/assets/img',
 	js:    'src/js',
 	scss:  'src/scss'
 }
 export const build = 'build'
 export const dest  = {
+	favicons: `${build}/assets/favicons`,
 	fonts: `${build}/assets/fonts`,
 	icons: `${build}/assets/icons`,
 	img:   `${build}/assets/img`,

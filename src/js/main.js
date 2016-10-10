@@ -18,7 +18,7 @@ esPolyfill({
 
 function main() {
 
-    console.log('hit yeaa!');
+    console.log('hit ye!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //
@@ -44,4 +44,4 @@ function main() {
 //number(2)
 
 //promise
-letter('eeeggggggggggff')
+letter('abc')
