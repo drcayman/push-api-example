@@ -1,8 +1,7 @@
 ////////////////////////////////
 // VARIABLES
-export const wp      = false;
-export const setHash = true;
-
+export const wp      = false
+export const setHash = true
 
 ////////////////////////////////////////////////////////////////
 // SFTP
@@ -19,7 +18,7 @@ export const serve = {
     open: false,
     //proxy: 'bp.local',
 	server: './build' // set false when MAMP
-};
+}
 
 
 ////////////////////////////////////////////////////////////////
@@ -78,7 +77,7 @@ export const dest  = {
 export const hashOpts = {
     hashLength: 3,
     template: '<%= name %>.<%= hash %><%= ext %>'
-};
+}
 
 
 ////////////////////////////////////////////////////////////////

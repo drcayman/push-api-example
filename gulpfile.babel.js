@@ -1,9 +1,8 @@
 // TODO
 /*
-* JS Stream >> Reload
-* Icons Tests
-* Hashing Tests
+* Injection (on build: delete originals || on dev: no CSS stream)
 * Vue Loader w/ Webpack
+* Hot Module Reloading
 */
 
 'use strict';
@@ -65,6 +64,10 @@ export function server() {
         .on('change', () => DEL(dest.js))
 
 
+    // // Watch Hash on JS (CSS in streamed)
+    // if(setHash) gulp.watch(`${dest.js}/*.js`, html)
+
+
     // Watch Fonts
     gulp.watch(`${src.fonts}/**/*`, gulp.parallel(fonts, copy.fonts))
         .on('unlink', () => DEL(dest.fonts))
@@ -92,7 +95,7 @@ export function scripts() {
     return gulp.src(`${src.js}/main.js`)
 		.pipe(plumber({ errorHandler: notify.onError(error) }))
 		.pipe(webpack(require('./webpack.config')))
-		.pipe(gulpif(setHash, hash(hashOpts)))
+		.pipe(gulpif(setHash && argv.production, hash(hashOpts)))
         .pipe(gulp.dest(dest.js))
         .pipe(browser.reload({ stream: true }))
 };
@@ -105,8 +108,10 @@ export function styles() {
         .pipe(maps.init())
         .pipe(sass().on('error', notify.onError(error)))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
-        .pipe(gulpif(setHash, hash(hashOpts)))
+
+        .pipe(gulpif(setHash && argv.production, hash(hashOpts)))
         .pipe(gulpif(argv.production, cleanCSS()))
+
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
         .pipe(browser.stream({ match: '**/*.css' }))
@@ -196,7 +201,11 @@ export function createTheme() {
 ////////////////////////////////
 // COPY
 export const copy = {
-    fonts() { return gulp.src(src.fonts + '/**/*').pipe(gulp.dest(dest.fonts)) },
+    fonts() {
+        return gulp.src(src.fonts + '/**/*')
+            .pipe(changed(dest.fonts))
+            .pipe(gulp.dest(dest.fonts))
+    },
     misc() {
         return gulp.src(miscGlob)
             .pipe(changed(buildFolder))
@@ -211,11 +220,11 @@ export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 export function html() {
 
     let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false });
-    let vendor  = gulp.src(`${dest.js}/vendor.*.css`, { read: false });
+    let vendor  = gulp.src(`${dest.js}/vendor.*.js`, { read: false });
     let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
 
     return gulp.src(`${buildFolder}/**/*.html`)
-        .pipe(gulpif(!wp, inject(series(styles, vendor, scripts), { relative: true })))
+        .pipe(gulpif(setHash, inject(series(styles, vendor, scripts), { relative: true })))
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
@@ -224,6 +233,7 @@ export function html() {
             removeComments: true
         })))
         .pipe(gulp.dest(buildFolder))
+        .pipe(gulpif(setHash, browser.reload({ stream: true })))
 };
 
 

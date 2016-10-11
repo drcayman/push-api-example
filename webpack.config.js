@@ -1,10 +1,9 @@
-import path from 'path'
-import webpack from 'webpack'
-import yargs from 'yargs'
+import path        from 'path'
+import webpack     from 'webpack'
+import yargs       from 'yargs'
+import { setHash } from './project.config'
 
-const argv = yargs.argv
-
-
+const argv   = yargs.argv
 const Common =
     new webpack.optimize.CommonsChunkPlugin({
         name: 'vendor',
@@ -16,7 +15,6 @@ const Common =
             )
          }
     })
-
 
 const Uglify =
     new webpack.optimize.UglifyJsPlugin({
@@ -31,7 +29,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        path: '/build'
+        path: '/build',
     },
     devtool: 'source-map',
     bail: false,
