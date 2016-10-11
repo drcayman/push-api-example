@@ -1,4 +1,11 @@
 
+// SFTP
+export let sftp = {
+    server: 'artofmyself',
+    path: '/customers/d/e/d/artofmyself.com/httpd.www/test/gulp'
+}
+
+
 // IF WORDPRESS
 export const wp = false;
 
@@ -55,21 +62,21 @@ _${res.url}_
 
 // PATH DEFINITION
 export const src = {
-	favicons: 'src/assets/favicons',
+ favicons: 'src/assets/favicons',
 	fonts: 'src/assets/fonts',
 	icons: 'src/assets/icons',
-	img:   'src/assets/img',
-	js:    'src/js',
-	scss:  'src/scss'
+	  img: 'src/assets/img',
+	   js: 'src/js',
+	 scss: 'src/scss'
 }
 export const build = 'build'
 export const dest  = {
-	favicons: `${build}/assets/favicons`,
+ favicons: `${build}/assets/favicons`,
 	fonts: `${build}/assets/fonts`,
 	icons: `${build}/assets/icons`,
-	img:   `${build}/assets/img`,
-	js:    `${build}/js`,
-	scss:  `${build}/css`
+	  img: `${build}/assets/img`,
+	   js: `${build}/js`,
+	 scss: `${build}/css`
 }
 
 

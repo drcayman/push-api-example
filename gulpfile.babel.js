@@ -1,44 +1,53 @@
 // TODO
 /*
-* FTP Upload
-* switch Stream for proper Reload
-* Favicon Generator
+* JS Stream >> Reload
+* Icons Tests
 * Hashing Tests
 * Vue Loader w/ Webpack
 */
 
 'use strict';
 
-import path          from 'path';                 import delData     from 'del';
-import exists        from 'fs-exists-sync';       import prompt      from 'prompt';
-import gulp          from 'gulp';				  import sass		 from 'gulp-sass';
-import browserSync   from 'browser-sync';         import webpack     from 'webpack-stream';
-import plumber	     from 'gulp-plumber';         import yargs       from 'yargs'
-import notify        from 'gulp-notify';          import imagemin	 from 'gulp-imagemin';
-import maps          from 'gulp-sourcemaps';      import colors      from 'colors'
-import autoprefixer  from 'gulp-autoprefixer';    import cleanCSS    from 'gulp-clean-css';
-import svgstore      from 'gulp-svgstore';        import svgmin      from 'gulp-svgmin';
-import htmlmin       from 'gulp-htmlmin';         import ttf2woff    from 'gulp-ttf2woff';
-import ttf2woff2     from 'gulp-ttf2woff2';       import inject      from 'gulp-inject';
-import hash          from 'gulp-hash';            import fs          from 'fs';
-import gulpif        from 'gulp-if';              import series      from 'stream-series';
-import changed		 from 'gulp-changed';         import gutil from 'gulp-util';
+// NODE
+import path      from 'path';               import del      from 'del';
+import exists    from 'fs-exists-sync';     import process  from 'process';
+import fs        from 'fs';
 
-import { wp, theme, src, dest, build as buildFolder, readme, serve, hashOpts } from './project.config'
+// GULP
+import gulp      from 'gulp';				import sass	    from 'gulp-sass';
+import plumber	 from 'gulp-plumber';       import imagemin from 'gulp-imagemin';
+import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
+import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
+import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
+import htmlmin   from 'gulp-htmlmin';       import ttf2woff from 'gulp-ttf2woff';
+import ttf2woff2 from 'gulp-ttf2woff2';     import inject   from 'gulp-inject';
+import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
+import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
+import sftp      from 'gulp-sftp';
 
-const browser  = browserSync.create()
+// MISC
+import yargs     from 'yargs';              import prompt   from 'prompt';
+import browser   from 'browser-sync';       import colors   from 'colors';
+import series    from 'stream-series';      import webpack  from 'webpack-stream';
+
+import {    src,    serve,  wp,
+            dest,   readme, theme,   hashOpts,
+            sftp as SFTP,   build as buildFolder    } from './project.config'
+
 const argv     = yargs.argv
-const miscGlob = ['src/**/*', `!${src.scss}{/**}`,    `!${src.js}{/**}`,
-                              `!${src.img}{/**/*}`,   `!${src.fonts}{/**}`,
-                              `!${src.icons}{/**/*}`, `!${src.favicons}{/**}`]
+const Browser  = browser.create()
+const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
+                            `!${src.img  }`, `!${src.img  }/**`,
+                            `!${src.scss }`, `!${src.scss }/**`,
+                            `!${src.fonts}`, `!${src.fonts}/**`,
+                            `!${src.icons}`, `!${src.icons}/**`]
 
-export const del = path => delData(path)
-////////////////////////////////////////////////////////
-// DEVELOPMENT
-//////////////////////////////////////////////////////
+export const DEL = path => del(path)
+
+//////////////////////////////////
 // SERVER
 export function server() {
-    browser.init({
+    Browser.init({
         ghostmode: serve.ghostmode,
         open: serve.open,
         proxy: serve.proxy,
@@ -47,36 +56,36 @@ export function server() {
 
     // Watch Sass
     gulp.watch(`${src.scss}/**/*.scss`, styles)
-        .on('change', () => del(dest.scss))
+        .on('change', () => DEL(dest.scss))
 
 
     // Watch JS
     gulp.watch(`${src.js}/**/*.js`, scripts)
-        .on('change', (cb) => del(dest.js))
+        .on('change', () => DEL(dest.js))
 
 
     // Reload after JS
-    gulp.watch(`${dest.js}/**/*`, browser.reload)
+    gulp.watch(`${dest.js}/**/*`, Browser.reload)
 
 
     // Watch Fonts
     gulp.watch(`${src.fonts}/**/*`, gulp.parallel(fonts, copy.fonts))
-        .on('unlink', () => del(dest.fonts))
+        .on('unlink', () => DEL(dest.fonts))
 
 
     // Watch Icons
     gulp.watch(src.icons, icons)
-        .on('change', () => del(dest.icons))
+        .on('unlink', () => DEL(dest.icons))
 
 
     // Watch Images
     gulp.watch(src.img, gulp.series(images))
-        .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
+        .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
 
 
     // Watch Misc
     gulp.watch(miscGlob, copy.misc)
-        .on('unlink', (path, stats) => del(path.replace('src', buildFolder)))
+        .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
 };
 
 
@@ -105,19 +114,19 @@ export function styles() {
 			title: 'Sass Error',
 	        message: 'Error: <%= error.message %>',
 		})))
-        .pipe(autoprefixer({ browsers: ['> 0.1%', 'IE 10'], cascade: false }))
+        .pipe(prefixer({ browsers: ['last 2 versions'] }))
         .pipe(gulpif(wp, hash(hashOpts)))
         .pipe(gulpif(argv.production, cleanCSS()))
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
-        .pipe(browser.stream({ match: '**/*.css' }))
+        .pipe(Browser.stream({ match: '**/*.css' }))
 };
 
 
 ////////////////////////////////
 // SVG ICONS
 export function icons() {
-    return gulp.src(`${src.icons}/icon-*.svg`)
+    return gulp.src(`${src.icons}/**/icon-*.svg`)
         //.pipe(rename({prefix: 'icon-'}))
         .pipe(svgmin(file => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
@@ -152,7 +161,7 @@ export function fonts() {
 		.pipe(changed(dest.fonts))
         .pipe(ttf2woff({ clone: true }))
         .pipe(ttf2woff2({ clone: true }))
-        .pipe(gulp.dest(dest.fonts))
+        .pipe(gulp.dest(dest.fonts).on('change', (path, stats) =>  gutil.log(stats)))
 };
 
 
@@ -177,6 +186,8 @@ export function createReadme() {
                 ], (err, res) => {
 
                 fs.writeFile('./README.md', readme(res), () => resolve());
+
+                gutil.log('README.md created.'.green)
             })
         }
     });
@@ -202,7 +213,7 @@ export const copy = {
             .pipe(gulp.dest(buildFolder))
     }
 }
-export const copyAll = gulp.parallel(copy.fonts, copy.misc);
+export const copyAll = gulp.parallel(/*copy.fonts,*/ copy.misc);
 
 
 ////////////////////////////////
@@ -223,6 +234,38 @@ export function html() {
             removeComments: true
         })))
         .pipe(gulp.dest(buildFolder))
+};
+
+
+//////////////////////////////////
+// FTP (https://www.npmjs.com/package/gulp-sftp)
+export function ftp() {
+
+    function upload(host, user, pass) {
+
+        process.chdir(__dirname)
+
+        return gulp.src(`./${buildFolder}/js/*`)
+            .pipe(sftp({ host, user, pass, remotePath: SFTP.path }))
+    }
+
+    return new Promise(res => {
+
+        process.chdir(process.env.HOME)
+
+        fs.readFile(`${process.cwd()}/.sftp_login`, (err, data) => {
+
+            if( err ) gutil.log(gutil.colors.red(err))
+
+            let logins = JSON.parse(data);
+
+            res([logins[SFTP.server].host,
+                logins[SFTP.server].user,
+                logins[SFTP.server].pass])
+
+        })
+    })
+    .then(login => upload(...login))
 };
 
 
