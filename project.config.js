@@ -1,4 +1,10 @@
+////////////////////////////////
+// VARIABLES
+export const wp      = false;
+export const setHash = true;
 
+
+////////////////////////////////////////////////////////////////
 // SFTP
 export let sftp = {
     server: 'artofmyself',
@@ -6,22 +12,8 @@ export let sftp = {
 }
 
 
-// IF WORDPRESS
-export const wp = false;
-
-
-// WORDPRESS THEME
-export const theme = `
-/*
-Theme Name: Boilerplate
-Version: 1.0
-Author: Pascal Klau <email@artofmyself.com>
-Author URI: http://www.artofmyself.com
-Description: Boilerplate WP Theme
-*/`;
-
-
-// SERVER OPTIONS
+////////////////////////////////////////////////////////////////
+// SERVER
 export const serve = {
 	ghostmode: false,
     open: false,
@@ -30,7 +22,8 @@ export const serve = {
 };
 
 
-// README FILE
+////////////////////////////////////////////////////////////////
+// README
 export const readme = res => {
 
 	let today = new Date(),
@@ -59,8 +52,8 @@ _${res.url}_
 
 }
 
-
-// PATH DEFINITION
+////////////////////////////////////////////////////////////////
+// PATHS
 export const src = {
  favicons: 'src/assets/favicons',
 	fonts: 'src/assets/fonts',
@@ -80,8 +73,21 @@ export const dest  = {
 }
 
 
-// HASH OPTIONS
+////////////////////////////////////////////////////////////////
+// HASH
 export const hashOpts = {
     hashLength: 3,
     template: '<%= name %>.<%= hash %><%= ext %>'
 };
+
+
+////////////////////////////////////////////////////////////////
+// THEME
+export const theme = `
+/*
+Theme Name: Boilerplate
+Version: 1.0
+Author: Pascal Klau <email@artofmyself.com>
+Author URI: http://www.artofmyself.com
+Description: Boilerplate WP Theme
+*/`;

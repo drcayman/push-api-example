@@ -30,7 +30,7 @@ import yargs     from 'yargs';              import prompt   from 'prompt';
 import Browser   from 'browser-sync';       import colors   from 'colors';
 import series    from 'stream-series';      import webpack  from 'webpack-stream';
 
-import {    src,    serve,  wp,
+import {    src,    serve,  wp,      setHash,
             dest,   readme, theme,   hashOpts,
             sftp as SFTP,   build as buildFolder    } from './project.config'
 
@@ -92,7 +92,7 @@ export function scripts() {
     return gulp.src(`${src.js}/main.js`)
 		.pipe(plumber({ errorHandler: notify.onError(error) }))
 		.pipe(webpack(require('./webpack.config')))
-		.pipe(gulpif(wp, hash(hashOpts)))
+		.pipe(gulpif(setHash, hash(hashOpts)))
         .pipe(gulp.dest(dest.js))
         .pipe(browser.reload({ stream: true }))
 };
@@ -105,7 +105,7 @@ export function styles() {
         .pipe(maps.init())
         .pipe(sass().on('error', notify.onError(error)))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
-        .pipe(gulpif(wp, hash(hashOpts)))
+        .pipe(gulpif(setHash, hash(hashOpts)))
         .pipe(gulpif(argv.production, cleanCSS()))
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
@@ -203,7 +203,7 @@ export const copy = {
             .pipe(gulp.dest(buildFolder))
     }
 }
-export const copyAll = gulp.parallel(/*copy.fonts,*/ copy.misc);
+export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 
 
 ////////////////////////////////
@@ -261,7 +261,7 @@ export function ftp() {
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-export const dev = gulp.series(createReadme,
+export const dev = gulp.series(
                    gulp.parallel(copyAll, styles, scripts, icons, fonts, images),
                    server)
 
