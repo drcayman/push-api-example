@@ -17,8 +17,7 @@
       "es2015"
     ],
     "plugins": [
-      "transform-remove-debugger",
-      "transform-remove-console"
+      "transform-remove-debugger"
     ]
   },
   "dependencies": {
@@ -50,7 +49,7 @@
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^2.3.1",
     "gulp-sftp": "^0.1.5",
-    "gulp-sourcemaps": "^1.6.0",
+    "gulp-sourcemaps": "^2.0.0",
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "gulp-ttf2woff": "^1.1.0",

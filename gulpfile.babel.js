@@ -27,7 +27,7 @@ import sftp      from 'gulp-sftp';
 
 // MISC
 import yargs     from 'yargs';              import prompt   from 'prompt';
-import browser   from 'browser-sync';       import colors   from 'colors';
+import Browser   from 'browser-sync';       import colors   from 'colors';
 import series    from 'stream-series';      import webpack  from 'webpack-stream';
 
 import {    src,    serve,  wp,
@@ -35,7 +35,8 @@ import {    src,    serve,  wp,
             sftp as SFTP,   build as buildFolder    } from './project.config'
 
 const argv     = yargs.argv
-const Browser  = browser.create()
+const browser  = Browser.create()
+const error    = { title: 'Error', message: '<%= error.message %>' }
 const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
                             `!${src.img  }`, `!${src.img  }/**`,
                             `!${src.scss }`, `!${src.scss }/**`,
@@ -47,7 +48,7 @@ export const DEL = path => del(path)
 //////////////////////////////////
 // SERVER
 export function server() {
-    Browser.init({
+    browser.init({
         ghostmode: serve.ghostmode,
         open: serve.open,
         proxy: serve.proxy,
@@ -62,10 +63,6 @@ export function server() {
     // Watch JS
     gulp.watch(`${src.js}/**/*.js`, scripts)
         .on('change', () => DEL(dest.js))
-
-
-    // Reload after JS
-    gulp.watch(`${dest.js}/**/*`, Browser.reload)
 
 
     // Watch Fonts
@@ -93,15 +90,11 @@ export function server() {
 // WEBPACK
 export function scripts() {
     return gulp.src(`${src.js}/main.js`)
-		.pipe(plumber({ errorHandler: notify.onError({
-				title: 'Webpack Error',
-	        	message: '<%= error.message %>',
-			})
-		}))
+		.pipe(plumber({ errorHandler: notify.onError(error) }))
 		.pipe(webpack(require('./webpack.config')))
 		.pipe(gulpif(wp, hash(hashOpts)))
         .pipe(gulp.dest(dest.js))
-        .pipe(browser.stream())
+        .pipe(browser.reload({ stream: true }))
 };
 
 
@@ -110,16 +103,13 @@ export function scripts() {
 export function styles() {
     return gulp.src(`${src.scss}/main.scss`)
         .pipe(maps.init())
-        .pipe(sass().on('error', notify.onError({
-			title: 'Sass Error',
-	        message: 'Error: <%= error.message %>',
-		})))
+        .pipe(sass().on('error', notify.onError(error)))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
         .pipe(gulpif(wp, hash(hashOpts)))
         .pipe(gulpif(argv.production, cleanCSS()))
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
-        .pipe(Browser.stream({ match: '**/*.css' }))
+        .pipe(browser.stream({ match: '**/*.css' }))
 };
 
 
@@ -161,7 +151,7 @@ export function fonts() {
 		.pipe(changed(dest.fonts))
         .pipe(ttf2woff({ clone: true }))
         .pipe(ttf2woff2({ clone: true }))
-        .pipe(gulp.dest(dest.fonts).on('change', (path, stats) =>  gutil.log(stats)))
+        .pipe(gulp.dest(dest.fonts))
 };
 
 
