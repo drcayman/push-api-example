@@ -18,8 +18,7 @@ import plumber	 from 'gulp-plumber';       import imagemin from 'gulp-imagemin';
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
-import htmlmin   from 'gulp-htmlmin';       import ttf2woff from 'gulp-ttf2woff';
-import ttf2woff2 from 'gulp-ttf2woff2';     import inject   from 'gulp-inject';
+import htmlmin   from 'gulp-htmlmin';       import inject   from 'gulp-inject';
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
 import sftp      from 'gulp-sftp';
@@ -39,7 +38,6 @@ const error    = { title: 'Error', message: '<%= error.message %>' }
 const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
                             `!${src.img  }`, `!${src.img  }/**`,
                             `!${src.scss }`, `!${src.scss }/**`,
-                            `!${src.fonts}`, `!${src.fonts}/**`,
                             `!${src.icons}`, `!${src.icons}/**`]
 
 export const DEL = path => del(path)
@@ -62,15 +60,6 @@ export function server() {
     // Watch JS
     gulp.watch(`${src.js}/**/*.js`, scripts)
         .on('change', () => DEL(dest.js))
-
-
-    // // Watch Hash on JS (CSS in streamed)
-    // if(setHash) gulp.watch(`${dest.js}/*.js`, html)
-
-
-    // Watch Fonts
-    gulp.watch(`${src.fonts}/**/*`, gulp.parallel(fonts, copy.fonts))
-        .on('unlink', () => DEL(dest.fonts))
 
 
     // Watch Icons
@@ -151,13 +140,13 @@ export function images() {
 
 //////////////////////////////////
 // FONTS
-export function fonts() {
-    return gulp.src(src.fonts + '/**/*.ttf')
-		.pipe(changed(dest.fonts))
-        .pipe(ttf2woff({ clone: true }))
-        .pipe(ttf2woff2({ clone: true }))
-        .pipe(gulp.dest(dest.fonts))
-};
+// export function fonts() {
+//     return gulp.src(src.fonts + '/**/*.ttf')
+// 		   .pipe(changed(dest.fonts))
+//         .pipe(ttf2woff({ clone: true }))
+//         .pipe(ttf2woff2({ clone: true }))
+//         .pipe(gulp.dest(dest.fonts))
+// };
 
 
 //////////////////////////////////
@@ -272,7 +261,7 @@ export function ftp() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = gulp.series(
-                   gulp.parallel(copyAll, styles, scripts, icons, fonts, images),
+                   gulp.parallel(copyAll, styles, scripts, icons, images),
                    server)
 
 export const build = gulp.series(gulp.parallel(styles, scripts), html)

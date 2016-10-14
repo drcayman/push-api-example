@@ -1,12 +1,8 @@
 
 import esPolyfill from 'es-dynamic-polyfill'
-//import number from './number'
 import letter from './letter'
-//import promise from './promise'
-//
-//
 
-[1,2,3,4].includes(3)
+console.log([1,2,3,4].includes(3))
 
 esPolyfill({
     fills: 'fetch, Promise',
@@ -18,7 +14,7 @@ esPolyfill({
 
 function main() {
 
-    console.log('hit ye!');
+    console.log('hit yeaa!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //
