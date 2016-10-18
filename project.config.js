@@ -1,7 +1,7 @@
 ////////////////////////////////
 // VARIABLES
 export const wp   = false
-export const app  = true   // if true, uncomment MW in Webpack
+export const app  = false   // if true, uncomment MW in Webpack
 export const SFTP = {
     server: 'artofmyself',
     path: '/customers/d/e/d/artofmyself.com/httpd.www/test/gulp'

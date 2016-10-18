@@ -8,8 +8,8 @@ const ENV = process.env.NODE_ENV
 const common = {
     entry: [
         // Define new entries for production as well
-        'webpack/hot/dev-server',
-        'webpack-hot-middleware/client',
+        //'webpack/hot/dev-server',
+        //'webpack-hot-middleware/client',
         './src/js/main.js'
     ],
     output: {
