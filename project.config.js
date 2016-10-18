@@ -1,6 +1,7 @@
 ////////////////////////////////
 // VARIABLES
 export const wp      = false
+export const app     = false
 export const setHash = true
 
 

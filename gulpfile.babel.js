@@ -1,53 +1,36 @@
-// TODO
-/*
-* Injection (on build: delete originals || on dev: no CSS stream)
-* Vue Loader w/ Webpack
-* Hot Module Reloading
-*/
-
 'use strict';
-
 // NODE
 import path      from 'path';               import del      from 'del';
 import exists    from 'fs-exists-sync';     import process  from 'process';
-import fs        from 'fs';
+import fs        from 'fs';                 import colors   from 'colors';
+import yargs     from 'yargs';              import prompt   from 'prompt';
+import Browser   from 'browser-sync';       import series   from 'stream-series';
+import webpack   from 'webpack';            import wpConfig from './webpack.config'
+import wpDevMW   from 'webpack-dev-middleware';
+import wpHotMW   from 'webpack-hot-middleware';
 
 // GULP
 import gulp      from 'gulp';				import sass	    from 'gulp-sass';
-//import imagemin from 'gulp-imagemin';
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
-import htmlmin   from 'gulp-htmlmin';
+import htmlmin   from 'gulp-htmlmin';       import sftp     from 'gulp-sftp';
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
-import sftp      from 'gulp-sftp';
-
-
-
-// MISC
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import webpackConfig        from './webpack.config'
-
-import yargs     from 'yargs';              import prompt   from 'prompt';
-import Browser   from 'browser-sync';       import colors   from 'colors';
-import series    from 'stream-series';      import webpack  from 'webpack';
 
 import {    src,    serve,  wp,        setHash,
-            dest,   theme,   hashOpts, createReadme,
+            dest,   theme,  hashOpts,  createReadme,
             sftp as SFTP,   build as buildFolder    } from './project.config'
 
 const argv     = yargs.argv
 const browser  = Browser.create()
-const bundler  = webpack(webpackConfig);
+const bundler  = webpack(wpConfig);
 const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
                             //`!${src.img  }`, `!${src.img  }/**`,
                             `!${src.scss }`, `!${src.scss }/**`,
                             `!${src.icons}`, `!${src.icons}/**`]
 
 export const DEL = path => del(path)
-
 //////////////////////////////////
 // SERVER
 export function server() {
@@ -60,15 +43,15 @@ export function server() {
             baseDir: serve.server,
             middleware: [
 
-            webpackDevMiddleware(bundler, {
-              publicPath: webpackConfig.output.publicPath,
+            wpDevMW(bundler, {
+              publicPath: wpConfig.output.publicPath,
               stats: {
                   colors: true,
                   chunks: false,
               }
 
           }),
-            webpackHotMiddleware(bundler)
+            wpHotMW(bundler)
           ]
         },
         files: ['src/js/main.js']
@@ -138,27 +121,6 @@ export function icons() {
 };
 
 
-////////////////////////////////
-// IMAGES
-// export function images() {
-//     return gulp.src(`${src.img}/**/*`)
-// 		.pipe(changed(dest.img))
-//         .pipe(imagemin())
-//         .pipe(gulp.dest(dest.img));
-// };
-
-
-//////////////////////////////////
-// FONTS
-// export function fonts() {
-//     return gulp.src(src.fonts + '/**/*.ttf')
-// 		   .pipe(changed(dest.fonts))
-//         .pipe(ttf2woff({ clone: true }))
-//         .pipe(ttf2woff2({ clone: true }))
-//         .pipe(gulp.dest(dest.fonts))
-// };
-
-
 //////////////////////////////////
 // README
 export function readme() {
@@ -219,12 +181,7 @@ export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 // MIN HTML + INJECT
 export function html() {
 
-    // let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false });
-    // let vendor  = gulp.src(`${dest.js}/vendor.*.js`, { read: false });
-    // let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
-
     return gulp.src(`${buildFolder}/**/*.html`)
-        //.pipe(gulpif(setHash, inject(series(styles, vendor, scripts), { relative: true })))
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
@@ -272,7 +229,7 @@ export function upload() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = gulp.series(
-                   gulp.parallel(copyAll, styles/*, scripts*/, icons/*, images*/),
+                   gulp.parallel(copyAll, styles/*, scripts*/, icons),
                    server)
 
 export const build = gulp.series(gulp.parallel(styles/*, scripts*/), html)
