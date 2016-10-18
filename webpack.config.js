@@ -1,44 +1,51 @@
-const path    = require('path')
-const webpack = require('webpack')
-const process = require('process')
-const merge   = require('webpack-merge');
+const path           = require('path')
+const webpack        = require('webpack')
+const process        = require('process')
+const merge          = require('webpack-merge');
 const NotifierPlugin = require('webpack-notifier')
 
-const ENV  = process.env.NODE_ENV
-const root = folder => path.join(__dirname, folder)
-
+const ENV = process.env.NODE_ENV
 const common = {
+    entry: [
+        // Define new entries for production as well
+        'webpack/hot/dev-server',
+        'webpack-hot-middleware/client',
+        './src/js/main.js'
+    ],
     output: {
         filename: '[name].js',
-        path: root('build/js'),
+        path: path.join(__dirname, 'build/js'),
         publicPath: '/js/'
     },
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.js',
-            'assets': root('build/assets'),
+            'assets': path.join(__dirname, 'build/assets'),
         }
     },
     url: { dataUrlLimit: 1000 },
+    devtool: 'eval-source-map',
     module: {
         loaders: [{
             test: /\.js$/,
             exclude: /node_modules|vue\/src|vue-router\//,
             loader: 'babel',
-            query: {
-                presets: ['es2015'],
-                plugins: ['transform-strict-mode']
-            }
+            query: { presets: ['es2015'], plugins: ['transform-strict-mode'] }
         },
-        // {   test: /\.scss$/, loaders: ['style', 'css', 'sass']   },
-        {   test: /\.svg/,   loader: 'svg-url-loader'   },
+        {
+            test: /\.svg/,
+            loader: 'svg-url-loader'
+        },
         {
             test: /\.(png|jpe?g|gif)(\?.*)?$/,
             loader: 'url',
             query: { limit: 10000, name: 'assets/img/[name].[ext]'   }
 
         },
-        {   test: /\.vue$/, loader: 'vue-loader'   }]
+        {
+            test: /\.vue$/,
+            loader: 'vue-loader'
+        }]
     },
 
     plugins: [
@@ -60,24 +67,13 @@ const common = {
     ]
 }
 
-if( ENV === undefined ) {
-    module.exports = merge(common, {
 
-        entry: [
-            'webpack/hot/dev-server',
-            'webpack-hot-middleware/client',
-            './src/js/main.js'
-        ],
-        devtool: 'eval-source-map',
-
-    })
-}
 
 
 if( ENV === 'production' ) {
     module.exports = merge(common, {
 
-        entry: ['./src/js/main.js'],
+        //entry: ['./src/js/main.js'],
         devtool: 'source-map',
         plugins: [
             new webpack.optimize.UglifyJsPlugin({
@@ -87,4 +83,7 @@ if( ENV === 'production' ) {
         ]
 
     })
+}
+else {
+    module.exports = common
 }

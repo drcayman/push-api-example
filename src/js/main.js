@@ -2,12 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import esPolyfill from 'es-dynamic-polyfill'
 //import App from './App.vue'
-import Home from './Home.vue'
+import App from './App.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
-    { path: '/', component: Home }
+    { path: '/', component: App }
 ]
 
 let router = new VueRouter({
@@ -34,7 +35,7 @@ esPolyfill({
 
 function main() {
 
-    console.log('hit ye!!');
+    console.log('hit ye!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //

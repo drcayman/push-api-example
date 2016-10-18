@@ -1,13 +1,8 @@
 ////////////////////////////////
 // VARIABLES
-export const wp      = false
-export const app     = false
-export const setHash = true
-
-
-////////////////////////////////////////////////////////////////
-// SFTP
-export let sftp = {
+export const wp   = false
+export const app  = true   // if true, uncomment MW in Webpack
+export const SFTP = {
     server: 'artofmyself',
     path: '/customers/d/e/d/artofmyself.com/httpd.www/test/gulp'
 }
@@ -18,8 +13,8 @@ export let sftp = {
 export const serve = {
 	ghostmode: false,
     open: false,
-    //proxy: 'bp.local',
-	server: './build' // set false when MAMP
+    //proxy: 'bp.local',   // uncomment if MAMP
+	server: './build'      // set false if MAMP
 }
 
 
@@ -49,7 +44,7 @@ _${res.url}_
 > **CMS:** ${res.cms}\x20\x20
 
 **Notizen:**
-* ${res.notes}`
+* Have a nice day!`
 
 }
 
@@ -64,22 +59,13 @@ export const src = {
 	   js: 'src/js',
 	 scss: 'src/scss'
 }
-export const build = 'build'
 export const dest  = {
- favicons: `${build}/assets/favicons`,
-	fonts: `${build}/assets/fonts`,
-	icons: `${build}/assets`,
-	  img: `${build}/assets/img`,
-	   js: `${build}/js`,
-	 scss: `${build}/css`
-}
-
-
-////////////////////////////////////////////////////////////////
-// HASH
-export const hashOpts = {
-    hashLength: 3,
-    template: '<%= name %>.<%= hash %><%= ext %>'
+ favicons: 'build/assets/favicons',
+   assets: 'build/assets',
+	fonts: 'build/assets/fonts',
+	  img: 'build/assets/img',
+	   js: 'build/js',
+	 scss: 'build/css'
 }
 
 

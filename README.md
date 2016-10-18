@@ -42,14 +42,14 @@ cat path/to/font.ttf | ttf2woff2 >> path/to/font.woff2
 ```
 
 ### VueJS
-**Web App development supported.**
+**Web App development supported.**  
+**Uncomment Middleware in Webpack and set app variable to true.**
 * Live Reloading
 * Hot Module Reloading  
 * Images <10KB to inline Base64
 * VueJS Templating
 * Add these dependencies
 ```
-yarn add vue vue-router &&
-yarn add svg-url-loader url-loader vue-hot-reload-apivue-html-loader vue-loader webpack-dev-middleware webpack-hot-middleware
+yarn add vue vue-router && yarn add svg-url-loader url-loader vue-hot-reload-api vue-html-loader vue-loader
 ```
-No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.
+No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.  
