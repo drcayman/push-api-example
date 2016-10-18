@@ -24,7 +24,7 @@ export const serve = {
 
 ////////////////////////////////////////////////////////////////
 // README
-export const readme = res => {
+export const createReadme = res => {
 
 	let today = new Date(),
 			d = today.getDate(),
@@ -67,7 +67,7 @@ export const build = 'build'
 export const dest  = {
  favicons: `${build}/assets/favicons`,
 	fonts: `${build}/assets/fonts`,
-	icons: `${build}/assets/icons`,
+	icons: `${build}/assets`,
 	  img: `${build}/assets/img`,
 	   js: `${build}/js`,
 	 scss: `${build}/css`

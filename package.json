@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "gulp",
-    "build": "gulp build --production"
+    "build": "gulp build --production && NODE_ENV=production webpack -p --progress"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,9 @@
   "dependencies": {
     "es-dynamic-polyfill": "0.0.9",
     "jquery": "^3.1.1",
-    "svg4everybody": "^2.1.0"
+    "svg4everybody": "^2.1.0",
+    "vue": "^2.0.3",
+    "vue-router": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
@@ -43,10 +45,7 @@
     "gulp-hash": "^3.1.0",
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.1",
-    "gulp-imagemin": "^3.0.3",
-    "gulp-inject": "^4.1.0",
     "gulp-notify": "^2.2.0",
-    "gulp-plumber": "^1.1.0",
     "gulp-sass": "^2.3.1",
     "gulp-sftp": "^0.1.5",
     "gulp-sourcemaps": "^2.0.1",
@@ -58,8 +57,16 @@
     "node-sass": "^3.10.1",
     "prompt": "^1.0.0",
     "stream-series": "^0.1.1",
+    "svg-url-loader": "^1.1.0",
+    "url-loader": "^0.5.7",
+    "vue-hot-reload-api": "^2.0.6",
+    "vue-html-loader": "^1.2.3",
+    "vue-loader": "^9.7.0",
     "webpack": "^1.13.2",
-    "webpack-stream": "^3.2.0",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0",
+    "webpack-merge": "^0.14.1",
+    "webpack-notifier": "^1.4.1",
     "yargs": "^6.0.0"
   }
 }

@@ -1,8 +1,26 @@
-
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import esPolyfill from 'es-dynamic-polyfill'
-import letter from './letter'
+import App from './App.vue'
+import Home from './Home.vue'
 
-console.log([1,2,3,4].includes(3))
+Vue.use(VueRouter)
+
+const routes = [
+    { path: '/', component: Home }
+]
+
+let router = new VueRouter({
+    routes
+})
+
+
+const app = new Vue({
+    el: '#content',
+    router
+})
+
+
 
 esPolyfill({
     fills: 'fetch, Promise',
@@ -12,9 +30,11 @@ esPolyfill({
     }
 })
 
+
+
 function main() {
 
-    console.log('hit yeaa!');
+    console.log('hit ye!!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //
@@ -34,10 +54,3 @@ function main() {
 
 
 }
-
-
-
-//number(2)
-
-//promise
-letter('abc')

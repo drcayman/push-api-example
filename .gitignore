@@ -1,7 +1,10 @@
+### Boilerplate ###
+build
+
+
 ### WordPress ###
 *.log
 vendor
-build
 production.zip
 extract.php
 
@@ -23,6 +26,7 @@ public/wp-content/uploads/wp-sync-db
 public/wp-content/uploads/**/*-*x[0-9][0-9].*
 public/wp-content/uploads/**/*-*x[0-9][0-9][0-9].*
 public/wp-content/uploads/**/*-*x[0-9][0-9][0-9][0-9].*
+
 
 
 ### OSX ###

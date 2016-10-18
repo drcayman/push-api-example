@@ -14,29 +14,35 @@ import fs        from 'fs';
 
 // GULP
 import gulp      from 'gulp';				import sass	    from 'gulp-sass';
-import plumber	 from 'gulp-plumber';       import imagemin from 'gulp-imagemin';
+//import imagemin from 'gulp-imagemin';
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
-import htmlmin   from 'gulp-htmlmin';       import inject   from 'gulp-inject';
+import htmlmin   from 'gulp-htmlmin';
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
 import sftp      from 'gulp-sftp';
 
+
+
 // MISC
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackHotMiddleware from 'webpack-hot-middleware';
+import webpackConfig        from './webpack.config'
+
 import yargs     from 'yargs';              import prompt   from 'prompt';
 import Browser   from 'browser-sync';       import colors   from 'colors';
-import series    from 'stream-series';      import webpack  from 'webpack-stream';
+import series    from 'stream-series';      import webpack  from 'webpack';
 
-import {    src,    serve,  wp,      setHash,
-            dest,   readme, theme,   hashOpts,
+import {    src,    serve,  wp,        setHash,
+            dest,   theme,   hashOpts, createReadme,
             sftp as SFTP,   build as buildFolder    } from './project.config'
 
 const argv     = yargs.argv
 const browser  = Browser.create()
-const error    = { title: 'Error', message: '<%= error.message %>' }
+const bundler  = webpack(webpackConfig);
 const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
-                            `!${src.img  }`, `!${src.img  }/**`,
+                            //`!${src.img  }`, `!${src.img  }/**`,
                             `!${src.scss }`, `!${src.scss }/**`,
                             `!${src.icons}`, `!${src.icons}/**`]
 
@@ -49,7 +55,23 @@ export function server() {
         ghostmode: serve.ghostmode,
         open: serve.open,
         proxy: serve.proxy,
-        server: serve.server
+        injectChanges: true,
+        server: {
+            baseDir: serve.server,
+            middleware: [
+
+            webpackDevMiddleware(bundler, {
+              publicPath: webpackConfig.output.publicPath,
+              stats: {
+                  colors: true,
+                  chunks: false,
+              }
+
+          }),
+            webpackHotMiddleware(bundler)
+          ]
+        },
+        files: ['src/js/main.js']
     });
 
     // Watch Sass
@@ -57,36 +79,20 @@ export function server() {
         .on('change', () => DEL(dest.scss))
 
 
-    // Watch JS
-    gulp.watch(`${src.js}/**/*.js`, scripts)
-        .on('change', () => DEL(dest.js))
-
-
     // Watch Icons
     gulp.watch(src.icons, icons)
-        .on('unlink', () => DEL(dest.icons))
+        .on('unlink', () => DEL(`${dest.icons}/icons.svg`))
 
 
     // Watch Images
-    gulp.watch(src.img, gulp.series(images))
-        .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
+    // gulp.watch(src.img, gulp.series(images))
+    //     .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
 
 
     // Watch Misc
     gulp.watch(miscGlob, copy.misc)
         .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
-};
 
-
-//////////////////////////////////
-// WEBPACK
-export function scripts() {
-    return gulp.src(`${src.js}/main.js`)
-		.pipe(plumber({ errorHandler: notify.onError(error) }))
-		.pipe(webpack(require('./webpack.config')))
-		.pipe(gulpif(setHash && argv.production, hash(hashOpts)))
-        .pipe(gulp.dest(dest.js))
-        .pipe(browser.reload({ stream: true }))
 };
 
 
@@ -95,7 +101,11 @@ export function scripts() {
 export function styles() {
     return gulp.src(`${src.scss}/main.scss`)
         .pipe(maps.init())
-        .pipe(sass().on('error', notify.onError(error)))
+        .pipe(sass().on('error', notify.onError({
+            title: 'Sass Error',
+            message: '<%= error.message %>',
+            icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2FpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTMyIDc5LjE1OTI4NCwgMjAxNi8wNC8xOS0xMzoxMzo0MCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0iNkFDODdBRTVCODI4QzVBNEQyREYwQjNFNjY4RTA3NUUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODczODExQ0Y4QzhCMTFFNkIyRTA4MjlBNjEyOTBDREYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODczODExQ0U4QzhCMTFFNkIyRTA4MjlBNjEyOTBDREYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgSWxsdXN0cmF0b3IgQ0MgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo3MTU1QjEzMjJCQUUxMUUzOEQyRUI1RDJFRDdBRTlBOCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4NUZDNzBEQTJCQUUxMUUzOEQyRUI1RDJFRDdBRTlBOCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg6bVCEAAAAYUExURcVNiei30PXf6t2Xu9N4pv///81mmv///+3Od60AAAAIdFJOU/////////8A3oO9WQAAAYRJREFUeNqclVmShEAIRJPV+994oKwFtHtiYvjR0CdrFuKqZkyiqq4qxNZeodwzqRdT4o+gib9M7A1SRxCWV3qC0qnMUvPq0kFpVFaSxuRYJB4coJO6TReJxiU2fUkYFRK1DvjAWBS3qRnhrihA25ze2Cw4n5Bx3tsAZYWliZXC5AYlQT5fRyBH6xOP0O4cIBWuuRsOs5jRd1znWXB9Om7TofuFGRkvDsnxSoVB2yFj+lnziUe6viXIyvqOAuEUhKtw8Rd1Qzc4I7Mxsz07pQukDYZPHkpvHdg5lMQDANAb5TuJHB8/XzZQS3N/IXWD8QmXdrzBolkfFeFDgtkeqrOI8CFXjnP7JGmNsCrS+Mx4GePS4nEocsxlDXRZqEequ4hgGGenSyRlZk18mAoENZd8jsLkYkJzpjVLqYdrFBBZLhHVhWXnuKbDkdrUvtQGUVkAWfCgCU0DM/BZKbODr/4t7iypdaq/cGXt5arDV64t0g+Y0v9X89+X/fl9RLLv38ePAAMALJofTrM3rn0AAAAASUVORK5CYII='
+        })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
         .pipe(gulpif(setHash && argv.production, hash(hashOpts)))
@@ -110,7 +120,7 @@ export function styles() {
 ////////////////////////////////
 // SVG ICONS
 export function icons() {
-    return gulp.src(`${src.icons}/**/icon-*.svg`)
+    return gulp.src(`${src.icons}/**/*.svg`)
         //.pipe(rename({prefix: 'icon-'}))
         .pipe(svgmin(file => {
             let prefix = path.basename(file.relative, path.extname(file.relative));
@@ -130,12 +140,12 @@ export function icons() {
 
 ////////////////////////////////
 // IMAGES
-export function images() {
-    return gulp.src(`${src.img}/**/*`)
-		.pipe(changed(dest.img))
-        .pipe(imagemin())
-        .pipe(gulp.dest(dest.img));
-};
+// export function images() {
+//     return gulp.src(`${src.img}/**/*`)
+// 		.pipe(changed(dest.img))
+//         .pipe(imagemin())
+//         .pipe(gulp.dest(dest.img));
+// };
 
 
 //////////////////////////////////
@@ -151,7 +161,7 @@ export function images() {
 
 //////////////////////////////////
 // README
-export function createReadme() {
+export function readme() {
 
     return new Promise(resolve => {
 
@@ -169,7 +179,7 @@ export function createReadme() {
                         { name: 'notes',   description: 'Notizen'.green }
                 ], (err, res) => {
 
-                fs.writeFile('./README.md', readme(res), () => resolve());
+                fs.writeFile('./README.md', createReadme(res), () => resolve());
 
                 gutil.log('README.md created.'.green)
             })
@@ -199,6 +209,7 @@ export const copy = {
         return gulp.src(miscGlob)
             .pipe(changed(buildFolder))
             .pipe(gulp.dest(buildFolder))
+            .pipe(browser.reload({ stream: true }))
     }
 }
 export const copyAll = gulp.parallel(copy.fonts, copy.misc);
@@ -208,12 +219,12 @@ export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 // MIN HTML + INJECT
 export function html() {
 
-    let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false });
-    let vendor  = gulp.src(`${dest.js}/vendor.*.js`, { read: false });
-    let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
+    // let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false });
+    // let vendor  = gulp.src(`${dest.js}/vendor.*.js`, { read: false });
+    // let scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false });
 
     return gulp.src(`${buildFolder}/**/*.html`)
-        .pipe(gulpif(setHash, inject(series(styles, vendor, scripts), { relative: true })))
+        //.pipe(gulpif(setHash, inject(series(styles, vendor, scripts), { relative: true })))
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
@@ -228,9 +239,9 @@ export function html() {
 
 //////////////////////////////////
 // FTP (https://www.npmjs.com/package/gulp-sftp)
-export function ftp() {
+export function upload() {
 
-    function upload(host, user, pass) {
+    function uploadProcess(host, user, pass) {
 
         process.chdir(__dirname)
 
@@ -254,16 +265,16 @@ export function ftp() {
 
         })
     })
-    .then(login => upload(...login))
+    .then(login => uploadProcess(...login))
 };
 
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = gulp.series(
-                   gulp.parallel(copyAll, styles, scripts, icons, images),
+                   gulp.parallel(copyAll, styles/*, scripts*/, icons/*, images*/),
                    server)
 
-export const build = gulp.series(gulp.parallel(styles, scripts), html)
+export const build = gulp.series(gulp.parallel(styles/*, scripts*/), html)
 
 export default dev
