@@ -18,15 +18,12 @@ import htmlmin   from 'gulp-htmlmin';       import sftp     from 'gulp-sftp';
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
 
-import {    src,    serve,  wp,        setHash,
-            dest,   theme,  hashOpts,  createReadme,
-            sftp as SFTP,   build as buildFolder    } from './project.config'
+import { src, dest, serve, wp, theme, createReadme, SFTP } from './project.config'
 
 const argv     = yargs.argv
 const browser  = Browser.create()
-const bundler  = webpack(wpConfig);
+const bundler  = webpack(wpConfig)
 const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
-                            //`!${src.img  }`, `!${src.img  }/**`,
                             `!${src.scss }`, `!${src.scss }/**`,
                             `!${src.icons}`, `!${src.icons}/**`]
 
@@ -42,17 +39,12 @@ export function server() {
         server: {
             baseDir: serve.server,
             middleware: [
-
-            wpDevMW(bundler, {
-              publicPath: wpConfig.output.publicPath,
-              stats: {
-                  colors: true,
-                  chunks: false,
-              }
-
-          }),
-            wpHotMW(bundler)
-          ]
+                wpDevMW(bundler, {
+                    publicPath: wpConfig.output.publicPath,
+                    stats: { colors: true, chunks: false, }
+                }),
+                wpHotMW(bundler)
+            ]
         },
         files: ['src/js/main.js']
     });
@@ -67,14 +59,9 @@ export function server() {
         .on('unlink', () => DEL(`${dest.icons}/icons.svg`))
 
 
-    // Watch Images
-    // gulp.watch(src.img, gulp.series(images))
-    //     .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
-
-
     // Watch Misc
     gulp.watch(miscGlob, copy.misc)
-        .on('unlink', (path, stats) => DEL(path.replace('src', buildFolder)))
+        .on('unlink', (path, stats) => DEL(path.replace('src', 'build')))
 
 };
 
@@ -91,7 +78,7 @@ export function styles() {
         })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
-        .pipe(gulpif(setHash && argv.production, hash(hashOpts)))
+        .pipe(gulpif(argv.production, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
         .pipe(gulpif(argv.production, cleanCSS()))
 
         .pipe(maps.write('./'))
@@ -117,7 +104,7 @@ export function icons() {
             };
         }))
         .pipe(svgstore({ inlineSvg: true }))
-        .pipe(gulp.dest(dest.icons))
+        .pipe(gulp.dest(dest.assets))
 };
 
 
@@ -154,34 +141,26 @@ export function readme() {
 // THEME CONFIG
 export function createTheme() {
     return new Promise(res => {
-        if( wp ) fs.writeFile(`${buildFolder}/style.css`, theme, () => res());
+        if( wp ) fs.writeFile('build/style.css', theme, () => res());
     });
 };
 
 
 ////////////////////////////////
 // COPY
-export const copy = {
-    fonts() {
-        return gulp.src(src.fonts + '/**/*')
-            .pipe(changed(dest.fonts))
-            .pipe(gulp.dest(dest.fonts))
-    },
-    misc() {
-        return gulp.src(miscGlob)
-            .pipe(changed(buildFolder))
-            .pipe(gulp.dest(buildFolder))
-            .pipe(browser.reload({ stream: true }))
-    }
+export function copy() {
+    return gulp.src(miscGlob)
+        .pipe(changed('build'))
+        .pipe(gulp.dest('build'))
+        .pipe(browser.reload({ stream: true }))
 }
-export const copyAll = gulp.parallel(copy.fonts, copy.misc);
 
 
 ////////////////////////////////
 // MIN HTML + INJECT
 export function html() {
 
-    return gulp.src(`${buildFolder}/**/*.html`)
+    return gulp.src('build/**/*.html')
         .pipe(gulpif(!wp, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
@@ -189,8 +168,7 @@ export function html() {
             removeScriptTypeAttributes: true,
             removeComments: true
         })))
-        .pipe(gulp.dest(buildFolder))
-        .pipe(gulpif(setHash, browser.reload({ stream: true })))
+        .pipe(gulp.dest('build'))
 };
 
 
@@ -202,7 +180,7 @@ export function upload() {
 
         process.chdir(__dirname)
 
-        return gulp.src(`./${buildFolder}/js/*`)
+        return gulp.src('build/js/*')
             .pipe(sftp({ host, user, pass, remotePath: SFTP.path }))
     }
 
@@ -229,7 +207,7 @@ export function upload() {
 ////////////////////////////////////////////////////////
 //// GULP TASKS
 export const dev = gulp.series(
-                   gulp.parallel(copyAll, styles/*, scripts*/, icons),
+                   gulp.parallel(copy, styles/*, scripts*/, icons),
                    server)
 
 export const build = gulp.series(gulp.parallel(styles/*, scripts*/), html)

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import esPolyfill from 'es-dynamic-polyfill'
-import App from './App.vue'
+//import App from './App.vue'
 import Home from './Home.vue'
 
 Vue.use(VueRouter)
