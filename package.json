@@ -47,14 +47,12 @@
     "gulp-svgstore": "^6.0.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
-    "gulp-watch": "^4.3.10",
     "node-sass": "^3.10.1",
     "prompt": "^1.0.0",
-    "stream-series": "^0.1.1",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0",
-    "webpack-merge": "^0.14.1",
+    "webpack-merge": "^0.15.0",
     "webpack-notifier": "^1.4.1"
   }
 }

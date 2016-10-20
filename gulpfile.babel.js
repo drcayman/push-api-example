@@ -1,5 +1,6 @@
 // TODO
 // SFTP upload on every task w/ variable
+// Maybe possible with Transmit?
 
 'use strict';
 
@@ -7,9 +8,8 @@
 import fs        from 'fs';                 import colors   from 'colors';
 import path      from 'path';               import del      from 'del';
 import exists    from 'fs-exists-sync';     import process  from 'process';
-import Browser   from 'browser-sync';       import series   from 'stream-series';
+import Browser   from 'browser-sync';       import prompt   from 'prompt';
 import webpack   from 'webpack';            import wpConfig from './webpack.config'
-import prompt    from 'prompt';
 import wpDevMW   from 'webpack-dev-middleware';
 import wpHotMW   from 'webpack-hot-middleware';
 
@@ -18,9 +18,9 @@ import gulp      from 'gulp';				import sass	    from 'gulp-sass';
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
-import htmlmin   from 'gulp-htmlmin';       import sftp     from 'gulp-sftp';
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
+import htmlmin   from 'gulp-htmlmin';
 
 import { src, dest, serve, app, wp, theme, createReadme, SFTP } from './project.config'
 
