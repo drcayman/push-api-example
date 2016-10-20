@@ -20,26 +20,28 @@ Upload whole project. Check **project.config.js** for paths and servername.
 npm run dev upload
 ```
 
-
+---
 
 ### Icons
 * save single icon SVG in **src/assets/icons**  
 * Gulp task combines icons into single icon in **build/assets/icons.svg**
-* If icons go inline, put them in **src/assets/img**
+* If icons go inline, put them in **_Mat/img** and paste manually.
 * Webpack alias for assets  
 Reference icons like this:
 ```html
 <use xlink:href="assets/icons.svg#squirrel"></use>
 ```
 
+---
+
 ### Fonts
-Too long install times for Gulp packages hence the disabled Gulp tasks.
+Too long install times for Gulp packages hence the global usage via Bash.  
+This creates **WOFF** and **WOFF2** in the same folder.
 ```
-ttf2woff path/to/font.ttf path/to/font.woff
+convertFont path/to/font.ttf
 ```
-```
-cat path/to/font.ttf | ttf2woff2 >> path/to/font.woff2
-```
+
+---
 
 ### VueJS
 **Web App development supported.**  

@@ -1,7 +1,5 @@
 // TODO
-// Bash function to convert fonts
 // SFTP upload on every task w/ variable
-// setup font task again (thanks to Yarn)
 
 'use strict';
 
