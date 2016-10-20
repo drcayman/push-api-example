@@ -90,7 +90,7 @@ export function styles() {
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
         .pipe(browser.stream({ match: '**/*.css' }))
-};
+}
 
 
 ////////////////////////////////
@@ -173,38 +173,6 @@ export function html() {
         })))
         .pipe(gulp.dest('build'))
 };
-
-
-//////////////////////////////////
-// FTP (https://www.npmjs.com/package/gulp-sftp)
-export function upload() {
-
-    function uploadProcess(host, user, pass) {
-
-        process.chdir(__dirname)
-
-        return gulp.src('build/js/*')
-            .pipe(sftp({ host, user, pass, remotePath: SFTP.path }))
-    }
-
-    return new Promise(res => {
-
-        process.chdir(process.env.HOME)
-
-        fs.readFile(`${process.cwd()}/.sftp_login`, (err, data) => {
-
-            if( err ) gutil.log(gutil.colors.red(err))
-
-            let logins = JSON.parse(data);
-
-            res([logins[SFTP.server].host,
-                logins[SFTP.server].user,
-                logins[SFTP.server].pass])
-
-        })
-    })
-    .then(login => uploadProcess(...login))
-}
 
 
 ////////////////////////////////////////////////////////
