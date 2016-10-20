@@ -6,12 +6,12 @@
 'use strict';
 
 // NODE
+import fs        from 'fs';                 import colors   from 'colors';
 import path      from 'path';               import del      from 'del';
 import exists    from 'fs-exists-sync';     import process  from 'process';
-import fs        from 'fs';                 import colors   from 'colors';
-import yargs     from 'yargs';              import prompt   from 'prompt';
 import Browser   from 'browser-sync';       import series   from 'stream-series';
 import webpack   from 'webpack';            import wpConfig from './webpack.config'
+import prompt    from 'prompt';
 import wpDevMW   from 'webpack-dev-middleware';
 import wpHotMW   from 'webpack-hot-middleware';
 
@@ -26,12 +26,13 @@ import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
 
 import { src, dest, serve, app, wp, theme, createReadme, SFTP } from './project.config'
 
-const argv     = yargs.argv
-const browser  = Browser.create()
-const bundler  = webpack(wpConfig)
-const miscGlob = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
-                            `!${src.scss }`, `!${src.scss }/**`,
-                            `!${src.icons}`, `!${src.icons}/**`]
+
+const browser    = Browser.create()
+const bundler    = webpack(wpConfig)
+const production = process.env.npm_lifecycle_script.includes('production')
+const miscGlob   = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
+                              `!${src.scss }`, `!${src.scss }/**`,
+                              `!${src.icons}`, `!${src.icons}/**`]
 
 export const DEL = path => del(path)
 //////////////////////////////////
@@ -85,8 +86,8 @@ export function styles() {
         })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
-        .pipe(gulpif(argv.production, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
-        .pipe(gulpif(argv.production, cleanCSS()))
+        .pipe(gulpif(production && wp, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
+        .pipe(gulpif(production, cleanCSS()))
 
         .pipe(maps.write('./'))
         .pipe(gulp.dest(dest.scss))
