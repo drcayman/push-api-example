@@ -1,22 +1,12 @@
-////////////////////////////////
-// VARIABLES
-export const wp   = false
-export const app  = false   // if true, uncomment MW in Webpack
-
-
 ////////////////////////////////////////////////////////////////
-// SERVER
-export const serve = {
-	ghostmode: false,
-    open: false,
-    //proxy: 'bp.local',   // uncomment if MAMP
-	server: './build'      // set false if MAMP
-}
+const wp       = true
+const app      = true
+const proxyURL = 'wp-vue-test.local' // false || MAMP Host
 
 
 ////////////////////////////////////////////////////////////////
 // README
-export const createReadme = res => {
+const templateReadme = res => {
 
 	let today = new Date(),
 			d = today.getDate(),
@@ -47,7 +37,7 @@ _${res.url}_
 
 ////////////////////////////////////////////////////////////////
 // PATHS
-export const src = {
+const src = {
  favicons: 'src/assets/favicons',
 	fonts: 'src/assets/fonts',
 	icons: 'src/assets/icons',
@@ -55,7 +45,7 @@ export const src = {
 	   js: 'src/js',
 	 scss: 'src/scss'
 }
-export const dest  = {
+const dest  = {
  favicons: 'build/assets/favicons',
    assets: 'build/assets',
 	fonts: 'build/assets/fonts',
@@ -67,7 +57,7 @@ export const dest  = {
 
 ////////////////////////////////////////////////////////////////
 // THEME
-export const theme = `
+const templateTheme = `
 /*
 Theme Name: Boilerplate
 Version: 1.0
@@ -75,3 +65,8 @@ Author: Pascal Klau <email@artofmyself.com>
 Author URI: http://www.artofmyself.com
 Description: Boilerplate WP Theme
 */`;
+
+
+module.exports = {
+	wp, app, proxyURL, templateReadme, src, dest, templateTheme
+}

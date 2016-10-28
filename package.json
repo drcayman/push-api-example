@@ -20,7 +20,9 @@
   "dependencies": {
     "es-dynamic-polyfill": "0.0.9",
     "jquery": "^3.1.1",
-    "svg4everybody": "^2.1.0"
+    "svg4everybody": "^2.1.0",
+    "vue": "^2.0.3",
+    "vue-router": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
@@ -49,10 +51,16 @@
     "gulp-util": "^3.0.7",
     "node-sass": "^3.10.1",
     "prompt": "^1.0.0",
+    "svg-url-loader": "^1.1.0",
+    "url-loader": "^0.5.7",
+    "vue-hot-reload-api": "^2.0.6",
+    "vue-html-loader": "^1.2.3",
+    "vue-loader": "^9.7.0",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0",
     "webpack-merge": "^0.15.0",
-    "webpack-notifier": "^1.4.1"
+    "webpack-notifier": "^1.4.1",
+    "write-file-webpack-plugin": "^3.3.0"
   }
 }

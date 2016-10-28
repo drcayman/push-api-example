@@ -1,59 +1,67 @@
 // TODO
-// SFTP upload on every task w/ variable
-// Maybe possible with Transmit?
+// inline Manifest if WP
+// open test.local:3000 if WP via Bash
+// inject script tags if HTML app
+// code splitting + dynamic modules w/ VueJS
+// write documentation about what wp/app/none does
 
 'use strict';
 
 // NODE
-import fs        from 'fs';                 import colors   from 'colors';
-import path      from 'path';               import del      from 'del';
-import exists    from 'fs-exists-sync';     import process  from 'process';
-import Browser   from 'browser-sync';       import prompt   from 'prompt';
+import fs        from 'fs';                 import colors   from 'colors'
+import path      from 'path';               import del      from 'del'
+import exists    from 'fs-exists-sync';     import process  from 'process'
+import Browser   from 'browser-sync';       import prompt   from 'prompt'
 import webpack   from 'webpack';            import wpConfig from './webpack.config'
-import wpDevMW   from 'webpack-dev-middleware';
-import wpHotMW   from 'webpack-hot-middleware';
+import wpDevMW   from 'webpack-dev-middleware'
 
 // GULP
-import gulp      from 'gulp';				import sass	    from 'gulp-sass';
-import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps';
-import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css';
-import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin';
-import hash      from 'gulp-hash';          import gulpif   from 'gulp-if';
-import changed   from 'gulp-changed';       import gutil    from 'gulp-util';
+import gulp      from 'gulp';				import sass	    from 'gulp-sass'
+import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps'
+import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css'
+import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin'
+import hash      from 'gulp-hash';          import gulpif   from 'gulp-if'
+import changed   from 'gulp-changed';       import gutil    from 'gulp-util'
 import htmlmin   from 'gulp-htmlmin';
 
-import { src, dest, serve, app, wp, theme, createReadme, SFTP } from './project.config'
+import { src, dest, proxyURL, app, wp, templateTheme, templateReadme, SFTP } from './project.config'
 
 
 const browser    = Browser.create()
 const bundler    = webpack(wpConfig)
 const production = process.env.npm_lifecycle_script.includes('production')
-const miscGlob   = ['src/**', `!${src.js   }`, `!${src.js   }/**`,
+const miscGlob   = ['src/**', `!${src.js   }/**`,   // copy JS folder for WP enqueue
                               `!${src.scss }`, `!${src.scss }/**`,
                               `!${src.icons}`, `!${src.icons}/**`]
+
+let wpHotMW
+if( app ) wpHotMW = require('webpack-hot-middleware')
+
 
 export const DEL = path => del(path)
 //////////////////////////////////
 // SERVER
 export function server() {
-    browser.init({
-        ghostmode: serve.ghostmode,
-        open: serve.open,
-        proxy: serve.proxy,
-        injectChanges: true,
-        server: {
-            baseDir: serve.server,
-            middleware: [
-                wpDevMW(bundler, {
-                    publicPath: wpConfig.output.publicPath,
-                    stats: { colors: true, chunks: false, }
-                }),
-                wpHotMW(bundler)
-            ]
-        },
-        files: app ? [`${src.js}/main.js`]
-                   : [`${src.js}/**/*.js`]
-    });
+
+    let middleware = [
+        wpDevMW(bundler, {
+            publicPath: wpConfig.output.publicPath,
+            stats: { colors: true, chunks: false }
+        })
+    ]
+
+    if( app ) middleware.push(wpHotMW(bundler))
+
+    let proxy = false, server = 'build'
+
+    if( proxyURL ) proxy  = { target: proxyURL, ws: true }; server = false
+
+    browser.init({ open: false, cors: true, proxy, server, middleware });
+
+
+    // Watch JS
+    gulp.watch(`${src.js}/**/*.js`).on('change', () => browser.reload())
+
 
     // Watch Sass
     gulp.watch(`${src.scss}/**/*.scss`, styles)
@@ -69,7 +77,7 @@ export function server() {
     gulp.watch(miscGlob, copy)
         .on('unlink', (path, stats) => DEL(path.replace('src', 'build')))
 
-};
+}
 
 
 //////////////////////////////////
@@ -132,8 +140,8 @@ export function readme() {
                         { name: 'cms',     description: 'CMS'.green, default: 'Typo3' },
             ], (err, res) => {
 
-                fs.writeFile('./README.md', createReadme(res), () => resolve());
-                gutil.log('README.md created.'.green)
+                fs.writeFile('./README.md', templateReadme(res), () => resolve());
+                gutil.log('README.md created. To write notes open README.md'.green)
             })
         }
     });
@@ -142,11 +150,11 @@ export function readme() {
 
 ////////////////////////////////
 // THEME CONFIG
-export function createTheme() {
+export function theme() {
     return new Promise(res => {
-        if( wp ) fs.writeFile('build/style.css', theme, () => res());
-    });
-};
+        fs.writeFile('build/style.css', templateTheme, () => res());
+    })
+}
 
 
 ////////////////////////////////
@@ -164,21 +172,35 @@ export function copy() {
 export function html() {
 
     return gulp.src('build/**/*.html')
-        .pipe(gulpif(!wp, htmlmin({
+        .pipe(htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true,
             removeComments: true
-        })))
+        }))
         .pipe(gulp.dest('build'))
 };
 
 
+////////////////////////////////
+// MIN HTML + INJECT
+export function cleanBuild() { return DEL('build') }
+export function cleanHashes() {
+    return new Promise(res => {
+        DEL(dest.scss)
+        DEL(dest.js)
+        res()
+    })
+}
+
+
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-export const dev   = gulp.series( gulp.parallel(copy, styles, icons), server )
+export const dev   = wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
+                        : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
 
-export const build = gulp.series( gulp.parallel(styles), html )
+export const build = wp ? gulp.series( cleanHashes, styles )
+                        : gulp.series( styles, html )
 
 export default dev

@@ -1,26 +1,26 @@
-//import Vue from 'vue'
-//import VueRouter from 'vue-router'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import esPolyfill from 'es-dynamic-polyfill'
-//import App from './App.vue'
-//import App from './App.vue'
+import App from './App.vue'
+import test from './test'
+
+test()
+
+Vue.use(VueRouter)
+
+const routes = [
+    { path: '/', component: App }
+]
+
+let router = new VueRouter({
+    routes
+})
 
 
-// Vue.use(VueRouter)
-//
-// const routes = [
-//     { path: '/', component: App }
-// ]
-//
-// let router = new VueRouter({
-//     routes
-// })
-//
-//
-// const app = new Vue({
-//     el: '#content',
-//     router
-// })
-//
+const app = new Vue({
+    el: '#content',
+    router
+})
 
 
 esPolyfill({
@@ -35,7 +35,7 @@ esPolyfill({
 
 function main() {
 
-    console.log('hit ye!');
+    console.log('hit yee!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //

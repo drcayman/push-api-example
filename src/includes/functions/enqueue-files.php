@@ -7,6 +7,7 @@
 * Enqueue file.
 */
 
+
 function enqueue_files() {
 
 ////////////////////////////////////////////////////////
@@ -17,8 +18,7 @@ function enqueue_files() {
 
 		if( pathinfo($file, PATHINFO_EXTENSION) === 'css' ) {
 
-			wp_enqueue_style( basename($file, '.css'), (get_template_directory_uri() . '/css/' . basename($file)),
-							  false, null );
+			wp_enqueue_style( basename($file, '.css'), (get_template_directory_uri() . '/css/' . basename($file)), false, null );
 		}
 
 	}
@@ -30,7 +30,7 @@ function enqueue_files() {
 
 	foreach ($dirJS as $file) {
 
-		if( pathinfo($file, PATHINFO_EXTENSION) === 'js' ) {					// only get JS files
+		if( pathinfo($file, PATHINFO_EXTENSION) === 'js' ) {
 
 			$fullName = basename($file);
 			$name = substr(basename($fullName), 0, strpos(basename($fullName), '.'));
@@ -39,9 +39,11 @@ function enqueue_files() {
 		////////////////////////////////////////////////////////
 		/// DEPENDENCIES >PHP 5.3
 
-
 			switch($name) {
 
+				case 'vendor':
+					$deps = array('manifest');	break;
+				
 				case 'main':
 					$deps = array('vendor');	break;
 
@@ -69,23 +71,3 @@ function enqueue_files() {
 
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_files' );
-
-
-
-
-// foreach ($dirJS as $file) {
-//
-// 	if( pathinfo($file, PATHINFO_EXTENSION) === 'js' ) {
-//
-// 		$fullName = basename($file);
-// 		//echo $fullName;
-// 		$name = substr($fullName, 0, strpos($fullName, '.')); // (string, start, length(string, position of character))
-// 		//echo $name;
-// 		$deps = ($name == 'main' ? 'vendor' : '');
-// 		//echo $deps;
-//
-// 		wp_enqueue_script( $name, get_template_directory_uri() . '/js/' . $fullName, array($deps), null, true );
-//
-// 	}
-//
-// }
