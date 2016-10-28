@@ -5,10 +5,16 @@ const merge           = require('webpack-merge');
 const NotifierPlugin  = require('webpack-notifier')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
+
+
 const app = require('./project.config').app
 const wp  = require('./project.config').wp
 const ENV = process.env.NODE_ENV
 
+if( app && !wp ) var HtmlWebpackPlugin = require('html-webpack-plugin')
+
+////////////////////////////////////////////////////////////////
+// DEVELOPMENT
 let commonDev = {
 
     entry: [
@@ -68,8 +74,9 @@ let commonDev = {
     ]
 }
 
+////////////////////////////////
 
-if( wp ) {
+if( wp || app ) {
     commonDev.plugins.push(
         new webpack.optimize.CommonsChunkPlugin({
             name: 'manifest',
@@ -78,6 +85,7 @@ if( wp ) {
     )
 }
 
+////////////////////////////////
 
 if( app && ENV !== 'production' ) {
     module.exports = merge(commonDev, {
@@ -96,27 +104,53 @@ else if( ENV !== 'production' ) module.exports = commonDev
 
 
 
+////////////////////////////////////////////////////////////////
+// PRODUCTION
 let output =
-    wp ? {
+    wp || app ? {
         filename: '[name].[chunkhash:3].js',
         chunkFilename: '[name].[chunkhash:3].js',
-        path: path.join(__dirname, 'build/js')
+        path: path.join(__dirname, 'build/js'),
     }
     : {
         filename: '[name].js',
         path: path.join(__dirname, 'build/js')
     }
 
+////////////////////////////////
+
+const commonProduction = {
+    output,
+    devtool: 'source-map',
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: { warnings: false },
+            comments: /sourceMappingURL/g
+        })
+    ]
+}
+
+////////////////////////////////
+
+if( app && !wp ) {
+    commonProduction.plugins.push(
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'src/index.html'),
+            filename: path.join(__dirname, 'build/index.html'),
+            inject: true,
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeAttributeQuotes: true,
+                removeScriptTypeAttributes: true
+            },
+            chunksSortMode: 'dependency'
+        })
+    )
+}
+
+////////////////////////////////
 
 if( ENV === 'production' ) {
-    module.exports = merge(commonDev, {
-        output,
-        devtool: 'source-map',
-        plugins: [
-            new webpack.optimize.UglifyJsPlugin({
-                compress: { warnings: false },
-                comments: /sourceMappingURL/g
-            })
-        ]
-    })
+    module.exports = merge(commonDev, commonProduction)
 }

@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////
-const wp       = true
+const wp       = false
 const app      = true
 const proxyURL = 'wp-vue-test.local' // false || MAMP Host
 

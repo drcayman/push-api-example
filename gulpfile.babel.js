@@ -1,7 +1,6 @@
 // TODO
 // inline Manifest if WP
 // open test.local:3000 if WP via Bash
-// inject script tags if HTML app
 // code splitting + dynamic modules w/ VueJS
 // write documentation about what wp/app/none does
 
@@ -172,13 +171,13 @@ export function copy() {
 export function html() {
 
     return gulp.src('build/**/*.html')
-        .pipe(htmlmin({
+        .pipe(gulpif(!app, htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true,
             removeComments: true
-        }))
+        })))
         .pipe(gulp.dest('build'))
 };
 
@@ -200,7 +199,7 @@ export function cleanHashes() {
 export const dev   = wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
                         : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
 
-export const build = wp ? gulp.series( cleanHashes, styles )
-                        : gulp.series( styles, html )
+export const build = wp || app ? gulp.series( cleanHashes, styles )
+                               : gulp.series( styles, html )
 
 export default dev
