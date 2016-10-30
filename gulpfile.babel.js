@@ -53,7 +53,8 @@ export function server() {
 
     let proxy = false, server = 'build'
 
-    if( proxyURL ) proxy  = { target: proxyURL, ws: true }; server = false
+    if( proxyURL ) proxy = { target: proxyURL, ws: true }, server = false
+
 
     browser.init({ open: false, cors: true, proxy, server, middleware });
 

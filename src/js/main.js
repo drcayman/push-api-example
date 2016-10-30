@@ -24,7 +24,7 @@ const app = new Vue({
 
 
 esPolyfill({
-    fills: 'fetch, Promise',
+    fills: 'fetch, promise',
     options: 'gated',
     afterFill() {
         main()
