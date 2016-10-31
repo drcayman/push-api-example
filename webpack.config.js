@@ -123,6 +123,7 @@ const commonProduction = {
             }
         }),
         new webpack.optimize.UglifyJsPlugin({
+            drop_console: true,
             compress: { warnings: false },
             sourceMap: true
         })
