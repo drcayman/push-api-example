@@ -36,14 +36,12 @@ let commonDev = {
         }
     },
 
-    url: { dataUrlLimit: 1000 },
     devtool: 'eval-source-map',
     module: {
-        loaders: [{
+        rules: [{
             test: /\.js$/,
             exclude: /node_modules|vue\/src|vue-router\//,
             loader: 'babel',
-            query: { presets: ['es2015'], plugins: ['transform-strict-mode'] }
         },
         {
             test: /\.svg/,
@@ -52,7 +50,7 @@ let commonDev = {
         {
             test: /\.(png|jpe?g|gif)(\?.*)?$/,
             loader: 'url',
-            query: { limit: 10000, name: 'assets/img/[name].[ext]'   }
+            options: { limit: 10000, name: 'assets/img/[name].[ext]'   }
 
         },
         {
@@ -125,7 +123,8 @@ const commonProduction = {
     plugins: [
         new webpack.optimize.UglifyJsPlugin({
             compress: { warnings: false },
-            comments: /sourceMappingURL/g
+            sourceMap: true,
+            //comments: /sourceMappingURL/g
         })
     ]
 }

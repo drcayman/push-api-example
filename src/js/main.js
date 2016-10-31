@@ -35,7 +35,7 @@ esPolyfill({
 
 function main() {
 
-    console.log('hit yee!');
+    console.log('hit ye!');
 
     // document.getElementById('link').addEventListener('click', function() {
     //
