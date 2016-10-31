@@ -92,7 +92,7 @@ export function styles() {
         })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
-        .pipe(gulpif(production && wp, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
+        .pipe(gulpif(production && wp || production && app, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
         .pipe(gulpif(production, cleanCSS()))
 
         .pipe(maps.write('./'))
