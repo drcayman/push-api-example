@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "gulp",
-    "build": "gulp build && NODE_ENV=production webpack -p --progress"
+    "build": "rm -r build/{css,js} && NODE_ENV=production webpack -p --progress && gulp build"
   },
   "repository": {
     "type": "git",
@@ -44,15 +44,16 @@
     "gulp-hash": "^3.1.0",
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.1",
+    "gulp-inject": "^4.1.0",
     "gulp-notify": "^2.2.0",
     "gulp-sass": "^2.3.1",
     "gulp-sourcemaps": "^2.2.0",
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "gulp-util": "^3.0.7",
-    "html-webpack-plugin": "^2.24.0",
     "node-sass": "^3.10.1",
     "prompt": "^1.0.0",
+    "stream-series": "^0.1.1",
     "svg-url-loader": "^1.1.0",
     "url-loader": "^0.5.7",
     "vue-hot-reload-api": "^2.0.6",

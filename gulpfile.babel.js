@@ -6,6 +6,8 @@
 
 'use strict';
 
+import { src, dest, proxyURL, app, wp, templateTheme, templateReadme, SFTP } from './project.config'
+
 // NODE
 import fs        from 'fs';                 import colors   from 'colors'
 import path      from 'path';               import del      from 'del'
@@ -23,7 +25,11 @@ import hash      from 'gulp-hash';          import gulpif   from 'gulp-if'
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util'
 import htmlmin   from 'gulp-htmlmin';
 
-import { src, dest, proxyURL, app, wp, templateTheme, templateReadme, SFTP } from './project.config'
+let wpHotMW, inject, series
+if( app )
+    wpHotMW = require('webpack-hot-middleware')
+    inject  = require('gulp-inject')
+    series  = require('stream-series')
 
 
 const browser    = Browser.create()
@@ -32,10 +38,6 @@ const production = process.env.npm_lifecycle_script.includes('production')
 const miscGlob   = ['src/**', `!${src.js   }/**`,   // copy JS folder for WP enqueue
                               `!${src.scss }`, `!${src.scss }/**`,
                               `!${src.icons}`, `!${src.icons}/**`]
-
-let wpHotMW
-if( app ) wpHotMW = require('webpack-hot-middleware')
-
 
 export const DEL = path => del(path)
 //////////////////////////////////
@@ -169,30 +171,53 @@ export function copy() {
 
 ////////////////////////////////
 // MIN HTML + INJECT
+// export function html() {
+//
+//     return gulp.src('build/**/*.html')
+//         .pipe(gulpif(!app, htmlmin({
+//             collapseWhitespace: true,
+//             removeAttributeQuotes: true,
+//             removeStyleLinkTypeAttributes: true,
+//             removeScriptTypeAttributes: true,
+//             removeComments: true
+//         })))
+//         .pipe(gulp.dest('build'))
+// };
+
+
+
 export function html() {
 
+    let styles   = gulp.src(`${dest.scss}/main.*.css`,  { read: false }),
+        manifest = gulp.src(`${dest.js}/manifest.*.js`, { read: false }),
+        vendor   = gulp.src(`${dest.js}/vendor.*.js`,   { read: false }),
+        scripts  = gulp.src(`${dest.js}/main.*.js`,     { read: false });
+
     return gulp.src('build/**/*.html')
-        .pipe(gulpif(!app, htmlmin({
+        .pipe(inject(series(styles, manifest, vendor, scripts), { relative: true }))
+        .pipe(htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true,
             removeComments: true
-        })))
+        }))
         .pipe(gulp.dest('build'))
-};
+}
 
 
 ////////////////////////////////
-// MIN HTML + INJECT
+// CLEAN
+// (no rm -r since it'll delete 'build' when running specific gulp tasks)
+// cleaning hashes via 'rm -r', otherwise it would delete js folder after Webpack
 export function cleanBuild() { return DEL('build') }
-export function cleanHashes() {
-    return new Promise(res => {
-        DEL(dest.scss)
-        DEL(dest.js)
-        res()
-    })
-}
+// export function cleanHashes() {
+//     return new Promise(res => {
+//         DEL(dest.scss)
+//         DEL(dest.js)
+//         res()
+//     })
+// }
 
 
 ////////////////////////////////////////////////////////
@@ -200,7 +225,7 @@ export function cleanHashes() {
 export const dev   = wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
                         : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
 
-export const build = wp || app ? gulp.series( cleanHashes, styles )
-                               : gulp.series( styles, html )
+export const build = wp || app ? gulp.series( styles, html )
+                               : gulp.series( styles )
 
 export default dev
