@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////
 const wp       = false
-const app      = false
+const app      = true
 const proxyURL = false // false || MAMP Host
 
 

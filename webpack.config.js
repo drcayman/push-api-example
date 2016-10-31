@@ -17,10 +17,10 @@ if( app && !wp ) var HtmlWebpackPlugin = require('html-webpack-plugin')
 // DEVELOPMENT
 let commonDev = {
 
-    entry: [
-        './src/js/main.js',
-        //'./src/js/dynamic.js'
-    ],
+    entry: {
+        main: ['./src/js/main.js'],
+        dynamic: './src/js/dynamic.js'
+    },
 
     output: {
         filename: '[name].js',
@@ -85,15 +85,15 @@ if( wp || app ) {
     )
 }
 
+
 ////////////////////////////////
 
 if( app && ENV !== 'production' ) {
     module.exports = merge(commonDev, {
 
-        entry: [
-            'webpack/hot/dev-server',
-            'webpack-hot-middleware/client'
-        ],
+        entry: {
+            main: ['webpack/hot/dev-server', 'webpack-hot-middleware/client']
+        },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
         ]
