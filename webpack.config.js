@@ -5,22 +5,18 @@ const merge           = require('webpack-merge');
 const NotifierPlugin  = require('webpack-notifier')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
-
-
 const app = require('./project.config').app
 const wp  = require('./project.config').wp
 const ENV = process.env.NODE_ENV
-
-if( app && !wp ) var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
 let commonDev = {
 
-    entry: [
-        './src/js/main.js',
-        //'./src/js/dynamic.js'
-    ],
+    entry: {
+        main: ['./src/js/main.js'],
+        dynamic: './src/js/dynamic.js'
+    },
 
     output: {
         filename: '[name].js',
@@ -36,14 +32,12 @@ let commonDev = {
         }
     },
 
-    url: { dataUrlLimit: 1000 },
     devtool: 'eval-source-map',
     module: {
-        loaders: [{
+        rules: [{
             test: /\.js$/,
             exclude: /node_modules|vue\/src|vue-router\//,
             loader: 'babel',
-            query: { presets: ['es2015'], plugins: ['transform-strict-mode'] }
         },
         {
             test: /\.svg/,
@@ -52,7 +46,7 @@ let commonDev = {
         {
             test: /\.(png|jpe?g|gif)(\?.*)?$/,
             loader: 'url',
-            query: { limit: 10000, name: 'assets/img/[name].[ext]'   }
+            options: { limit: 10000, name: 'assets/img/[name].[ext]'   }
 
         },
         {
@@ -85,15 +79,15 @@ if( wp || app ) {
     )
 }
 
+
 ////////////////////////////////
 
 if( app && ENV !== 'production' ) {
     module.exports = merge(commonDev, {
 
-        entry: [
-            'webpack/hot/dev-server',
-            'webpack-hot-middleware/client'
-        ],
+        entry: {
+            main: ['webpack/hot/dev-server', 'webpack-hot-middleware/client']
+        },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
         ]
@@ -123,30 +117,17 @@ const commonProduction = {
     output,
     devtool: 'source-map',
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
         new webpack.optimize.UglifyJsPlugin({
+            drop_console: true,
             compress: { warnings: false },
-            comments: /sourceMappingURL/g
+            sourceMap: true
         })
     ]
-}
-
-////////////////////////////////
-
-if( app && !wp ) {
-    commonProduction.plugins.push(
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src/index.html'),
-            filename: path.join(__dirname, 'build/index.html'),
-            inject: true,
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeAttributeQuotes: true,
-                removeScriptTypeAttributes: true
-            },
-            chunksSortMode: 'dependency'
-        })
-    )
 }
 
 ////////////////////////////////

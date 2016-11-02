@@ -1,4 +1,4 @@
 
 export default function() {
-    console.log('hit moduleeee');
+    console.log('hit module');
 }

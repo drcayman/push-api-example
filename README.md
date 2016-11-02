@@ -6,21 +6,29 @@ _https://github.com/pascalaoms/boilerplate_
 ![dev dependencies check](https://david-dm.org/pascalaoms/boilerplate/dev-status.svg)
 ## Usage
 ```
-sites  
-newSite <project name>
-```
-```
-npm i
+project new <name>  
+
+yarn
 npm run dev  
 npm run build
 ```
 
-Upload whole project. Check **project.config.js** for paths and servername.
-```
-npm run dev upload
-```
-
 ---
+### VueJS
+**Set app variable in project.config to true.**  
+Add these dependencies:
+```
+yarn add vue vue-router && \
+yarn add svg-url-loader url-loader vue-hot-reload-api \
+vue-html-loader vue-loader webpack-hot-middleware \
+gulp-inject stream-series gulp-htmlmin \
+--dev
+```
+* Live Reloading
+* Hot Module Reloading  
+* Images <10KB to inline Base64
+* VueJS Templating
+No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.  
 
 ### Icons
 * save single icon SVG in **src/assets/icons**  
@@ -42,16 +50,3 @@ convertFont path/to/font.ttf
 ```
 
 ---
-
-### VueJS
-**Web App development supported.**  
-**Uncomment Middleware in Webpack and set app variable to true.**
-* Live Reloading
-* Hot Module Reloading  
-* Images <10KB to inline Base64
-* VueJS Templating
-* Add these dependencies
-```
-yarn add vue vue-router && yarn add svg-url-loader url-loader vue-hot-reload-api vue-html-loader vue-loader
-```
-No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.  

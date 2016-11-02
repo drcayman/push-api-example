@@ -1,12 +1,7 @@
-// TODO
-// inline Manifest if WP
-// open test.local:3000 if WP via Bash
-// code splitting + dynamic modules w/ VueJS
-// write documentation about what wp/app/none does
-
 'use strict';
 
-// NODE
+import { src, dest, proxyURL, app, wp, templateTheme, templateReadme } from './project.config'
+
 import fs        from 'fs';                 import colors   from 'colors'
 import path      from 'path';               import del      from 'del'
 import exists    from 'fs-exists-sync';     import process  from 'process'
@@ -14,17 +9,22 @@ import Browser   from 'browser-sync';       import prompt   from 'prompt'
 import webpack   from 'webpack';            import wpConfig from './webpack.config'
 import wpDevMW   from 'webpack-dev-middleware'
 
-// GULP
 import gulp      from 'gulp';				import sass	    from 'gulp-sass'
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps'
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css'
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin'
 import hash      from 'gulp-hash';          import gulpif   from 'gulp-if'
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util'
-import htmlmin   from 'gulp-htmlmin';
 
-import { src, dest, proxyURL, app, wp, templateTheme, templateReadme, SFTP } from './project.config'
+//////////////////////////////////
 
+if( app )
+    var wpHotMW = require('webpack-hot-middleware'),
+        inject  = require('gulp-inject'),
+        series  = require('stream-series'),
+        htmlmin = require('gulp-htmlmin');
+
+//////////////////////////////////
 
 const browser    = Browser.create()
 const bundler    = webpack(wpConfig)
@@ -33,11 +33,8 @@ const miscGlob   = ['src/**', `!${src.js   }/**`,   // copy JS folder for WP enq
                               `!${src.scss }`, `!${src.scss }/**`,
                               `!${src.icons}`, `!${src.icons}/**`]
 
-let wpHotMW
-if( app ) wpHotMW = require('webpack-hot-middleware')
-
-
 export const DEL = path => del(path)
+
 //////////////////////////////////
 // SERVER
 export function server() {
@@ -54,7 +51,6 @@ export function server() {
     let proxy = false, server = 'build'
 
     if( proxyURL ) proxy = { target: proxyURL, ws: true }, server = false
-
 
     browser.init({ open: false, cors: true, proxy, server, middleware });
 
@@ -92,7 +88,7 @@ export function styles() {
         })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
-        .pipe(gulpif(production && wp, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
+        .pipe(gulpif(production && wp || production && app, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
         .pipe(gulpif(production, cleanCSS()))
 
         .pipe(maps.write('./'))
@@ -171,36 +167,37 @@ export function copy() {
 // MIN HTML + INJECT
 export function html() {
 
+    let styles   = gulp.src(`${dest.scss}/main.*.css`,  { read: false }),
+        manifest = gulp.src(`${dest.js}/manifest.*.js`, { read: false }),
+        vendor   = gulp.src(`${dest.js}/vendor.*.js`,   { read: false }),
+        scripts  = gulp.src(`${dest.js}/main.*.js`,     { read: false });
+
     return gulp.src('build/**/*.html')
-        .pipe(gulpif(!app, htmlmin({
+        .pipe(inject(series(styles, manifest, vendor, scripts), { relative: true }))
+        .pipe(htmlmin({
             collapseWhitespace: true,
             removeAttributeQuotes: true,
             removeStyleLinkTypeAttributes: true,
             removeScriptTypeAttributes: true,
             removeComments: true
-        })))
+        }))
         .pipe(gulp.dest('build'))
-};
+}
 
 
 ////////////////////////////////
-// MIN HTML + INJECT
+// CLEAN
+// * no rm -r since it'll delete 'build' when running specific gulp tasks
+// * cleaning hashes via 'rm -r', otherwise it would delete js folder after Webpack
 export function cleanBuild() { return DEL('build') }
-export function cleanHashes() {
-    return new Promise(res => {
-        DEL(dest.scss)
-        DEL(dest.js)
-        res()
-    })
-}
 
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-export const dev   = wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
-                        : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
+export const dev   =  wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
+                         : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
 
-export const build = wp || app ? gulp.series( cleanHashes, styles )
-                               : gulp.series( styles, html )
+export const build = app ? gulp.series( styles, html )
+                         : gulp.series( styles )
 
 export default dev
