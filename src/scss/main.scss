@@ -1,19 +1,19 @@
 @import
 
 // TOOLS
-    "1-tools/variables",
-    "1-tools/mixins",
-    "1-tools/normalize",
-    "1-tools/base",
-    "1-tools/animations",
+    'tools/variables',
+    'tools/mixins',
+    'tools/normalize',
+    'tools/base',
+    'tools/animations',
 
 // LAYOUT
-    "2-layout/grid",
-    "2-layout/helpers",
+    'layout/grid',
+    'layout/helpers',
 
 // MODULES
-    "3-modules/header",
-    "3-modules/nav",
-    "3-modules/footer",
+    'modules/header',
+    'modules/nav',
+    'modules/footer',
 
-    "_temp";
+    'temp';
