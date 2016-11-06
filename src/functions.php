@@ -22,6 +22,17 @@ add_image_size( 'size-small', 543, 500, true );
 add_image_size( 'portfolio-size', 426, 240, array( 'center', 'center' ) );
 add_filter( 'jpeg_quality', create_function( '', 'return 70;' ) );
 
+// Delete original image
+add_filter( 'wp_generate_attachment_metadata', 'delete_fullsize_image' );
+function delete_fullsize_image( $metadata )
+{
+    $upload_dir = wp_upload_dir();
+    $full_image_path = trailingslashit( $upload_dir['basedir'] ) . $metadata['file'];
+    $deleted = unlink( $full_image_path );
+
+    return $metadata;
+}
+
 //////////////////////////////
 // POST
 add_theme_support( 'post-thumbnails', array( 'page', 'post', 'portfolio' ) ); // Featured Image
