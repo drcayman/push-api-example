@@ -43,7 +43,7 @@ function enqueue_files() {
 
 				case 'vendor':
 					$deps = array('manifest');	break;
-				
+
 				case 'main':
 					$deps = array('vendor');	break;
 
@@ -56,6 +56,18 @@ function enqueue_files() {
 		////////////////////////////////////////////////////////
 		/// ENQUEUE SCRIPT
 			wp_enqueue_script( $name, get_template_directory_uri() . '/js/' . $fullName, $deps, null, true );
+
+
+		////////////////////////////////////////////////////////
+		/// LOCALIZE
+			if( $name === 'vendor' ) {
+				$site_parameters = array(
+					'siteUrl' => get_site_url(),
+					'themeUrl' => get_template_directory_uri()
+				);
+				wp_localize_script( 'vendor', 'localize', $site_parameters );
+
+			}
 
 
 		}
