@@ -18,10 +18,10 @@ npm run build
 **Set app variable in project.config to true.**  
 Add these dependencies:
 ```
-yarn add vue vue-router && \
+yarn add vue vue-router vuex && \
 yarn add svg-url-loader url-loader vue-hot-reload-api \
 vue-html-loader vue-loader webpack-hot-middleware \
-gulp-inject stream-series gulp-htmlmin \
+vue-template-compiler gulp-inject stream-series gulp-htmlmin \
 --dev
 ```
 * Live Reloading
