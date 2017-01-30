@@ -1,8 +1,8 @@
 	<footer class="footer">
 		<div class="container">
 
-			<span>&copy; {{COPYRIGHT}}</span>
-			<a href="#">Imprint</a>
+			<span>&copy; <?= date('Y') ?></span>
+			<a href="#0">Imprint</a>
 
 		</div>
 	</footer>

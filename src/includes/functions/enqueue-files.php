@@ -7,8 +7,21 @@
 * Enqueue file.
 */
 
+// VARIABLES
+$gmapAPI = 'AIzaSyBADXQUHYJEAwy7PCpoOxEQPxLoH6gWPEU';
+
+
+// MAIN JS DEPENDENCIES
+$gmap = $gmapAPI ? 'gmap' : null;
+
+$deps = array('vendor', $gmap);
+
+
+
+
 
 function enqueue_files() {
+
 
 ////////////////////////////////////////////////////////
 /// CSS
@@ -42,13 +55,13 @@ function enqueue_files() {
 			switch($name) {
 
 				case 'vendor':
-					$deps = array('manifest');	break;
+					$deps = array('manifest'); 	break;
 
 				case 'main':
-					$deps = array('vendor');	break;
+					$deps; 						break;
 
 				default:
-					$deps = null;				break;
+					$deps = null; 				break;
 
 			}
 
@@ -80,6 +93,14 @@ function enqueue_files() {
 ////////////////////////////////////////////////////////
 /// DEREGISTER JQUERY
 	if( !is_admin() ) {	wp_deregister_script('jquery'); }
+
+
+
+////////////////////////////////////////////////////////
+/// GOOGLE MAPS API
+	if( $gmap ) { wp_enqueue_script( 'gmap', 'http://maps.google.com/maps/api/js?key=' . $gmapAPI, false, null, true ); }
+
+
 
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_files' );

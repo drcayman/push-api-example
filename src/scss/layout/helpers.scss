@@ -13,6 +13,6 @@
 
 
 // ALIGNMENT
-.center-vert { align-items: center; } // flex-start | center | flex-end
-.center-horz { float: none; margin-left: auto; margin-right: auto; }
+.align-center { align-items: center; }
+.justify-center { float: none; margin-left: auto; margin-right: auto; }
 .order-first { order: 1; } // -1 | 0 | 1

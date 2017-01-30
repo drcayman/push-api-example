@@ -14,8 +14,7 @@ const ENV = process.env.NODE_ENV
 let commonDev = {
 
     entry: {
-        main: ['./src/js/main.js'],
-        dynamic: './src/js/dynamic.js'
+        main: ['./src/js/main.js']
     },
 
     output: {
@@ -26,8 +25,10 @@ let commonDev = {
     },
 
     resolve: {
+        modules: ['src', 'node_modules'],
         alias: {
             'vue$': 'vue/dist/vue.js',
+            'jquery': 'jquery/dist/jquery.slim'
             'assets': path.join(__dirname, 'build/assets'),
         }
     },
@@ -56,6 +57,11 @@ let commonDev = {
     },
 
     plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         new WriteFilePlugin({ test: /(^\w*)(\.\w{3})?(\.js$)/, log: false } ),
         new webpack.NoErrorsPlugin(),
         new NotifierPlugin({

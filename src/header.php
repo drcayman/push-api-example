@@ -26,7 +26,7 @@
 
 	<?php wp_head(); ?>
 </head>
-<body id="<?php echo get_query_var('name'); ?>">
+<body>
 
 
 	<div class="header-sticky">
@@ -34,16 +34,17 @@
 		<div class="container">
 
 			<div class="logo">
-				<h1>REST API Test</h1>
+				<h1>TITLE</h1>
 			</div>
 
 			<?php
-
 				wp_nav_menu( array(
-					'container'       => 'nav',
-					'container_class' => 'nav',
-					'items_wrap'      => '<ul>%3$s</ul>',
-				) );
+					'menu' => 'Main',
+					'theme_location' => 'Header',
+					'container' => 'nav',
+					'container_class' => 'nav-main',
+					'menu_class' => false
+				) )
 			 ?>
 
 		</div>

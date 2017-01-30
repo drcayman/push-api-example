@@ -1,6 +1,7 @@
 
 // VARIABLES
-$font-main:    "Roboto";
+$font-main: "Roboto";
+// @include('myFont')
 
 
 // MAIN WRAPPER
@@ -17,13 +18,11 @@ body {
     @if $sticky-footer {
         display: flex;
         flex-direction: column;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
     }
 }
 
 main {
-    @if $sticky-footer { flex: 1 0 auto; }  // 0 auto = IE fix
+    @if $sticky-footer { flex: 1 0 auto; }
 }
 
 // HEADINGS
@@ -42,21 +41,39 @@ a {
     text-decoration: none;
     transition: .4s;
 
-    &:hover, &:active, &:focus { color: lighten($prim-color, 15%); outline: 0; }
+    &:hover,
+    &:active,
+    &:focus {
+        color: lighten($prim-color, 15%);
+    }
 }
 
 p { font-size: 1.6em; color: $txt-color; }
 
+
+// LISTS
 ul, ol { padding-left: 0; list-style: none; }
-.col ul { margin-left: 15px;        // CMS fix
-	li { position: relative;
-		&:before { content: "■"; color: $prim-color; left: -15px; font-size: 1em; line-height: 1; position: absolute; }
+
+.col ul {
+    margin-left: 15px; // CMS fix
+
+	li {
+        position: relative;
+
+		&:before {
+            content: "■";
+            color: $prim-color;
+            left: -15px;
+            font-size: 1em;
+            line-height: 1;
+            position: absolute;
+        }
 	}
 }
 
-img { max-width: 100%; display: block; }
 
 
+// BUTTON
 button, .btn {
     background: $prim-color;
     border: 0;
@@ -84,7 +101,7 @@ table {
         color: white;
         border-right: 1px solid white;
 
-        &:last-child { border: none; }
+        &:last-child { border: 0; }
     }
 
     tr {
@@ -93,13 +110,12 @@ table {
         &:nth-child(even) {
             background: lighten($sec-color, 25%);
         }
-
     }
 
     td {
         border-right: 1px solid $prim-color;
         padding: 1.2em;
-        &:last-child { border: none; }
+        &:last-child { border: 0; }
     }
 
 
@@ -107,6 +123,5 @@ table {
         tr { background: transparent; color: $txt-color;
             &:hover { background: lighten($sec-color, 25%); }
         }
-
     }
 }
