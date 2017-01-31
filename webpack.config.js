@@ -28,7 +28,7 @@ let commonDev = {
         modules: ['src', 'node_modules'],
         alias: {
             'vue$': 'vue/dist/vue.js',
-            'jquery': 'jquery/dist/jquery.slim'
+            'jquery': 'jquery/dist/jquery.slim',
             'assets': path.join(__dirname, 'build/assets'),
         }
     },

@@ -1,22 +1,23 @@
 
-export default function scrollToTop(scrollDuration, cb) {
+export default function(scrollDuration, cb) {
 
-const   scrollHeight = window.scrollY,
-        scrollStep = Math.PI / ( scrollDuration / 15 ),
-        cosParameter = scrollHeight / 2;
-var     scrollCount = 0,
-        scrollMargin,
-        scrollInterval = setInterval( function() {
-            if ( window.scrollY != 0 ) {
-                scrollCount = scrollCount + 1;
-                scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
-                window.scrollTo( 0, ( scrollHeight - scrollMargin ) );
-            }
-            else {
-                clearInterval(scrollInterval);
-                cb();
-            }
+let scrollHeight = window.scrollY,
+    scrollStep   = Math.PI / ( scrollDuration / 15 ),
+    cosParameter = scrollHeight / 2,
+    scrollCount  = 0,
+    scrollMargin,
+    scrollInterval = setInterval(() => {
 
-        }, 15 );
+        if ( window.scrollY != 0 ) {
+            scrollCount = scrollCount + 1
+            scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep )
+            window.scrollTo( 0, ( scrollHeight - scrollMargin ) )
+        }
+        else {
+            clearInterval(scrollInterval)
+            cb()
+        }
+
+    }, 15 )
 
 }

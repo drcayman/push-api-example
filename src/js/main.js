@@ -1,4 +1,6 @@
 import Polyfill from 'dynamic-polyfill'
+import onResize from './lib/onResize'
+
 
 Polyfill({
     fills: 'fetch, Promise',
@@ -12,5 +14,7 @@ Polyfill({
 function main() {
 
 
+
+    onResize()
 
 }

@@ -2,21 +2,21 @@
 HOW TO USE ES6 VERSION
 (ES5 in Snippets)
 
-import onResize from '../lib/onResize'
+* Import all Modules in main.js
+* Run Module in onResize Function
 
 function log() { ... }
-
-onResize( log() )
+onResize( log )
 */
 
 
-export default function(...runOnResize) {
+export default function(...cb) {
 
 	const waitForFinalEvent = (() => {
 
         let timers = {}
 
-        return function(cb, ms, resizeID) {
+        return function(callback, ms, resizeID) {
 
             if( !resizeID ) { resizeID = '239586' }
 
@@ -24,17 +24,20 @@ export default function(...runOnResize) {
                 clearTimeout(timers[resizeID])
             }
 
-            timers[resizeID] = setTimeout(cb, ms)
+            timers[resizeID] = setTimeout(callback, ms)
         }
 
     })()
 
-	window.onresize = e => {
+	window.onresize = () => {
 		waitForFinalEvent(() => {
 
-            runOnResize()
+			for( let i = 0; i < cb.length; i++ ) {
+			    cb[i]()
+			}
 
-		}, 10, 'resizeID')
+
+		}, 30, 'resizeID')
 	}
 
 }
