@@ -52,6 +52,7 @@
 		width: 7px;
 		right: 9px;
 	}
+
 	&::after {
 		height: 7px;
 		width: 1px;
@@ -66,8 +67,10 @@
 		.nav-sub { z-index: 2; }
 	}
 
-	&:hover > ul { display: block; }
-
+	&:hover > ul { // ul to not repeat for sub + deep
+		visibility: visible;
+		opacity: 1;
+	}
 
 }
 
@@ -75,19 +78,24 @@
 
 // NAV SUB
 ////////////////////////////
-.nav-sub { // width and top generated via JS
+.nav-sub {
 	position: absolute;
 	left: 0;
 	top: 100%; // offset for border
 	z-index: 1;
 	min-width: 100%;
+	visibility: hidden;
+	backface-visibility: hidden;
+	opacity: 0;
+	transition: .4s;
 
 	&--item {
 		@extend .nav--item;
 		display: block;
-		border: none;
+		border: 0;
 		margin-left: 0;
 		background: $gray-lightest;
+		white-space: nowrap;
 
 	}
 
@@ -101,6 +109,9 @@
 	top: 0;
 	right: 100%;
 	min-width: 100%;
+	backface-visibility: hidden;
+	opacity: 0;
+	transition: .4s;
 
 	&--item { @extend .nav-sub--item; }
 }
@@ -108,84 +119,34 @@
 
 // NAV HANDLER
 ////////////////////////////
-//$dash-array: 40;
-
-
 .nav-handler {
 	width: 30px;
-	//height: 35px;
 	cursor: pointer;
 	display: none;
 
-	//&:hover line:nth-child(2) { stroke-dasharray: $dash-array / 1.33; }
-	//&:hover line:nth-child(3) { stroke-dasharray: $dash-array / 2; }
-	&:hover .line { background: darken($prim-color, 15%); }
+	&:hover span { background: darken($prim-color, 15%); }
+
+	&.is-active span:nth-child(1) { transform: translate(0, 10px) rotate(45deg) }
+	&.is-active span:nth-child(2) { opacity: 0; }
+	&.is-active span:nth-child(3) { transform: translate(0, -10px) rotate(-45deg) }
 
 	//line
-	.line {
-		//stroke: $prim-color;
-		//stroke-width: 3;
-		//stroke-dasharray: $dash-array;
+	span {
 		height: 4px;
+		display: block;
 		border-radius: 3px;
 		background: $prim-color;
-		transition: background .2s ;
-		stroke-linecap: square;
+		margin-bottom: .6em;
+		backface-visibility: hidden; // fix 1 Pixel off in Chrome
+		transition: .4s;
 
-		&:nth-child(1) { animation: nav-line-1-rev .7s ease-in-out; }
-		&:nth-child(2) { animation: nav-line-2-rev .7s $ease-in-back; margin: 5px 0; }
-		&:nth-child(3) { animation: nav-line-3-rev .7s ease-in-out; }
+		&:last-child { margin-bottom: 0; }
 	}
 
-	&.is-active {
-		// &:hover line { stroke-dasharray: $dash-array; }
-		// line:nth-child(1) { transform: rotate(45deg) translate(5px, -5px); }
-		// line:nth-child(2) { opacity: 0; }
-		// line:nth-child(3) { transform: rotate(-45deg) translate(-19px, -5px); }
-
-		.line:nth-child(1) { animation: nav-line-1 .7s $ease-in-back forwards; }
-		.line:nth-child(2) { animation: nav-line-2 .7s ease-in forwards; }
-		.line:nth-child(3) { animation: nav-line-3 .7s $ease-in-back forwards; }
-	}
 }
 
 
-// ANIMATION
-////////////////////////////
-@keyframes nav-line-1-rev {
-	0% { transform: translate3d(0,9px,0) rotate(45deg); }
-	50% { transform: translate3d(0,9px,0) rotate(0); }
-	100% { transform: translate3d(0,0,0) rotate(0); }
-}
 
-@keyframes nav-line-2-rev {
-	0% { transform: scale(0); opacity: 0; }
-	100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes nav-line-3-rev {
-	0% { transform: translate3d(0,-9px,0) rotate(135deg); }
-	50% { transform: translate3d(0,-9px,0) rotate(0); }
-	100% { transform: translate3d(0,0,0) rotate(0); }
-}
-
-
-@keyframes nav-line-1 {
-	0% { transform: translate3d(0,0,0) rotate(0); }
-	50% { transform: translate3d(0,9px,0) rotate(0); }
-	100% { transform: translate3d(0,9px,0) rotate(45deg); }
-}
-
-@keyframes nav-line-2 {
-	0% { transform: scale(1); opacity: 1; }
-	100% { transform: scale(0); opacity: 0; }
-}
-
-@keyframes nav-line-3 {
-	0% { transform: translate3d(0,0,0) rotate(0); }
-	50% { transform: translate3d(0,-9px,0) rotate(0); }
-	100% { transform: translate3d(0,-9px,0) rotate(135deg);	}
-}
 
 // QUERIES
 ////////////////////////////
@@ -193,13 +154,28 @@
 
 @media(max-width: $xs) {
 
-	.nav { display: none; width: 100%; }
+	.nav {
+		display: none;
+		width: 100%;
+		height: 100%;
+		overflow-x: scroll;
+		position: fixed;
+		top: 0;
+		right: 0;
+		transform: translate(100%, 0);
+		transition: transform .4s $ease-out-quad;
 
-	.nav > ul { display: block; padding-top: 25px; }
+		.nav-handler.is-active + & {
+			transform: translate(0, 0);
+		}
+
+	}
+
+	.nav > ul { visibility: visible; opacity: 1; padding-top: 25px; }
 
 	.nav--item {
 		display: block;
-		border: none;
+		border: 0;
 		margin-left: 0;
 		width: 100%;
 		text-align: left;

@@ -9,39 +9,37 @@
 
         <div class="logo">
             <a href="./">
-                <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logo.svg" alt="__TITLE__">
+                <img src="assets/img/logo.svg" alt="__TITLE__">
             </a>
         </div>
         <!-- <h1>__TITLE__</h1> -->
 
-        <div id="nav-mobile" class="nav-handler">
-            <div class="line"></div>
-            <div class="line"></div>
-            <div class="line"></div>
+        <div id="nav-handler" class="nav-handler">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
         <nav id="nav-main" class="nav">
             <ul>
-                <li class="nav-dropdown nav--item"><a href="#">Item</a></li>
-                <li class="nav-drop nav--item"><a href="#">Sub</a>
+                <li class="nav-dropdown nav--item"><a href="#0">Item</a></li>
+                <li class="nav-drop nav--item"><a href="#0">Item Has Sub</a>
                     <ul class="nav-sub">
-                        <li class="nav-sub--item"><a  href="#">Item</a></li>
-                        <li class="nav-drop nav-sub--item"><a href="#">Deep</a>
+                        <li class="nav-sub--item"><a  href="#0">Sub Item</a></li>
+                        <li class="nav-drop nav-sub--item"><a href="#0">Sub Item Has Deep</a>
                             <ul class="nav-deep">
-                                <li class="nav-deep--item"><a href="#">Item</a></li>
-                                <li class="nav-deep--item"><a href="#">Item</a></li>
-                                <li class="nav-deep--item"><a href="#">Item</a></li>
+                                <li class="nav-deep--item"><a href="#0">Deep Item</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-                <li class="sb-overlay--handler nav--item"><a><i class="fa-instagram"></i></a></li>
             </ul>
         </nav>
     </div>
 
 </header>
 </div>
+
 
 
 <main id="content"> <!-- content -->
