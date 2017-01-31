@@ -1,7 +1,7 @@
 import Polyfill from 'dynamic-polyfill'
 
 Polyfill({
-    fills: 'fetch, promise',
+    fills: 'fetch, Promise',
     options: 'gated',
     afterFill() {
         main()
@@ -11,6 +11,6 @@ Polyfill({
 
 function main() {
 
-    
+
 
 }

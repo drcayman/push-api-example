@@ -10,11 +10,11 @@ String.prototype.capitalize = function() {
 export function getLoadedBackground(src, cb) {
 
     let url = src.match(/\((.*?)\)/)[1].replace(/('|")/g,''),
-        img = new Image();
+        img = new Image()
 
     img.onload = () => cb()
 
-    img.src = url;
-    if (img.complete) img.onload();
+    img.src = url
+    if( img.complete ) img.onload()
 
 }

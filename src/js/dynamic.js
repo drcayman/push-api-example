@@ -1,3 +1,0 @@
-
-
-console.log('dynamically loaded')
