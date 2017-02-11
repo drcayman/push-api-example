@@ -42,7 +42,8 @@ export function server() {
     let middleware = [
         wpDevMW(bundler, {
             publicPath: wpConfig.output.publicPath,
-            stats: { colors: true, chunks: false }
+            //noInfo: true,
+            stats: "errors-only"
         })
     ]
 
@@ -156,7 +157,7 @@ export function theme() {
 ////////////////////////////////
 // COPY
 export function copy() {
-    return gulp.src(miscGlob)
+    return gulp.src(miscGlob, { dot: true })
         .pipe(changed('build'))
         .pipe(gulp.dest('build'))
         .pipe(browser.reload({ stream: true }))
