@@ -5,8 +5,8 @@ import Nav from './modules/nav'
 
 
 Polyfill({
-    fills: 'fetch, Promise',
-    options: 'gated',
+    fills: ['fetch', 'Promise'],
+    options: ['gated'],
     afterFill() {
         main()
     }
@@ -14,6 +14,8 @@ Polyfill({
 
 
 function main() {
+
+    alert('hitttt')
 
     Nav()
 
