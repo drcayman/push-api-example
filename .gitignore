@@ -2,6 +2,11 @@
 build
 
 
+### Laravel ###
+public
+vendor
+
+
 ### WordPress ###
 *.log
 vendor
