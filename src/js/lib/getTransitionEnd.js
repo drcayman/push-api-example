@@ -1,5 +1,5 @@
 
-export default function() {
+export function transitionEnd() {
 
     var s = document.body || document.documentElement, s = s.style, /*prefixAnimation = '',*/ prefixTransition = '';
 

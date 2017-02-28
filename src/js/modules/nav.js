@@ -2,11 +2,20 @@
 
 export default function() {
 
-    let navHandler = document.getElementById('nav-handler'),
-        navMain    = document.getElementById('nav-main')
+    let handler = document.getElementById('nav-handler'),
+        navMain = document.getElementById('nav-main'),
+        overlay = document.querySelector('.nav-overlay')
 
-    navHandler.addEventListener('click', function() {
-        this.classList.toggle('is-active')
-    })
+    handler.addEventListener('click', () => toggleNavElements())
+
+    overlay.addEventListener('click', () => toggleNavElements())
+
+
+    function toggleNavElements() {
+        handler.classList.toggle('is-active')
+        navMain.classList.toggle('is-visible')
+        overlay.classList.toggle('is-visible')
+    }
+
 
 }
