@@ -134,7 +134,7 @@ export function readme() {
 
     return new Promise(resolve => {
 
-        if( exists('README.md') ) { 
+        if( exists('README.md') ) {
             gutil.log('README.md already exists.'.red)
             resolve()
         }
@@ -151,7 +151,7 @@ export function readme() {
             ], (err, res) => {
 
                 fs.writeFile('./README.md', templateReadme(res), () => resolve());
-                gutil.log('README.md created. To write notes open README.md'.green)
+                gutil.log('README.md created.'.green)
             })
         }
     });
