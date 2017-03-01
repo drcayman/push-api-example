@@ -65,3 +65,15 @@ add_action('widgets_init', 'remove_recent_comments_style');
 //     return str_replace("'", '"', $input);
 // }
 // add_filter('script_loader_tag', 'clean_script_tag');
+
+
+// REMOVE WP UPDATE NOTIFICATION
+function remove_core_updates() {
+    if( !current_user_can('update_core') ) {
+        return;
+    }
+    add_action('init', create_function('$a',"remove_action( 'init', 'wp_version_check' );"), 2);
+    add_filter('pre_option_update_core','__return_null');
+    add_filter('pre_site_transient_update_core','__return_null');
+}
+add_action('after_setup_theme','remove_core_updates');
