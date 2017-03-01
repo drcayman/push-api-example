@@ -134,7 +134,10 @@ export function readme() {
 
     return new Promise(resolve => {
 
-        if( exists('README.md') ) { resolve() }
+        if( exists('README.md') ) { 
+            gutil.log('README.md already exists.'.red)
+            resolve()
+        }
         else {
             prompt.message = ('');
             prompt.delimiter = colors.gray(' ==>');
