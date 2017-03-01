@@ -1,8 +1,30 @@
 ////////////////////////////////////////////////////////////////
-const wp = false
+const wp  = false
 const app = false
-const proxyURL = false // false || MAMP Host
+const proxyURL = false // false || MAMP/Valet DNS
 
+////////////////////////////////////////////////////////////////
+// PATHS
+// Laravel => src: resources | dest: public
+const SRC_ROOT = 'src',
+	src = {
+	      js: SRC_ROOT + '/js',
+	    scss: SRC_ROOT + '/scss',
+	     img: SRC_ROOT + '/assets/img',
+	   icons: SRC_ROOT + '/assets/icons',
+	   fonts: SRC_ROOT + '/assets/fonts',
+	favicons: SRC_ROOT + '/assets/favicons'
+}
+
+const DEST_ROOT = 'build',
+	dest = {
+          js: DEST_ROOT + '/js',
+        scss: DEST_ROOT + '/css',
+      assets: DEST_ROOT + '/assets',
+         img: DEST_ROOT + '/assets/img',
+       fonts: DEST_ROOT + '/assets/fonts',
+	favicons: DEST_ROOT + '/assets/favicons'
+}
 
 ////////////////////////////////////////////////////////////////
 // README
@@ -36,26 +58,6 @@ _${res.url}_
 
 
 ////////////////////////////////////////////////////////////////
-// PATHS
-const src = {
- favicons: 'src/assets/favicons',
-	fonts: 'src/assets/fonts',
-	icons: 'src/assets/icons',
-	  img: 'src/assets/img',
-	   js: 'src/js',
-	 scss: 'src/scss'
-}
-const dest  = {
- favicons: 'build/assets/favicons',
-   assets: 'build/assets',
-	fonts: 'build/assets/fonts',
-	  img: 'build/assets/img',
-	   js: 'build/js',
-	 scss: 'build/css'
-}
-
-
-////////////////////////////////////////////////////////////////
 // THEME
 const templateTheme = `
 /*
@@ -68,5 +70,5 @@ Description: Boilerplate WP Theme
 
 
 module.exports = {
-	wp, app, proxyURL, templateReadme, src, dest, templateTheme
+	wp, app, proxyURL, templateReadme, src, dest, SRC_ROOT, DEST_ROOT, templateTheme
 }

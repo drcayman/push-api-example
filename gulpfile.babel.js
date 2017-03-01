@@ -1,6 +1,6 @@
 'use strict';
 
-import { src, dest, proxyURL, app, wp, templateTheme, templateReadme } from './project.config'
+import { src, dest, SRC_ROOT, DEST_ROOT, proxyURL, app, wp, templateTheme, templateReadme } from './project.config'
 
 import fs        from 'fs';                 import colors   from 'colors'
 import path      from 'path';               import del      from 'del'
@@ -29,9 +29,15 @@ if( app )
 const browser    = Browser.create()
 const bundler    = webpack(wpConfig)
 const production = process.env.npm_lifecycle_script.includes('production')
-const miscGlob   = ['src/**', `!${src.js   }/**`,   // copy JS folder for WP enqueue
-                              `!${src.scss }`, `!${src.scss }/**`,
-                              `!${src.icons}`, `!${src.icons}/**`]
+const miscGlob   = [
+    `${SRC_ROOT}/**`,
+    `!${src.js   }/**`,   // JS folder 4 WP enq
+    `!${src.scss }`,      `!${src.scss }/**`,
+    `!${src.icons}`,      `!${src.icons}/**`,
+    `!${src}/components`, `!${src}/components/**`,  // VueJS
+    `!${src}/views`,      `!${src}/views/**`,       // Laravel
+    `!${src}/lang`,       `!${src}/lang/**`,        // Laravel
+]
 
 export const DEL = path => del(path)
 
@@ -49,7 +55,7 @@ export function server() {
 
     if( app ) middleware.push(wpHotMW(bundler))
 
-    let proxy = false, server = 'build'
+    let proxy = false, server = DEST_ROOT
 
     if( proxyURL ) proxy = { target: proxyURL, ws: true }, server = false
 
@@ -72,7 +78,11 @@ export function server() {
 
     // Watch Misc
     gulp.watch(miscGlob, copy)
-        .on('unlink', (path, stats) => DEL(path.replace('src', 'build')))
+        .on('unlink', (path, stats) => DEL(path.replace(SRC_ROOT, DEST_ROOT)))
+
+
+    // Watch Laravel Views
+    gulp.watch(`${SRC_ROOT}/views/**/*.blade.php`, copy).on('change', () => browser.reload())
 
 }
 
@@ -158,8 +168,8 @@ export function theme() {
 // COPY
 export function copy() {
     return gulp.src(miscGlob, { dot: true })
-        .pipe(changed('build'))
-        .pipe(gulp.dest('build'))
+        .pipe(changed(DEST_ROOT))
+        .pipe(gulp.dest(DEST_ROOT))
         .pipe(browser.reload({ stream: true }))
 }
 
@@ -173,7 +183,7 @@ export function html() {
         vendor   = gulp.src(`${dest.js}/vendor.*.js`,   { read: false }),
         scripts  = gulp.src(`${dest.js}/main.*.js`,     { read: false });
 
-    return gulp.src('build/**/*.html')
+    return gulp.src(`${DEST_ROOT}/**/*.html`)
         .pipe(inject(series(styles, manifest, vendor, scripts), { relative: true }))
         .pipe(htmlmin({
             collapseWhitespace: true,
@@ -182,7 +192,7 @@ export function html() {
             removeScriptTypeAttributes: true,
             removeComments: true
         }))
-        .pipe(gulp.dest('build'))
+        .pipe(gulp.dest(DEST_ROOT))
 }
 
 
@@ -190,7 +200,7 @@ export function html() {
 // CLEAN
 // * no rm -r since it'll delete 'build' when running specific gulp tasks
 // * cleaning hashes via 'rm -r', otherwise it would delete js folder after Webpack
-export function cleanBuild() { return DEL('build') }
+export function cleanBuild() { return DEL(DEST_ROOT) }
 
 
 ////////////////////////////////////////////////////////

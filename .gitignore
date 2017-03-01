@@ -2,30 +2,35 @@
 build
 
 
-### WordPress ###
+### Laravel ###
+public
+vendor
+
+
+### WordPress w/ Bedrock ###
+.env
 *.log
 vendor
 production.zip
-extract.php
 
-public/wp
-public/wp-content/plugins
-public/wp-content/advanced-cache.php
-public/wp-content/backup-db/
-public/wp-content/backups/
-public/wp-content/blogs.dir/
-public/wp-content/cache/
-public/wp-content/upgrade/
-public/wp-content/wp-cache-config.php
+web/wp
+web/app/plugins
+web/app/advanced-cache.php
+web/app/backup-db/
+web/app/backups/
+web/app/blogs.dir/
+web/app/cache/
+web/app/upgrade/
+web/app/wp-cache-config.php
 
 
 ## Uploads
 # DB Backup
-public/wp-content/uploads/wp-sync-db
-# Don't add processed images
-public/wp-content/uploads/**/*-*x[0-9][0-9].*
-public/wp-content/uploads/**/*-*x[0-9][0-9][0-9].*
-public/wp-content/uploads/**/*-*x[0-9][0-9][0-9][0-9].*
+web/app/uploads/wp-sync-db
+
+web/app/uploads/**/*-*x[0-9][0-9].*
+web/app/uploads/**/*-*x[0-9][0-9][0-9].*
+web/app/uploads/**/*-*x[0-9][0-9][0-9][0-9].*
 
 
 

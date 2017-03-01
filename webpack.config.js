@@ -5,31 +5,33 @@ const merge           = require('webpack-merge');
 const NotifierPlugin  = require('webpack-notifier')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
-const app = require('./project.config').app
-const wp  = require('./project.config').wp
-const ENV = process.env.NODE_ENV
+const config = require('./project.config')
+const ENV    = process.env.NODE_ENV
+
+let src  = config.src,
+    dest = config.dest,
+    app  = config.app,
+    wp   = config.wp
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
 let commonDev = {
 
     entry: {
-        main: ['./src/js/main.js']
+        main: [`./${src.js}/main.js`]
     },
 
     output: {
         filename: '[name].js',
         chunkFilename: '[name].js',
-        path: path.join(__dirname, 'build/js'),
+        path: path.join(__dirname, dest.js),
         publicPath: '/js/'
     },
 
     resolve: {
-        modules: ['src', 'node_modules'],
         alias: {
             'vue$': 'vue/dist/vue.js',
-            'jquery': 'jquery/dist/jquery.slim',
-            'assets': path.join(__dirname, 'build/assets'),
+            'assets': path.join(__dirname, dest.assets)
         }
     },
 
@@ -47,7 +49,7 @@ let commonDev = {
         {
             test: /\.(png|jpe?g|gif)(\?.*)?$/,
             loader: 'url-loader',
-            options: { limit: 10000, name: 'assets/img/[name].[ext]'   }
+            options: { limit: 10000, name: 'assets/img/[name].[ext]' }
 
         },
         {
@@ -110,11 +112,11 @@ let output =
     wp || app ? {
         filename: '[name].[chunkhash:3].js',
         chunkFilename: '[name].[chunkhash:3].js',
-        path: path.join(__dirname, 'build/js'),
+        path: path.join(__dirname, dest.js),
     }
     : {
         filename: '[name].js',
-        path: path.join(__dirname, 'build/js')
+        path: path.join(__dirname, dest.js)
     }
 
 ////////////////////////////////

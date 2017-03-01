@@ -19,6 +19,6 @@ function main() {
     Nav()
 
     onResize()
-    
+
 
 }
