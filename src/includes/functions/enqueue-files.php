@@ -7,21 +7,17 @@
 * Enqueue file.
 */
 
-// VARIABLES
-$gmapAPI = 'AIzaSyBADXQUHYJEAwy7PCpoOxEQPxLoH6gWPEU';
-
-
-// MAIN JS DEPENDENCIES
-$gmap = $gmapAPI ? 'gmap' : null;
-
-$deps = array('vendor', $gmap);
-
-
-
-
-
 function enqueue_files() {
 
+	// VARIABLES
+	$gmapAPI = 'AIzaSyBADXQUHYJEAwy7PCpoOxEQPxLoH6gWPEU';
+
+
+	// MAIN JS DEPENDENCIES
+	$gmap = $gmapAPI ? 'gmap' : null;
+
+	$deps = array('vendor', $gmap);
+	
 
 ////////////////////////////////////////////////////////
 /// CSS
