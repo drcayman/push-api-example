@@ -13,20 +13,15 @@ npm run dev
 npm run build
 ```
 
+For WordPress create `style.css` in root.
+
 ---
 ### VueJS
 **Set app variable in project.config to true.**  
-Add these dependencies:
-```
-yarn add vue vue-router vuex && \
-yarn add svg-url-loader url-loader vue-hot-reload-api \
-vue-html-loader vue-loader webpack-hot-middleware \
-vue-template-compiler gulp-inject stream-series gulp-htmlmin \
---dev
-```
+Add app dependencies with `installAppDependencies`.
+
 * Live Reloading
 * Hot Module Reloading  
-* Images <10KB to inline Base64
 * VueJS Templating
 No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.  
 

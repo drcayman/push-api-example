@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////
-const wp  = false
-const app = false
+const app  = false     // Add specfic dependencies + hot reload
+const hash = false 	   // Add hash to file name: main.e4d.js
 const proxyURL = false // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
@@ -57,18 +57,7 @@ _${res.url}_
 }
 
 
-////////////////////////////////////////////////////////////////
-// THEME
-const templateTheme = `
-/*
-Theme Name: Boilerplate
-Version: 1.0
-Author: Pascal Klau <email@artofmyself.com>
-Author URI: http://www.artofmyself.com
-Description: Boilerplate WP Theme
-*/`;
-
 
 module.exports = {
-	wp, app, proxyURL, templateReadme, src, dest, SRC_ROOT, DEST_ROOT, templateTheme
+	app, hash, proxyURL, templateReadme, src, dest, SRC_ROOT, DEST_ROOT
 }

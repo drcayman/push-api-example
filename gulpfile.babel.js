@@ -1,6 +1,6 @@
 'use strict';
 
-import { src, dest, SRC_ROOT, DEST_ROOT, proxyURL, app, wp, templateTheme, templateReadme } from './project.config'
+import { src, dest, hash, SRC_ROOT, DEST_ROOT, proxyURL, app, templateReadme } from './project.config'
 
 import fs        from 'fs';                 import colors   from 'colors'
 import path      from 'path';               import del      from 'del'
@@ -13,16 +13,18 @@ import gulp      from 'gulp';				import sass	    from 'gulp-sass'
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps'
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css'
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin'
-import hash      from 'gulp-hash';          import gulpif   from 'gulp-if'
+import gulpif    from 'gulp-if'
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util'
 
 //////////////////////////////////
 
 if( app )
     var wpHotMW = require('webpack-hot-middleware'),
-        inject  = require('gulp-inject'),
-        series  = require('stream-series'),
-        htmlmin = require('gulp-htmlmin');
+        series  = require('stream-series')
+
+if( hash )
+    var hashing = require('gulp-hash'),
+        inject  = require('gulp-inject')
 
 //////////////////////////////////
 
@@ -99,7 +101,7 @@ export function styles() {
         })))
         .pipe(prefixer({ browsers: ['last 2 versions'] }))
 
-        .pipe(gulpif(production && wp || production && app, hash({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
+        .pipe(gulpif(production && hash, hashing({ hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' })))
         .pipe(gulpif(production, cleanCSS()))
 
         .pipe(maps.write('./'))
@@ -125,7 +127,7 @@ export function icons() {
         }))
         .pipe(svgstore({ inlineSvg: true }))
         .pipe(gulp.dest(dest.assets))
-};
+}
 
 
 //////////////////////////////////
@@ -135,7 +137,7 @@ export function readme() {
     return new Promise(resolve => {
 
         if( exists('README.md') ) {
-            gutil.log('README.md already exists.'.red)
+            gutil.log('README.md already exists. Delete manually.'.red)
             resolve()
         }
         else {
@@ -154,15 +156,6 @@ export function readme() {
                 gutil.log('README.md created.'.green)
             })
         }
-    });
-}
-
-
-////////////////////////////////
-// THEME CONFIG
-export function theme() {
-    return new Promise(res => {
-        fs.writeFile('build/style.css', templateTheme, () => res());
     })
 }
 
@@ -178,8 +171,8 @@ export function copy() {
 
 
 ////////////////////////////////
-// MIN HTML + INJECT
-export function html() {
+// INJECT
+export function inject() {
 
     let styles   = gulp.src(`${dest.scss}/main.*.css`,  { read: false }),
         manifest = gulp.src(`${dest.js}/manifest.*.js`, { read: false }),
@@ -188,13 +181,6 @@ export function html() {
 
     return gulp.src(`${DEST_ROOT}/**/*.html`)
         .pipe(inject(series(styles, manifest, vendor, scripts), { relative: true }))
-        .pipe(htmlmin({
-            collapseWhitespace: true,
-            removeAttributeQuotes: true,
-            removeStyleLinkTypeAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeComments: true
-        }))
         .pipe(gulp.dest(DEST_ROOT))
 }
 
@@ -203,15 +189,15 @@ export function html() {
 // CLEAN
 // * no rm -r since it'll delete 'build' when running specific gulp tasks
 // * cleaning hashes via 'rm -r', otherwise it would delete js folder after Webpack
-export function cleanBuild() { return DEL(DEST_ROOT) }
+export function cleanDev()  { return DEL(DEST_ROOT) }
+export function cleanProd() { return DEL([dest.js, dest.scss]) }
 
 
 ////////////////////////////////////////////////////////
 //// GULP TASKS
-export const dev   =  wp ? gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), theme, server )
-                         : gulp.series( cleanBuild, gulp.parallel(copy, styles, icons), server )
+export const dev = gulp.series( cleanDev, gulp.parallel(copy, styles, icons), server )
 
-export const build = app ? gulp.series( styles, html )
-                         : gulp.series( styles )
+export const build = hash ? gulp.series( cleanProd, styles, inject )
+                          : gulp.series( styles )
 
 export default dev

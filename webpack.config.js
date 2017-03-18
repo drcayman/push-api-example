@@ -5,13 +5,12 @@ const merge           = require('webpack-merge');
 const NotifierPlugin  = require('webpack-notifier')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
-const config = require('./project.config')
-const ENV    = process.env.NODE_ENV
+const config     = require('./project.config')
+const production = (process.env.NODE_ENV === 'production')
 
 let src  = config.src,
     dest = config.dest,
-    app  = config.app,
-    wp   = config.wp
+    app  = config.app
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -25,7 +24,6 @@ let commonDev = {
         filename: '[name].js',
         chunkFilename: '[name].js',
         path: path.join(__dirname, dest.js),
-        publicPath: '/js/'
     },
 
     resolve: {
@@ -78,7 +76,7 @@ let commonDev = {
 
 ////////////////////////////////
 
-if( wp || app ) {
+if( hash || app ) {
     commonDev.plugins.push(
         new webpack.optimize.CommonsChunkPlugin({
             name: 'manifest',
@@ -90,7 +88,7 @@ if( wp || app ) {
 
 ////////////////////////////////
 
-if( app && ENV !== 'production' ) {
+if( app && !production ) {
     module.exports = merge(commonDev, {
 
         entry: {
@@ -102,14 +100,14 @@ if( app && ENV !== 'production' ) {
 
     })
 }
-else if( ENV !== 'production' ) module.exports = commonDev
+else if( !production ) module.exports = commonDev
 
 
 
 ////////////////////////////////////////////////////////////////
 // PRODUCTION
 let output =
-    wp || app ? {
+    hash ? {
         filename: '[name].[chunkhash:3].js',
         chunkFilename: '[name].[chunkhash:3].js',
         path: path.join(__dirname, dest.js),
@@ -138,6 +136,6 @@ const commonProduction = {
 
 ////////////////////////////////
 
-if( ENV === 'production' ) {
+if( production ) {
     module.exports = merge(commonDev, commonProduction)
 }
