@@ -10,7 +10,8 @@ const production = (process.env.NODE_ENV === 'production')
 
 let src  = config.src,
     dest = config.dest,
-    app  = config.app
+    app  = config.app,
+    hash = config.hash
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT

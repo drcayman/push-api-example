@@ -13,18 +13,15 @@ import gulp      from 'gulp';				import sass	    from 'gulp-sass'
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps'
 import prefixer  from 'gulp-autoprefixer';  import cleanCSS from 'gulp-clean-css'
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin'
-import gulpif    from 'gulp-if'
+import hashing   from 'gulp-hash';          import gulpif    from 'gulp-if'
 import changed   from 'gulp-changed';       import gutil    from 'gulp-util'
 
 //////////////////////////////////
-
 if( app )
     var wpHotMW = require('webpack-hot-middleware'),
-        series  = require('stream-series')
-
-if( hash )
-    var hashing = require('gulp-hash'),
+        series  = require('stream-series'),
         inject  = require('gulp-inject')
+
 
 //////////////////////////////////
 
