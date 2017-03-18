@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////
 const app  = false     // Add specfic dependencies + hot reload
-const hash = false 	   // Add hash to file name: main.e4d.js
+const hash = true 	   // Add hash to file name: main.e4d.js
 const proxyURL = false // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
