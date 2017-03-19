@@ -29,8 +29,6 @@
 }
 
 .col {
-    //flex-basis: 0;
-    //flex-grow: 1;
     flex: 1 0 0;
     max-width: 100%;
 }
@@ -39,8 +37,6 @@
     flex: 0 0 auto;
     width: auto;
 }
-
-
 
 [class^="col-"] {
     position: relative;
