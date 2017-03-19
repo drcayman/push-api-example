@@ -20,15 +20,20 @@ $grid-gutter:      30px;
 // MAX WIDTH
 $tiny:             543px; // 320 - 543 (small phones)
 $xs:               767px; // 544 - 767 (tablet, landscape)
-$sm:               961px; // 769 - 991 (tablet, portrait)
+$sm:               991px; // 769 - 991 (tablet, portrait)
 $md:               1199px; // 992 - 1199 (notebook, desktop)
 
 // MIN WIDTH
 $xs-up:            544px; // 544 - 767
 $sm-up:            768px; // 768 - 991
-$md-up:            962px; // 992 - 1199
+$md-up:            992px; // 992 - 1199
 $lg-up:            1200px; // 1200+
 
+$breakpoints: (
+    xs: $xs-up,
+    sm: $sm-up,
+    md: $md-up
+);
 
 // STATIC MISC
 ///////////////////////////////

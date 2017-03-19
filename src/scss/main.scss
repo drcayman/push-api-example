@@ -3,14 +3,19 @@
 // TOOLS
     'tools/variables',
     'tools/mixins',
-    'tools/normalize',
-    'tools/base',
+    //'tools/normalize',
+    //'tools/base',
 
 // LAYOUT
-    'layout/grid',
-    'layout/header',
-    'layout/footer',
-    'layout/helpers',
+    'layout/grid';
+//     'layout/header',
+//     'layout/footer',
+//     'layout/helpers',
+//
+// // MODULES
+//     'modules/nav';
 
-// MODULES
-    'modules/nav';
+
+.col, [class^="col-"] {
+    background: $gray-lighter;
+}

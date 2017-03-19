@@ -1,73 +1,87 @@
 
-
-
-section + section { margin-top: 5vw; }
 .container {
+    position: relative;
     padding-right: $grid-gutter / 2;
     padding-left: $grid-gutter / 2;
-    margin-right: auto;
     margin-left: auto;
+    margin-right: auto;
 
-    @media(min-width: $sm-up) { max-width: 100%; }
-    @media(min-width: $md-up) { max-width: 940px; }
+    @media( min-width: $sm-up ) { max-width: 100%; }
+    @media( min-width: $md-up ) { max-width: 960px; }
 }
 
 .row {
-    @include clear;
-
-    margin-right: $grid-gutter / -2;
+    display: flex;
+    flex-wrap: wrap;
     margin-left: $grid-gutter / -2;
+    margin-right: $grid-gutter / -2;
+}
+
+.no-gutters {
+    margin-left: 0;
+    margin-right: 0;
+
+    & > .col,
+    & > [class^="col-"] {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 .col {
+    //flex-basis: 0;
+    //flex-grow: 1;
+    flex: 1 0 0;
+    max-width: 100%;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+
+
+[class^="col-"] {
     position: relative;
+    width: 100%;
     min-height: 1px;
-    padding-right: $grid-gutter / 2;
     padding-left: $grid-gutter / 2;
+    padding-right: $grid-gutter / 2;
 }
 
 
-// XS
-//////////////////////////////////////
-@media(min-width: $xs-up) {
-    [class*='xs-'] { float: left; }
-    .xs-6 { width: (100% / $grid-columns) * 6; }
-    .xs-4 { width: (100% / $grid-columns) * 4; }
-    .xs-3 { width: (100% / $grid-columns) * 3; }
-}
-
-
-// SM
-//////////////////////////////////////
-@media(min-width: $sm-up) {
-    [class*='sm-'] { float: left; }
-    .sm-6 { width: (100% / $grid-columns) * 6; }
-    .sm-4 { width: (100% / $grid-columns) * 4; }
-    .sm-3 { width: (100% / $grid-columns) * 3; }
-}
-
-// MD
-//////////////////////////////////////
-@media(min-width: $md-up) {
-    [class*='md-'] { float: left; }
-    .md-6 { width: (100% / $grid-columns) * 6; }
-    .md-4 { width: (100% / $grid-columns) * 4; }
-    .md-3 { width: (100% / $grid-columns) * 3; }
-}
-
-// LG
-//////////////////////////////////////
-@if $large-container {
-
-    .container {
-        @media(min-width: $lg-up) { max-width: 1140px; }
+@mixin fullWidth($breakpoint) {
+    .col-#{$breakpoint} {
+        flex: 1 0 0;
+        max-width: 100%;
     }
+}
 
-    @media(min-width: $lg) {
-        [class*='lg-'] { float: left; }
-        .lg-6 { width: (100% / $grid-columns) * 6; }
-        .lg-4 { width: (100% / $grid-columns) * 4; }
-        .lg-3 { width: (100% / $grid-columns) * 3; }
+@mixin autoWidth($breakpoint) {
+    .col-#{$breakpoint}-auto {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
+@mixin columnLoop($class) {
+    @for $i from 1 through $grid-columns {
+        .#{$class}-#{$i} {
+            flex: 0 0 (100% / $grid-columns * $i);
+            max-width: 100% / $grid-columns * $i;
+        }
+    }
+}
+
+@include columnLoop(col);
+
+@each $breakpoint in $breakpoints {
+
+    @media(min-width: #{nth($breakpoint, 2)}) {
+        @include fullWidth(#{nth($breakpoint, 1)});
+        @include autoWidth(#{nth($breakpoint, 1)});
+        @include columnLoop(#{nth($breakpoint, 1)});
     }
 
 }
