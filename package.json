@@ -1,6 +1,6 @@
 {
   "name": "boilerplate",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Personal Boilerplate",
   "scripts": {
     "dev": "gulp",
@@ -20,7 +20,9 @@
   "dependencies": {
     "dynamic-polyfill": "^1.0.0",
     "jquery": "^3.2.0",
-    "svg4everybody": "^2.1.7"
+    "svg4everybody": "^2.1.7",
+    "vue": "^2.2.4",
+    "vue-router": "^2.3.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.0",
@@ -42,11 +44,17 @@
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "gulp-util": "^3.0.7",
+    "loader-utils": "^1.1.0",
     "node-sass": "^4.5.0",
     "prompt": "^1.0.0",
     "stream-series": "^0.1.1",
+    "vue-hot-reload-api": "^2.0.11",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^11.1.4",
+    "vue-template-compiler": "^2.2.4",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.1",
+    "webpack-hot-middleware": "^2.17.1",
     "webpack-merge": "^4.1.0",
     "webpack-notifier": "^1.4.1",
     "write-file-webpack-plugin": "^4.0.0"

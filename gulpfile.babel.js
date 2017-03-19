@@ -104,10 +104,11 @@ export function styles() {
 
     if( production )
         stylesTask = stylesTask.pipe(purify([
-            `${dest.js}/**/*.js`,
-            `${DEST_ROOT}/**/*.html`,
-            `${DEST_ROOT}/**/*.php`,
-            `${SRC_ROOT}/**/*.blade.php` // Laravel Views only in SRC
+            `${src.js}/**/*.vue`,
+            `${src.js}/**/*.js`,
+            `${SRC_ROOT}/**/*.html`,
+            `${SRC_ROOT}/**/*.php`,
+            `${SRC_ROOT}/views/**/*.blade.php`
         ], { minify: true }))
 
     if( production && hash )

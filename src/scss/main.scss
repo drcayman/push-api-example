@@ -1,24 +1,16 @@
 @import
 
 // TOOLS
-    'tools/variables',
-    'tools/mixins',
-    //'tools/normalize',
-    //'tools/base',
+'tools/variables',
+'tools/mixins',
+'tools/normalize',
+'tools/base',
 
 // LAYOUT
-    'layout/grid';
-//     'layout/header',
-//     'layout/footer',
-//     'layout/helpers',
-//
-// // MODULES
-//     'modules/nav';
+'layout/grid',
+'layout/header',
+'layout/footer',
+'layout/helpers',
 
-
-
-
-
-.col, [class^="col-"] {
-    background: $gray-lighter;
-}
+// MODULES
+'modules/nav';
