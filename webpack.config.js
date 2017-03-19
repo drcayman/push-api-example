@@ -1,7 +1,9 @@
+const fs              = require('fs')
 const path            = require('path')
+const del             = require('del')
 const webpack         = require('webpack')
 const process         = require('process')
-const merge           = require('webpack-merge');
+const merge           = require('webpack-merge')
 const NotifierPlugin  = require('webpack-notifier')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
@@ -12,6 +14,8 @@ let src  = config.src,
     dest = config.dest,
     app  = config.app,
     hash = config.hash
+
+if( production && hash ) del(dest.js) // to overwrite hashes
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -77,18 +81,6 @@ let commonDev = {
 
 ////////////////////////////////
 
-if( hash || app ) {
-    commonDev.plugins.push(
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'manifest',
-            chunks: ['vendor']
-        })
-    )
-}
-
-
-////////////////////////////////
-
 if( app && !production ) {
     module.exports = merge(commonDev, {
 
@@ -110,7 +102,6 @@ else if( !production ) module.exports = commonDev
 let output =
     hash ? {
         filename: '[name].[chunkhash:3].js',
-        chunkFilename: '[name].[chunkhash:3].js',
         path: path.join(__dirname, dest.js),
     }
     : {
@@ -127,11 +118,14 @@ const commonProduction = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"production"'
         }),
+
         new webpack.optimize.UglifyJsPlugin({
-            drop_console: true,
-            compress: { warnings: false },
+            compress: {
+                drop_console: true,
+                warnings: false
+            },
             sourceMap: true
-        })
+         })
     ]
 }
 

@@ -10,10 +10,12 @@ Polyfill({
     options: ['gated'],
     afterFill() {
         main()
+
+
     }
 })
 
-
+console.log('hit');
 function main() {
 
     Nav()

@@ -17,7 +17,7 @@ function enqueue_files() {
 	$gmap = $gmapAPI ? 'gmap' : null;
 
 	$deps = array('vendor', $gmap);
-	
+
 
 ////////////////////////////////////////////////////////
 /// CSS
@@ -50,14 +50,11 @@ function enqueue_files() {
 
 			switch($name) {
 
-				case 'vendor':
-					$deps = array('manifest'); 	break;
-
 				case 'main':
-					$deps; 						break;
+					$deps; 			break;
 
 				default:
-					$deps = null; 				break;
+					$deps = null; 	break;
 
 			}
 

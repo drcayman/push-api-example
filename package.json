@@ -4,9 +4,9 @@
   "description": "Personal Boilerplate",
   "scripts": {
     "dev": "gulp",
-    "build": "NODE_ENV=production gulp build && webpack -p --progress",
-    "css": "NODE_ENV=production gulp build",
-    "js": "NODE_ENV=production webpack -p --progress"
+    "build": "NODE_ENV=production webpack -p --progress && gulp build && gulp inject",
+    "css": "NODE_ENV=production gulp css && gulp inject",
+    "js": "NODE_ENV=production webpack -p --progress && gulp inject"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "browser-sync": "^2.18.8",
     "browser-sync-webpack-plugin": "^1.1.4",
     "del": "^2.2.0",
+    "group-array": "^0.3.2",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-changed": "^2.0.0",
@@ -36,6 +37,7 @@
     "gulp-hash": "^4.1.0",
     "gulp-inject": "^4.2.0",
     "gulp-notify": "^3.0.0",
+    "gulp-purifycss": "^0.2.0",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-svgmin": "^1.2.2",
