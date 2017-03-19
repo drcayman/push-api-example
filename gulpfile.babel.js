@@ -1,6 +1,6 @@
 'use strict';
 
-import { src, dest, laravel, hash, SRC_ROOT, DEST_ROOT, proxyURL, app, templateReadme } from './project.config'
+import { src, dest, hash, SRC_ROOT, DEST_ROOT, proxyURL, app, templateReadme } from './project.config'
 
 import fs        from 'fs';                 import colors   from 'colors'
 import path      from 'path';               import del      from 'del'

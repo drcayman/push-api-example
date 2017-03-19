@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////
 const app  = false     // Add specfic dependencies + hot reload
 const hash = true 	   // Add hash to file name: main.e4d.js
-const laravel  = false  // Inject hashed files into views
 const proxyURL = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
@@ -60,5 +59,6 @@ _${res.url}_
 
 
 module.exports = {
-	app, hash, laravel, proxyURL, templateReadme, src, dest, SRC_ROOT, DEST_ROOT
+	app, hash, proxyURL, templateReadme,
+	src, dest, SRC_ROOT, DEST_ROOT
 }
