@@ -7,8 +7,8 @@
     padding-left: $grid-gutter / 2;
 
     @media(min-width: $sm-up) { width: 100%; }
-    @media(min-width: $md-up) { width: 720px; max-width: 100%; }
-    @media(min-width: $lg-up) { width: 960px; max-width: 100%; }
+    @media(min-width: $md-up - $grid-gutter) { width: 750px; max-width: 100%; } // smooth transition between px and 100%
+    @media(min-width: $lg-up - $grid-gutter / 2) { width: 960px; max-width: 100%; }
 }
 
 .row {
@@ -16,17 +16,6 @@
     flex-wrap: wrap;
     margin-left: $grid-gutter / -2;
     margin-right: $grid-gutter / -2;
-}
-
-.no-gutters {
-    margin-left: 0;
-    margin-right: 0;
-
-    & > .col,
-    & > [class^="col-"] {
-        padding-left: 0;
-        padding-right: 0;
-    }
 }
 
 .col,
@@ -38,22 +27,46 @@
     padding-right: $grid-gutter / 2;
 }
 
+
+////////////
+// GUTTERS
+.no-gutters {
+    margin-left: 0;
+    margin-right: 0;
+
+    > .col,
+    > [class^="col-"] {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+// @media(max-width: $xs) {
+//     @include verticalGutter;
+// }
+
+
 ////////////
 // XS-UP
 @include fullWidthColumn;
 @include autoWidthColumn;
 
+
 @include column(4);
+@include column(6);
+@include column(12);
 
 
 ////////////
 // SM-UP
 @media(min-width: $sm-up) {
-
+    
     @include fullWidthColumn(sm);
     @include autoWidthColumn(sm);
 
     @include column(4, sm);
+    @include column(8, sm);
+    @include column(12, sm);
 }
 
 ////////////
@@ -64,6 +77,8 @@
     @include autoWidthColumn(md);
 
     @include column(4, md);
+    @include column(6, md);
+    @include column(12, md);
 }
 
 ////////////
@@ -74,4 +89,6 @@
     @include autoWidthColumn(lg);
 
     @include column(4, lg);
+    @include column(6, lg);
+    @include column(12, lg);
 }

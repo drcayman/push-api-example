@@ -3,18 +3,21 @@
 .align-center { align-items: center; }
 .align-bottom { align-items: flex-end; }
 
+.align-self-center { align-self: center; }
+
 .justify-center  { justify-content: center; }
 .justify-around  { justify-content: space-around; }
 .justify-between { justify-content: space-between; }
 .justify-start   { justify-content: flex-start; }
 .justify-end     { justify-content: flex-end; }
 
+.mx-auto { margin-left: auto; margin-right: auto; }
+
 .order-first { order: -1; }
 .order-last  { order: 1; }
 
 
-
 ////////////
-// REORDERING (Media Query not included)
+// REORDERING (use min-width MQ)
 // (type, i, breakpoint: null)
-@include reorder(push, 4, sm)
+@include reorder(push, 4, sm);

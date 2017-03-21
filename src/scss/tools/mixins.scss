@@ -35,7 +35,7 @@
 }
 
 ////////////
-// .col-{breakpoint}
+// .col{-breakpoint}
 @mixin fullWidthColumn($breakpoint: null) {
 
     .col#{infix($breakpoint)} {
@@ -45,7 +45,7 @@
 }
 
 ////////////
-// .col-{breakpoint}-auto
+// .col{-breakpoint}-auto
 @mixin autoWidthColumn($breakpoint: null) {
 
     .col#{infix($breakpoint)}-auto {
@@ -55,7 +55,7 @@
 }
 
 ////////////
-// .col-{i}
+// .col{-i}
 @mixin column($i, $breakpoint: null) {
 
     .col#{infix($breakpoint)}-#{$i} {
@@ -65,7 +65,21 @@
 }
 
 ////////////
-// .{type}-{breakpoint}-{i}
+// .y{-breakpoint}-gutter
+@mixin verticalGutter($breakpoint: null) {
+
+    .y#{infix($breakpoint)}-gutter > .col,
+    .y#{infix($breakpoint)}-gutter > [class^="col-"] {
+        + .col,
+        + [class^="col-"] {
+            margin-top: $grid-gutter / 2;
+        }
+    }
+
+}
+
+////////////
+// .{type}{-breakpoint}-{i}
 @mixin reorder($type, $i, $breakpoint: null) {
 
     $attribute: null;
