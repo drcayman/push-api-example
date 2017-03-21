@@ -44,8 +44,7 @@
 
 <main id="content"> <!-- content -->
 
-    <p>Text!!</p>
-    <router-view></router-view>
+    
 
 </main> <!-- end content -->
 

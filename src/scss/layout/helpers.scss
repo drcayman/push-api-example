@@ -1,35 +1,22 @@
 // FLEX ALIGNMENT
-.align-top { align-items: flex-start;; }
+.align-top    { align-items: flex-start; }
 .align-center { align-items: center; }
-.align-bottom { align-items: flex-end;; }
+.align-bottom { align-items: flex-end; }
 
-.justify-center { justify-content: center; }
-.justify-around { justify-content: space-around; }
+.justify-center  { justify-content: center; }
+.justify-around  { justify-content: space-around; }
 .justify-between { justify-content: space-between; }
-.justify-start { justify-content: flex-start; }
-.justify-end { justify-content: flex-end; }
+.justify-start   { justify-content: flex-start; }
+.justify-end     { justify-content: flex-end; }
 
 .order-first { order: -1; }
-.order-last { order: 1; }
+.order-last  { order: 1; }
 
 
-// PULL
-@for $i from 1 through $grid-columns {
-    .pull-#{$i} {
-        right: 100% / $grid-columns * $i;
-    }
-}
 
-// PUSH
-@for $i from 1 through $grid-columns {
-    .push-#{$i} {
-        left: 100% / $grid-columns * $i;
-    }
-}
+// PULL / PUSH / OFFSET
+.pull-4 { right: 100% / $grid-columns * 4; }
 
-// OFFSET
-@for $i from 1 through $grid-columns {
-    .offset-#{$i} {
-        margin-left: 100% / $grid-columns * $i;
-    }
-}
+.push-4 { left: 100% / $grid-columns * 4; }
+
+.offset-4 { margin-left: 100% / $grid-columns * 4; }

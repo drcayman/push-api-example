@@ -2,8 +2,6 @@
 
 show_admin_bar(false); // DISABLE ADMIN BAR
 
-define('DISALLOW_FILE_EDIT', true); // REMOVE EDITABLE PHP FILES IN ADMIN AREA
-
 // DISABLE EMAIL AFTER SUCCESSFUL UPDATE
 function disable_update_emails( $send, $type, $core_update, $result ) {
     if( !empty( $type ) && $type == 'success' ) {
@@ -67,7 +65,7 @@ add_action('widgets_init', 'remove_recent_comments_style');
 // add_filter('script_loader_tag', 'clean_script_tag');
 
 
-// REMOVE WP UPDATE NOTIFICATION
+// REMOVE WP UPDATE NOTIFICATION FOR NON ADMINS
 function remove_core_updates() {
     if( !current_user_can('update_core') ) {
         return;

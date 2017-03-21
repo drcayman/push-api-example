@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
 
 	<meta charset="utf-8">
 
 	<meta name="viewport"     content="width=device-width, initial-scale=1.0, user-scalable=no">
-	<meta name="description"  content="__DESCRIPTION__">
+	<meta name="description"  content="<?php bloginfo('description') ?>">
 <!-- <meta name="author" 	  content="ArtOfMySelf | Pascal Klau | www.artofmyself.com"> -->
 
-	<title>__TITLE__</title>
+	<title><?php bloginfo('name') ?></title>
 
 	<!-- Social Media -->
 	<meta property="og:title" content="__TITLE__">
