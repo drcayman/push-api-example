@@ -19,6 +19,7 @@ For WordPress create `style.css` in root.
 ### VueJS
 **Set app variable in project.config to true.**  
 Add app dependencies with `installAppDependencies`.
+Add hash dependencies with `installHashDependencies` (runs automatically when WordPress project).
 
 * Live Reloading
 * Hot Module Reloading  
