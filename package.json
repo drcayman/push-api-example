@@ -1,6 +1,6 @@
 {
   "name": "boilerplate",
-  "version": "2.4.0",
+  "version": "2.3.0",
   "description": "Personal Boilerplate",
   "scripts": {
     "dev": "gulp",
@@ -8,7 +8,7 @@
     "css": "NODE_ENV=production gulp css && gulp inject",
     "js": "NODE_ENV=production webpack -p --progress && gulp inject"
   },
-  "license": "MIT",
+  "license" : "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/pascalaoms/boilerplate.git"
