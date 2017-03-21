@@ -84,7 +84,7 @@ export function server() {
 
 
     // Watch Laravel Views
-    gulp.watch(`${SRC_ROOT}/views/**/*.blade.php`, copy).on('change', () => browser.reload())
+    gulp.watch(`${SRC_ROOT}/views/**/*.blade.php`).on('change', () => browser.reload())
 
 }
 
