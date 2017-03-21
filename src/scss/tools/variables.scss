@@ -18,22 +18,17 @@ $grid-columns:     12;
 $grid-gutter:      30px;
 
 // MAX WIDTH
-$tiny:             543px; // 320 - 543 (small phones)
-$xs:               767px; // 544 - 767 (tablet, landscape)
-$sm:               991px; // 769 - 991 (tablet, portrait)
-$md:               1199px; // 992 - 1199 (notebook, desktop)
+$xs:               575px; // 320 - 575 (small phones)
+$sm:               767px; // 767 - 990 (tablet, landscape)
+$md:               991px; // 769 - 991 (tablet, portrait)
+$lg:              1199px; // 992 - 1199 (notebook, desktop)
 
 // MIN WIDTH
-$xs-up:            544px; // 544 - 767
-$sm-up:            768px; // 768 - 991
-$md-up:            992px; // 992 - 1199
-$lg-up:            1200px; // 1200+
+$sm-up:            576px; // 576 - 767
+$md-up:            768px; // 768 - 991
+$lg-up:            992px; // 992 - 1199
+$xl-up:           1200px; // 1200+
 
-$breakpoints: (
-    xs: $xs-up,
-    sm: $sm-up,
-    md: $md-up
-);
 
 // STATIC MISC
 ///////////////////////////////

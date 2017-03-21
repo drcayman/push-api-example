@@ -1,3 +1,4 @@
+////////////
 // CLEARFIX
 @mixin clear() {
     &::after {
@@ -8,7 +9,7 @@
 }
 
 
-
+////////////
 // FONT FACE
 @mixin font-face($name, $weight: 400, $style: normal) {
     $filepath: "../assets/fonts/" + $name;
@@ -25,25 +26,67 @@
 
 }
 
+////////////////////////
 // LAYOUT MIXINS
-/////////////////////////////
-// DECLARE SPECIAL CLASS
-// .pull-4 { @include pull(4); }
-//
-@mixin pull($column-number) {
-
-    right: ($column-number / 12) * 100%;
-
+////////////
+// SET INFIX
+@function infix($breakpoint) {
+    @return if($breakpoint == null, "", "-#{$breakpoint}");
 }
-////
-@mixin push($breakpoint-acronym, $column-number) {
 
-        left: ($column-number / 12) * 100%;
+////////////
+// .col-{breakpoint}
+@mixin fullWidthColumn($breakpoint: null) {
 
+    .col#{infix($breakpoint)} {
+        flex: 1 0 0;
+        max-width: 100%;
+    }
 }
-////
-@mixin offset($breakpoint-acronym, $column-number) {
 
-        margin-left: ($column-number / 12) * 100%;
+////////////
+// .col-{breakpoint}-auto
+@mixin autoWidthColumn($breakpoint: null) {
 
+    .col#{infix($breakpoint)}-auto {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
+////////////
+// .col-{i}
+@mixin column($i, $breakpoint: null) {
+
+    .col#{infix($breakpoint)}-#{$i} {
+        flex: 0 0 (100% / $grid-columns * $i);
+        max-width: 100% / $grid-columns * $i;
+    }
+}
+
+////////////
+// .{type}-{breakpoint}-{i}
+@mixin reorder($type, $i, $breakpoint: null) {
+
+    $attribute: null;
+
+    @if $type == "pull" {
+        $attribute: "right";
+
+    } @else if $type == "push" {
+        $attribute: "left";
+
+    } @else if $type == "offset" {
+        $attribute: "margin-left";
+
+    } @else {
+        @error "Invalid type. Use push, pull or offset."
+    }
+
+
+    .#{$type}#{infix($breakpoint)}-#{$i} {
+
+        #{$attribute}: 100% / $grid-columns * $i;
+
+    }
 }

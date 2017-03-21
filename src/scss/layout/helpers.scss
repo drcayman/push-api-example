@@ -14,9 +14,7 @@
 
 
 
-// PULL / PUSH / OFFSET
-.pull-4 { right: 100% / $grid-columns * 4; }
-
-.push-4 { left: 100% / $grid-columns * 4; }
-
-.offset-4 { margin-left: 100% / $grid-columns * 4; }
+////////////
+// REORDERING (Media Query not included)
+// (type, i, breakpoint: null)
+@include reorder(push, 4, sm)

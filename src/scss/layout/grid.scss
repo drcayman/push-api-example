@@ -1,13 +1,14 @@
-
-.container {
+.container,
+.container-fluid {
     position: relative;
-    padding-right: $grid-gutter / 2;
-    padding-left: $grid-gutter / 2;
     margin-left: auto;
     margin-right: auto;
+    padding-right: $grid-gutter / 2;
+    padding-left: $grid-gutter / 2;
 
-    @media( min-width: $sm-up ) { max-width: 100%; }
-    @media( min-width: $md-up ) { max-width: 960px; }
+    @media(min-width: $sm-up) { width: 100%; }
+    @media(min-width: $md-up) { width: 720px; max-width: 100%; }
+    @media(min-width: $lg-up) { width: 960px; max-width: 100%; }
 }
 
 .row {
@@ -28,16 +29,7 @@
     }
 }
 
-.col {
-    flex: 1 0 0;
-    max-width: 100%;
-}
-
-.col-auto {
-    flex: 0 0 auto;
-    width: auto;
-}
-
+.col,
 [class^="col-"] {
     position: relative;
     width: 100%;
@@ -46,38 +38,40 @@
     padding-right: $grid-gutter / 2;
 }
 
+////////////
+// XS-UP
+@include fullWidthColumn;
+@include autoWidthColumn;
 
-@mixin fullWidth($breakpoint) {
-    .col-#{$breakpoint} {
-        flex: 1 0 0;
-        max-width: 100%;
-    }
+@include column(4);
+
+
+////////////
+// SM-UP
+@media(min-width: $sm-up) {
+
+    @include fullWidthColumn(sm);
+    @include autoWidthColumn(sm);
+
+    @include column(4, sm);
 }
 
-@mixin autoWidth($breakpoint) {
-    .col-#{$breakpoint}-auto {
-        flex: 0 0 auto;
-        width: auto;
-    }
+////////////
+// MD-UP
+@media(min-width: $md-up) {
+
+    @include fullWidthColumn(md);
+    @include autoWidthColumn(md);
+
+    @include column(4, md);
 }
 
-@mixin columnLoop($class) {
-    @for $i from 1 through $grid-columns {
-        .#{$class}-#{$i} {
-            flex: 0 0 (100% / $grid-columns * $i);
-            max-width: 100% / $grid-columns * $i;
-        }
-    }
-}
+////////////
+// LG-UP
+@media(min-width: $lg-up) {
 
-@include columnLoop(col);
+    @include fullWidthColumn(lg);
+    @include autoWidthColumn(lg);
 
-@each $breakpoint in $breakpoints {
-
-    @media(min-width: #{nth($breakpoint, 2)}) {
-        @include fullWidth(#{nth($breakpoint, 1)});
-        @include autoWidth(#{nth($breakpoint, 1)});
-        @include columnLoop(#{nth($breakpoint, 1)});
-    }
-
+    @include column(4, lg);
 }
