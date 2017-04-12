@@ -1,5 +1,5 @@
 const fs       = require('fs')
-const prompt   = require('prompt')
+const http     = require('request')
 const exists   = require('fs-exists-sync')
 const colors   = require('colors')
 const inquirer = require('inquirer')
@@ -90,7 +90,7 @@ let questions = [
 	    type: 'editor',
 	    name: 'notes',
 	    message: 'Write your notes.'
-	 }
+	}
 ]
 
 inquirer.prompt(questions)
@@ -103,12 +103,18 @@ inquirer.prompt(questions)
 
 		res.created_by = user
 
-		console.log(res);
-
-		return fs.writeFile('./README.md', templateReadme(res), () => {
+		fs.writeFile('./README.md', templateReadme(res), () => {
 			console.log('README.md created.'.green)
 			console.log('Open to write notes.'.yellow)
-		});
+		})
+
+
+		uploadToDroplet(res)		
+
 
 	})
 	.catch(err => console.log(err))
+
+function uploadToDroplet(res) {
+	//http.post('https://droplet.artofmyself.com', res)
+}
