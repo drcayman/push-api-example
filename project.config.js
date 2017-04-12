@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
-const app  = false     // Add specfic dependencies + hot reload
-const hash = false 	   // Add hash to file name: main.e4d.js
-const proxyURL = false // false || MAMP/Valet DNS
+const app   = false     // add specfic dependencies + HMR
+const hash  = false 	// add hash to file name: main.e4d.js
+const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
 // PATHS
@@ -26,39 +26,8 @@ const DEST_ROOT = 'build',
 	favicons: DEST_ROOT + '/assets/favicons'
 }
 
-////////////////////////////////////////////////////////////////
-// README
-const templateReadme = res => {
-
-	let today = new Date(),
-			d = today.getDate(),
-			m = today.getMonth() + 1,
-			y = today.getFullYear();
-
-	if( d < 10 ) d = '0' + d
-	if( m < 10 ) m = '0' + m
-
-	today = `${d}.${m}.${y}`
-
-	return `
-### ${res.project}
-_${res.url}_
-- - - -
-
-> **Gestartet von:** ${res.author}\x20\x20
-> **Angelegt am:** ${today}\x20\x20
-> **URL:** ${res.url}\x20\x20
-> **Server:** ${res.server}\x20\x20
-> **CMS:** ${res.cms}\x20\x20
-
-**Notizen:**
-* Have a nice day!`
-
-}
-
-
 
 module.exports = {
-	app, hash, proxyURL, templateReadme,
+	app, hash, proxy,
 	src, dest, SRC_ROOT, DEST_ROOT
 }

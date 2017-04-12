@@ -6,37 +6,43 @@
     "dev": "gulp",
     "build": "NODE_ENV=production webpack -p --progress && gulp build && gulp inject",
     "css": "NODE_ENV=production gulp css && gulp inject",
-    "js": "NODE_ENV=production webpack -p --progress && gulp inject"
+    "js": "NODE_ENV=production webpack -p --progress && gulp inject",
+    "readme": "node config/readme.js"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/pascalaoms/boilerplate.git"
   },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
   "dependencies": {
     "dynamic-polyfill": "^1.0.0",
-    "jquery": "^3.2.0",
+    "jquery": "^3.2.1",
     "svg4everybody": "^2.1.7"
   },
   "devDependencies": {
-    "babel-core": "^6.24.0",
-    "babel-loader": "^6.3.2",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2105": "^0.0.0",
     "browser-sync": "^2.18.8",
-    "browser-sync-webpack-plugin": "^1.1.4",
     "del": "^2.2.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-changed": "^2.0.0",
     "gulp-notify": "^3.0.0",
     "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.4.1",
+    "gulp-sourcemaps": "^2.6.0",
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
-    "gulp-util": "^3.0.7",
-    "node-sass": "^4.5.0",
+    "inquirer": "^3.0.6",
+    "node-sass": "^4.5.2",
     "prompt": "^1.0.0",
-    "webpack": "^2.2.1",
+    "webpack": "^2.3.3",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-merge": "^4.1.0",
     "webpack-notifier": "^1.4.1",

@@ -1,29 +1,19 @@
 'use strict';
 
-import { src, dest, hash, SRC_ROOT, DEST_ROOT, proxyURL, app, templateReadme } from './project.config'
+import { src, dest, hash, SRC_ROOT, DEST_ROOT, proxy, app } from './project.config'
 
-import fs        from 'fs';                 import colors   from 'colors'
+import fs        from 'fs';
 import path      from 'path';               import del      from 'del'
-import exists    from 'fs-exists-sync';     import process  from 'process'
-import Browser   from 'browser-sync';       import prompt   from 'prompt'
+import process  from 'process'
+import Browser   from 'browser-sync';
 import webpack   from 'webpack';            import wpConfig from './webpack.config'
 import wpDevMW   from 'webpack-dev-middleware'
 
 import gulp      from 'gulp';				import sass	    from 'gulp-sass'
 import notify    from 'gulp-notify';        import maps     from 'gulp-sourcemaps'
-import prefixer  from 'gulp-autoprefixer';  import gutil    from 'gulp-util'
+import prefixer  from 'gulp-autoprefixer';
 import svgstore  from 'gulp-svgstore';      import svgmin   from 'gulp-svgmin'
 import changed   from 'gulp-changed'
-
-//////////////////////////////////
-if( app )
-    var wpHotMW = require('webpack-hot-middleware')
-
-if( hash )
-    var series  = require('stream-series'),
-        inject  = require('gulp-inject'),
-        hashing = require('gulp-hash')
-
 
 //////////////////////////////////
 
@@ -39,49 +29,43 @@ const miscGlob   = [
     `!${SRC_ROOT}/lang`,  `!${SRC_ROOT}/lang/**`,  // Laravel
 ]
 
+//////////////////////////////////
+
+if( app )
+    var wpHotMW = require('webpack-hot-middleware'),
+        series  = require('stream-series'),
+        inject  = require('gulp-inject')
+
+if( hash ) var hashing = require('gulp-hash')
+
+//////////////////////////////////
+// DELETE OLD FILES
 export const DEL = path => del(path)
 
 //////////////////////////////////
 // SERVER
 export function server() {
 
-    let middleware = [
-        wpDevMW(bundler, {
-            publicPath: wpConfig.output.publicPath,
-            stats: "errors-only"
-        })
-    ]
+    let middleware = [ wpDevMW(bundler, { stats: wpConfig.stats }) ]
 
     if( app ) middleware.push(wpHotMW(bundler))
 
-    let proxy = false, server = DEST_ROOT
-
-    if( proxyURL ) proxy = { target: proxyURL, ws: true }, server = false
-
-    browser.init({
-        open: false,
-        cors: true,
-        proxy, server, middleware
-    });
-
+    // Start Server
+    browser.init({ open: false, proxy, middleware });
 
     // Watch JS
     gulp.watch(`${src.js}/**/*.js`).on('change', () => browser.reload())
 
-
     // Watch Sass
     gulp.watch(`${src.scss}/**/*.scss`, styles)
-
 
     // Watch Icons
     gulp.watch(src.icons, icons)
         .on('unlink', () => DEL(`${dest.assets}/icons.svg`))
 
-
     // Watch Misc
     gulp.watch(miscGlob, copy)
         .on('unlink', (path, stats) => DEL(path.replace(SRC_ROOT, DEST_ROOT)))
-
 
     // Watch Laravel Views
     gulp.watch(`${SRC_ROOT}/views/**/*.blade.php`).on('change', () => browser.reload())
@@ -135,36 +119,6 @@ export function icons() {
 }
 
 
-//////////////////////////////////
-// README
-export function readme() {
-
-    return new Promise(resolve => {
-
-        if( exists('README.md') ) {
-            gutil.log('README.md already exists. Delete manually.'.red)
-            resolve()
-        }
-        else {
-            prompt.message = ('');
-            prompt.delimiter = colors.gray(' ==>');
-            prompt.start();
-
-            prompt.get([{ name: 'project', description: 'Name des Projekts'.green + '*'.red, required: true },
-                        { name: 'author',  description: 'Ersteller des Projekts'.green + '*'.red, required: true },
-                        { name: 'url',     description: 'URL (http://)'.green, pattern: /^https?:\/\// },
-                        { name: 'server',  description: 'Server'.green },
-                        { name: 'cms',     description: 'CMS'.green, default: 'Typo3' },
-            ], (err, res) => {
-
-                fs.writeFile('./README.md', templateReadme(res), () => resolve());
-                gutil.log('README.md created.'.green)
-            })
-        }
-    })
-}
-
-
 ////////////////////////////////
 // COPY
 export function copy() {
@@ -179,25 +133,13 @@ export function copy() {
 // INJECT
 export function inject() {
 
-
     let styles  = gulp.src(`${dest.scss}/main.*.css`, { read: false }),
         vendor  = gulp.src(`${dest.js}/vendor.*.js`,  { read: false }),
         scripts = gulp.src(`${dest.js}/main.*.js`,    { read: false })
 
-    // if( laravel ) {
-    //     return gulp.src([
-    //         `${SRC_ROOT}/views/**/head*.blade.php`,
-    //         `${SRC_ROOT}/views/**/footer.blade.php`
-    //     ])
-    //         .pipe(inject(series(styles, vendor, scripts), {
-    //             ignorePath: DEST_ROOT, addRootSlash: false
-    //         }))
-    //         .pipe(gulp.dest(`${SRC_ROOT}/views`))
-    // }
-
     return gulp.src([
         `${DEST_ROOT}/**/*.html`,
-        `${DEST_ROOT}/**/head*.php`,
+        `${DEST_ROOT}/**/head*.php`, // for non-WorPress PHP files
         `${DEST_ROOT}/**/footer.php`,
     ])
         .pipe(inject(series(styles, vendor, scripts), {
@@ -210,8 +152,6 @@ export function inject() {
 
 ////////////////////////////////
 // CLEAN
-// * no rm -r since it'll delete 'build' when running specific gulp tasks
-// * cleaning hashes via 'rm -r', otherwise it would delete js folder after Webpack
 export function cleanDest() { return DEL(DEST_ROOT) }
 export function cleanDestCSS() { return DEL([dest.scss]) }
 
@@ -220,9 +160,8 @@ export function cleanDestCSS() { return DEL([dest.scss]) }
 //// GULP TASKS
 export const dev = gulp.series( cleanDest, gulp.parallel(copy, styles, icons), server )
 
-export const css = gulp.series( cleanDestCSS, styles )
+export const css = gulp.series( cleanDestCSS, styles ) // CSS only
 
-export const build = hash ? gulp.series( cleanDestCSS, styles ) // commented out due to bug in package?!
-                          : gulp.series( styles )
+export const build = gulp.series( cleanDestCSS, styles ) // Webpack, then CSS
 
 export default dev
