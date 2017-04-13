@@ -31,6 +31,7 @@ ${res.notes}
 `
 }
 
+
 let questions = [
     {
         type: 'input',
@@ -109,11 +110,13 @@ inquirer.prompt(questions)
 		})
 
 
-		uploadToDroplet(res)		
+		uploadToDroplet(res)
 
 
 	})
 	.catch(err => console.log(err))
+
+
 
 function uploadToDroplet(res) {
 	//http.post('https://droplet.artofmyself.com', res)

@@ -1,24 +1,14 @@
-const path            = require('path')
-const del             = require('del')
-const config          = require('./project.config')
-const webpack         = require('webpack')
-const process         = require('process')
-const merge           = require('webpack-merge')
-const NotifierPlugin  = require('webpack-notifier')
-const WriteFilePlugin = require('write-file-webpack-plugin')
+import path            from 'path'
+import del             from 'del'
+import webpack         from 'webpack'
+import process         from 'process'
+import merge           from 'webpack-merge'
+import NotifierPlugin  from 'webpack-notifier'
+import WriteFilePlugin from 'write-file-webpack-plugin'
+
+import { paths, app, chunkhash, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
-
-let SRC_ROOT  = config.SRC_ROOT
-let DEST_ROOT = config.DEST_ROOT
-let src  = config.src,
-    dest = config.dest,
-    app  = config.app,
-    hash = config.hash
-
-let chunkhash = hash ? '.[chunkhash:3]' : ''
-
-if( isProduction && hash ) del(dest.js) // to overwrite hashes
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -31,18 +21,18 @@ let commonDev = {
     output: {
         filename: 'js/[name]' + chunkhash + '.js',
         chunkFilename: 'js/[name]' + chunkhash + '.js',
-        path: path.join(__dirname, DEST_ROOT)
+        path: path.resolve(__dirname, '../' + paths.dest.root)
     },
 
-    context: path.join(__dirname, SRC_ROOT),
+    context: path.resolve(__dirname, '../' + paths.src.root),
 
     resolve: {
         extensions: ['.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
-            'Img': path.join(__dirname, SRC_ROOT + '/assets/img'),
-            'Icons': path.join(__dirname, SRC_ROOT + '/assets/icons'),
-            '@': path.join(__dirname, '..', 'src')
+            'Img': path.resolve(__dirname, '../' + paths.src.img),
+            'Icons': path.resolve(__dirname, '../' + paths.src.icons),
+            '@': path.join(__dirname, '..', paths.src.root)
 
         }
     },
@@ -121,16 +111,12 @@ const commonProduction = {
             'process.env.NODE_ENV': '"production"'
         }),
 
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                drop_console: true,
-                warnings: false
-            },
-            sourceMap: true // just in case
-         })
+        new webpack.optimize.UglifyJsPlugin(uglifyConfig)
     ]
 }
 
 ////////////////////////////////
 
 if( isProduction ) module.exports = merge(commonDev, commonProduction)
+
+//if( isProduction ) webpack(merge(commonDev, commonProduction))

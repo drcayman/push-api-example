@@ -927,7 +927,7 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
 
-callsite@1.0.0:
+callsite@1.0.0, callsite@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/callsite/-/callsite-1.0.0.tgz#280398e5d664bd74038b6f0905153e6e8af1bc20"
 
@@ -1843,6 +1843,10 @@ fstream@^1.0.0, fstream@^1.0.2, fstream@~1.0.10:
     mkdirp ">=0.5 0"
     rimraf "2"
 
+fwd@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/fwd/-/fwd-0.2.2.tgz#0d19f99b40f8af83b8792203ba50dce7e46f7530"
+
 gauge@~2.7.1:
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.3.tgz#1c23855f962f17b3ad3d0dc7443f304542edfe09"
@@ -2046,6 +2050,28 @@ gulp-cli@^1.0.0:
     wreck "^6.3.0"
     yargs "^3.28.0"
 
+gulp-hub@frankwallis/gulp-hub#4.0:
+  version "4.0.1"
+  resolved "https://codeload.github.com/frankwallis/gulp-hub/tar.gz/aa7154e90e638de09a1b8b755a045957ee493a48"
+  dependencies:
+    callsite "^1.0.0"
+    fwd "^0.2.2"
+    glob "^5.0.3"
+    gulp-util "^3.0.2"
+    lodash "^3.5.0"
+    undertaker-registry "0.0.2"
+
+gulp-hub@frankwallis/gulp-hub#registry-init:
+  version "4.1.0"
+  resolved "https://codeload.github.com/frankwallis/gulp-hub/tar.gz/d461b9c700df9010d0a8694e4af1fb96d9f38bf4"
+  dependencies:
+    callsite "^1.0.0"
+    fwd "^0.2.2"
+    glob "^5.0.3"
+    gulp-util "^3.0.2"
+    lodash "^3.5.0"
+    undertaker-forward-reference "^0.1.0"
+
 gulp-notify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/gulp-notify/-/gulp-notify-3.0.0.tgz#a04b8af9acdbe4e63c845678ce0c3d30694c59a3"
@@ -2107,7 +2133,7 @@ gulp-svgstore@^6.0.0:
     cheerio "0.*"
     gulp-util "^3.0.0"
 
-gulp-util@^3.0, gulp-util@^3.0.0, gulp-util@^3.0.4, gulp-util@^3.0.8:
+gulp-util@^3.0, gulp-util@^3.0.0, gulp-util@^3.0.2, gulp-util@^3.0.4, gulp-util@^3.0.8:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -2941,7 +2967,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "~3.0.0"
 
-lodash@^3.10.1:
+lodash@^3.10.1, lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
@@ -4459,6 +4485,20 @@ underscore@1.7.x:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.7.0.tgz#6bbaf0877500d36be34ecaa584e0db9fef035209"
 
+undertaker-forward-reference@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/undertaker-forward-reference/-/undertaker-forward-reference-0.1.0.tgz#00a2e3c03d1e7b31a8701a620a7c3d404542a45b"
+  dependencies:
+    undertaker-registry "0.0.3"
+
+undertaker-registry@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/undertaker-registry/-/undertaker-registry-0.0.2.tgz#9111c7dfbcb6b3562e793b4740cf4a45796bcd87"
+
+undertaker-registry@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/undertaker-registry/-/undertaker-registry-0.0.3.tgz#8d17dda153b24794876ce1fe8370ff9e1f61f27f"
+
 undertaker-registry@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/undertaker-registry/-/undertaker-registry-1.0.0.tgz#2da716c765999d8c94b9f9ed2c006df4923b052b"
@@ -4521,8 +4561,8 @@ uuid@^3.0.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 v8flags@^2.0.9:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/v8flags/-/v8flags-2.0.11.tgz#bca8f30f0d6d60612cc2c00641e6962d42ae6881"
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/v8flags/-/v8flags-2.0.12.tgz#73235d9f7176f8e8833fb286795445f7938d84e5"
   dependencies:
     user-home "^1.1.1"
 
