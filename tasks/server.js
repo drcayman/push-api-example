@@ -10,8 +10,8 @@ import { copy, icons } from './misc'
 import webpackConfig from './webpack.config'
 import { paths, app, proxy, copyGlob } from './config'
 
-
-export const browser = Browser.create()
+const browser = Browser.create()
+const bundler = webpack(webpackConfig) // devMW + hotMW need same instance
 
 export function reload(done) {
     return browser.reload()
@@ -21,13 +21,13 @@ export function reload(done) {
 export function server() {
 
     let middleware = [
-        webpackDevMiddleware(webpack(webpackConfig), {
+        webpackDevMiddleware(bundler, {
             stats: webpackConfig.stats
         })
     ]
 
     if( app )
-        middleware.push( require('webpack-hot-middleware')( webpack(webpackConfig) ) )
+        middleware.push( require('webpack-hot-middleware')( bundler ) )
 
 
     // Start Server

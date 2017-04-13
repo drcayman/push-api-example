@@ -4,10 +4,12 @@ import gulp     from 'gulp'
 import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
+import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
 
-import { browser }  from './server'
-import { paths, hash, prefixerCfg, hashCfg } from './config'
+const browser = Browser.create()
+
+import { paths, hash, prefixerCfg, hashCfg, cwd } from './config'
 
 //////////////////////////////////
 

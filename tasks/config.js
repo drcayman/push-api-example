@@ -1,6 +1,7 @@
+import path from 'path'
 ////////////////////////////////////////////////////////////////
 
-const app   = false     // add specfic dependencies + HMR
+const app   = true     // add specfic dependencies + HMR
 const hash  = false 	// add specfic dependencies for hash in file name: main.e4d.js
 const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
@@ -64,6 +65,6 @@ module.exports = {
 	hash,
 	prefixerConfig, uglifyConfig, hashConfig,
 	chunkhash,
-	paths, copyGlob,
-	proxy
+	paths,
+	copyGlob, proxy
 }

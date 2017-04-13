@@ -4,6 +4,7 @@ import process         from 'process'
 import merge           from 'webpack-merge'
 import NotifierPlugin  from 'webpack-notifier'
 import WriteFilePlugin from 'write-file-webpack-plugin'
+import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
 import { paths, app, chunkhash, uglifyConfig } from './config'
 
@@ -109,7 +110,8 @@ const commonProduction = {
             'process.env.NODE_ENV': '"production"'
         }),
 
-        new webpack.optimize.UglifyJsPlugin(uglifyConfig)
+        new webpack.optimize.UglifyJsPlugin(uglifyConfig),
+        new ProgressBarPlugin()
     ]
 }
 

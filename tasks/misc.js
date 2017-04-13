@@ -1,11 +1,13 @@
-import del from 'del'
-import gulp from 'gulp'
-import changed  from 'gulp-changed'
+import del      from 'del'
+import gulp     from 'gulp'
 import svgmin   from 'gulp-svgmin'
+import Browser  from 'browser-sync'
+import changed  from 'gulp-changed'
 import svgstore from 'gulp-svgstore'
 
 import { paths, app, copyGlob } from './config'
-import { browser } from './server'
+
+const browser = Browser.create()
 
 ////////////////////////////////////////////////////////////////
 
