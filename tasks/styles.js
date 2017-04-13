@@ -9,7 +9,7 @@ import prefixer from 'gulp-autoprefixer'
 
 const browser = Browser.create()
 
-import { paths, hash, prefixerCfg, hashCfg, cwd } from './config'
+import { paths, hash, prefixerConfig, hashConfig, cwd } from './config'
 
 //////////////////////////////////
 
@@ -30,10 +30,10 @@ export function styles() {
         })))
 
     if( isProduction )
-        stylesTask = stylesTask.pipe(prefixer(prefixerCfg))
+        stylesTask = stylesTask.pipe(prefixer(prefixerConfig))
 
     if( isProduction && hash )
-        stylesTask = stylesTask.pipe(hashing(hashCfg))
+        stylesTask = stylesTask.pipe(hashing(hashConfig))
 
     return stylesTask
         .pipe(maps.write('./'))

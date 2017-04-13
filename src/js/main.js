@@ -1,8 +1,8 @@
-import Polyfill from 'dynamic-polyfill'
-import onResize from './lib/onResize'
+// import Polyfill from 'dynamic-polyfill'
+// import onResize from './lib/onResize'
 
-import Nav from './modules/nav'
-import App from './components/App.vue'
+// import Nav from './modules/nav'
+import App from '@/App'
 import Vue from 'vue'
 
 new Vue({
@@ -11,19 +11,19 @@ new Vue({
 })
 
 
-Polyfill({
-    fills: ['fetch', 'Promise'],
-    options: ['gated'],
-    afterFill() {
-        main()
-    }
-})
+// Polyfill({
+//     fills: ['fetch', 'Promise'],
+//     options: ['gated'],
+//     afterFill() {
+//         main()
+//     }
+// })
 
-function main() {
-
-    Nav()
-
-    onResize()
-
-
-}
+// function main() {
+//
+//     Nav()
+//
+//     onResize()
+//
+//
+// }

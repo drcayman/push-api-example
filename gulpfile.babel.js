@@ -6,7 +6,7 @@ import { scripts } from './tasks/scripts'
 import { server }  from './tasks/server'
 
 import { copy, icons, inject }  from './tasks/misc'
-import { paths } from './tasks/config'
+import { paths, app } from './tasks/config'
 
 
 function DEL(path) { return del.bind(null, path) }
@@ -19,6 +19,7 @@ export const dev = gulp.series( DEL( paths.dest.root),
 export const css = gulp.series( DEL(paths.dest.css), styles )
 export const js  = gulp.series( DEL(paths.dest.js), scripts )
 
-export const build = gulp.series(css, js) // not parallel due to progress
+export const build = app ? gulp.series(css, js, inject) :
+                           gulp.series(css, js) // not parallel due to progress
 
 export default dev

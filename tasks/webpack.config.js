@@ -6,9 +6,11 @@ import NotifierPlugin  from 'webpack-notifier'
 import WriteFilePlugin from 'write-file-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-import { paths, app, chunkhash, uglifyConfig } from './config'
+import { paths, app, hash, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
+
+const chunkhash = (hash && isProduction) ? '.[chunkhash:3]' : ''
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -21,7 +23,7 @@ let commonDev = {
     output: {
         filename: 'js/[name]' + chunkhash + '.js',
         chunkFilename: 'js/[name]' + chunkhash + '.js',
-        path: path.resolve(__dirname, '../' + paths.dest.root)
+        path: path.resolve(__dirname, '../', paths.dest.root)
     },
 
     context: path.resolve(__dirname, '../' + paths.src.root),

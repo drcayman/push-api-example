@@ -47,7 +47,7 @@ export function icons() {
 
 if( app )
     var series = require('stream-series'),
-        inject = require('gulp-inject')
+        Inject = require('gulp-inject')
 
 export function inject() {
 
