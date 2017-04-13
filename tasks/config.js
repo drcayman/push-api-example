@@ -51,6 +51,7 @@ const copyGlob = [
     `${paths.src.root}/**`,
     `!${paths.src.js}/**`, 		// JS folder for WP enqueue
     `!${paths.src.css}`,        `!${paths.src.css }/**`, 	   // Sass gets compiled
+    //`!${paths.src.img}`,        `!${paths.src.img}/**`, 	   // Images get processed
     `!${paths.src.icons}`,      `!${paths.src.icons}/**`, 	   // Icons get processed
     `!${paths.src.root}/views`, `!${paths.src.root}/views/**`, // Laravel
     `!${paths.src.root}/lang`,  `!${paths.src.root}/lang/**`,  // Laravel

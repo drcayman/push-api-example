@@ -1,5 +1,4 @@
 import path            from 'path'
-import del             from 'del'
 import webpack         from 'webpack'
 import process         from 'process'
 import merge           from 'webpack-merge'

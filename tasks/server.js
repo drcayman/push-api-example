@@ -1,11 +1,12 @@
 import gulp     from 'gulp'
+import del      from 'del'
 import Browser  from 'browser-sync'
 import webpack  from 'webpack'
-import wpDevMW  from 'webpack-dev-middleware'
+import webpackDevMiddleware  from 'webpack-dev-middleware'
 
 import { styles } from './styles'
 import { icons } from './icons'
-import { copy, DEL } from './copy-clean'
+import { copy } from './copy-clean'
 
 import webpackConfig from './webpack.config'
 import { paths, app, proxy, copyGlob } from './config'
@@ -13,18 +14,22 @@ import { paths, app, proxy, copyGlob } from './config'
 
 export const browser = Browser.create()
 
+export function reload(done) {
+    return browser.reload()
+    done()
+}
+
 export function server() {
 
     let middleware = [
-        wpDevMW(webpack(webpackConfig), {
+        webpackDevMiddleware(webpack(webpackConfig), {
             stats: webpackConfig.stats
         })
     ]
 
-    if( app ) {
-        var wpHotMW = require('webpack-hot-middleware')
-        middleware.push( wpHotMW( webpack(webpackConfig) ) )
-    }
+    if( app )
+        middleware.push( require('webpack-hot-middleware')( webpack(webpackConfig) ) )
+
 
     // Start Server
     browser.init({ open: false, proxy, middleware });
@@ -38,11 +43,12 @@ export function server() {
 
     // Watch Icons
     gulp.watch(paths.src.icons, icons)
-       .on('unlink', () => DEL(`${paths.dest.assets}/icons.svg`))
+        .on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
 
     // Watch Misc
     gulp.watch(copyGlob, copy)
-       .on('unlink', (path, stats) => DEL(path.replace(paths.src.root, paths.dest.root)))
+        .on('unlink', (path, stats) => del(path.replace(paths.src.root, paths.dest.root)))
+
 
     // Watch Laravel Views
     gulp.watch(`${paths.src.root}/views/**/*.blade.php`)
