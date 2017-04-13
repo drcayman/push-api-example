@@ -1,13 +1,14 @@
+import del  from 'del'
 import gulp from 'gulp'
 
-import { styles }  from './tasks/styles'
-import { scripts } from './tasks/scripts'
-import { server }  from './tasks/server'
-import { icons }   from './tasks/icons'
+import { styles }  from './styles'
+import { scripts } from './scripts'
+import { server }  from './server'
 
-import { copy, DEL }  from './tasks/copy-clean'
-import { paths, app } from './tasks/config'
+import { copy, icons, inject }  from './misc'
+import { paths, app } from './config'
 
+function DEL(path) { return del.bind(null, path) }
 
 export const dev = gulp.series( DEL(paths.dest.root),
                         gulp.parallel(copy, styles, icons),

@@ -5,8 +5,7 @@ import webpack  from 'webpack'
 import webpackDevMiddleware  from 'webpack-dev-middleware'
 
 import { styles } from './styles'
-import { icons } from './icons'
-import { copy } from './copy-clean'
+import { copy, icons } from './misc'
 
 import webpackConfig from './webpack.config'
 import { paths, app, proxy, copyGlob } from './config'

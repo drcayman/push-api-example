@@ -46,10 +46,9 @@ let commonDev = {
             test: /\.js$/,
             exclude: /node_modules/,
             loader: 'babel-loader',
-            // options: {
-            //     'babelrc': false,
-            //     'presets': [ ['es2015', { 'modules': false }] ] // Webpack handles modules
-            // }
+            options: {
+                'presets': [ ['es2015', { 'modules': false }] ] // Webpack handles modules
+            }                                                   // here bc tasks have modules
         },
         {
             test: /\.svg/,

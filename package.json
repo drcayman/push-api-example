@@ -3,7 +3,7 @@
   "version": "2.4.2",
   "description": "Personal Boilerplate",
   "scripts": {
-    "dev": "gulp",
+    "dev": "gulp --gulpfile tasks/index.babel.js",
     "build": "NODE_ENV=production gulp build",
     "css": "NODE_ENV=production gulp css",
     "js": "NODE_ENV=production gulp js",
@@ -17,7 +17,8 @@
   "babel": {
     "presets": [
       "es2015"
-    ]
+  ],
+    "babelrc": false
   },
   "dependencies": {
     "dynamic-polyfill": "^1.0.0",
