@@ -19,8 +19,8 @@ let commonDev = {
     },
 
     output: {
-        filename: '[name].js',
-        chunkFilename: '[name].js',
+        filename: 'js/[name].js',
+        chunkFilename: 'js/[name].js',
         path: path.resolve(__dirname, '../', paths.dest.root)
     },
 

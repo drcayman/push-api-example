@@ -110,7 +110,7 @@ inquirer.prompt(questions)
 		})
 
 
-		uploadToDroplet(res)
+		//uploadToDroplet(res)
 
 
 	})

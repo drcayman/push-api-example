@@ -1,4 +1,4 @@
-// import Polyfill from 'dynamic-polyfill'
+import Polyfill from 'dynamic-polyfill'
 // import onResize from './lib/onResize'
 
 // import Nav from './modules/nav'

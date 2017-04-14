@@ -6,6 +6,7 @@ import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
 import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
+import path from 'path'
 
 const browser = Browser.create()
 
@@ -21,7 +22,7 @@ export function styles() {
 
     let outputStyle = isProduction ? 'compressed' : 'nested'
 
-    let stylesTask = gulp.src(`${paths.src.css}/*.scss`)
+    let stylesTask = gulp.src(`${paths.src.css}/main.scss`)
         .pipe(maps.init())
         .pipe(sass({ outputStyle }).on('error', notify.onError({
             title: 'Sass Error',

@@ -10,7 +10,7 @@ import { paths, app } from './tasks/config'
 
 
 function DEL(path) { return del.bind(null, path) }
-//const DEL = path => del(path)
+
 
 export const dev = gulp.series( DEL( paths.dest.root),
                         gulp.parallel(copy, styles, icons),
