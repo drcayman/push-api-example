@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 
 const app   = true     // add specfic dependencies + HMR
-const hash  = true 	// add specfic dependencies for hash in file name: main.e4d.js
+const hash  = false 	// add specfic dependencies for hash in file name: main.e4d.js
 const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
@@ -10,6 +10,8 @@ const prefixerConfig = { browsers: ['android >= 4.2', '> 0.2%', 'not ie <= 8'] }
 
 const hashConfig = { hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' }
 
+const chunkhash = hash ? '.[chunkhash:3]' : ''
+
 const uglifyConfig = {
 	compress: {
 		drop_console: true,
@@ -17,6 +19,7 @@ const uglifyConfig = {
 	},
 	sourceMap: true // just in case
 }
+
 
 ////////////////////////////////////////////////////////////////
 
@@ -59,6 +62,6 @@ module.exports = {
 	app,
 	hash,
 	prefixerConfig, uglifyConfig, hashConfig,
-	paths,
+	paths, chunkhash,
 	copyGlob, proxy
 }

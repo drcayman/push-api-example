@@ -6,11 +6,9 @@ import NotifierPlugin  from 'webpack-notifier'
 import WriteFilePlugin from 'write-file-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-import { paths, app, hash, uglifyConfig } from './config'
+import { paths, app, hash, chunkhash, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
-
-const chunkhash = (hash && isProduction) ? '.[chunkhash:3]' : ''
 
 ////////////////////////////////////////////////////////////////
 // DEVELOPMENT
@@ -21,8 +19,8 @@ let commonDev = {
     },
 
     output: {
-        filename: 'js/[name]' + chunkhash + '.js',
-        chunkFilename: 'js/[name]' + chunkhash + '.js',
+        filename: '[name].js',
+        chunkFilename: '[name].js',
         path: path.resolve(__dirname, '../', paths.dest.root)
     },
 
@@ -105,17 +103,19 @@ else if( !isProduction ) module.exports = commonDev
 
 ////////////////////////////////
 
-const commonProduction = {
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"'
-        }),
+if( isProduction ) {
+    module.exports = merge(commonDev, {
+        output: {
+            filename: '[name]' + chunkhash + '.js',
+            path: path.resolve(__dirname, '../' + paths.dest.js)
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.env.NODE_ENV': '"production"'
+            }),
 
-        new webpack.optimize.UglifyJsPlugin(uglifyConfig),
-        new ProgressBarPlugin()
-    ]
+            new webpack.optimize.UglifyJsPlugin(uglifyConfig),
+            new ProgressBarPlugin()
+        ]
+    })
 }
-
-////////////////////////////////
-
-if( isProduction ) module.exports = merge(commonDev, commonProduction)
