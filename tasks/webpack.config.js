@@ -47,8 +47,8 @@ let commonDev = {
             exclude: /node_modules/,
             loader: 'babel-loader',
             options: {
-                'presets': [ ['es2015', { 'modules': false }] ] // Webpack handles modules
-            }                                                   // here bc tasks have modules
+                'presets': [ ['es2015', { 'modules': false }] ] // tree shaking
+            }
         },
         {
             test: /\.svg/,
