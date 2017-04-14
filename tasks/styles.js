@@ -39,5 +39,4 @@ export function styles() {
     return stylesTask
         .pipe(maps.write('./'))
         .pipe(gulp.dest(paths.dest.css))
-        .pipe(browser.stream({ match: '**/*.css' }))
 }

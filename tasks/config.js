@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 
-const app   = false     // add specfic dependencies + HMR
-const hash  = false 	// add specfic dependencies for hash in file name: main.e4d.js
+const app   = true     // add specfic dependencies + HMR
+const hash  = true 	// add specfic dependencies for hash in file name: main.e4d.js
 const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////

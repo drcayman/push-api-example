@@ -29,9 +29,21 @@ export function server() {
     if( app )
         middleware.push( require('webpack-hot-middleware')( bundler ) )
 
+    let config = {
+        open: false,
+        proxy: proxy ? proxy : false,
+        cors: true,
+        notify: false,
+        logFileChanges: false,
+        files: [
+            paths.dest.css + '/*.css'
+        ],
+        server: proxy ? false : paths.dest.root,
+        middleware
+    }
 
     // Start Server
-    browser.init({ open: false, proxy, middleware });
+    browser.init(config);
 
     // Watch JS
     gulp.watch(`${paths.src.js}/**/*.js`)
@@ -52,7 +64,5 @@ export function server() {
     // Watch Laravel Views
     gulp.watch(`${paths.src.root}/views/**/*.blade.php`)
         .on('change', () => browser.reload())
-
-
 
 }
