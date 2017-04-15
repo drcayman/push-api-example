@@ -5,7 +5,7 @@ import Browser  from 'browser-sync'
 import changed  from 'gulp-changed'
 import svgstore from 'gulp-svgstore'
 
-import { paths, app, copyGlob } from './config'
+import { paths, app, hash, copyGlob } from './config'
 
 const browser = Browser.create()
 
@@ -45,7 +45,7 @@ export function icons() {
 
 ////////////////////////////////////////////////////////////////
 
-if( app )
+if( hash && app )
     var series = require('stream-series'),
         Inject = require('gulp-inject')
 
