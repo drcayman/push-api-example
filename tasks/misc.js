@@ -1,5 +1,6 @@
 import del      from 'del'
 import gulp     from 'gulp'
+import path     from 'path'
 import svgmin   from 'gulp-svgmin'
 import Browser  from 'browser-sync'
 import changed  from 'gulp-changed'

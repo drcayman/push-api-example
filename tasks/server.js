@@ -37,7 +37,8 @@ export function server() {
         logFileChanges: false,
         files: [
             paths.dest.css + '/*.css',
-            paths.dest.img + '/**/*'
+            paths.dest.img + '/**/*',
+            paths.dest.assets + '/icons.svg'
         ],
         server: proxy ? false : paths.dest.root,
         middleware
@@ -55,7 +56,8 @@ export function server() {
 
     // Watch Icons
     gulp.watch(paths.src.icons, icons)
-        .on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
+        .on('change', () => browser.reload())
+        //.on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
 
 
     // Watch Misc + Inject Images
