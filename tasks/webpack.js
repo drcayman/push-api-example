@@ -10,6 +10,8 @@ import { paths, app, chunkhash, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
+process.noDeprecation = true // ignore loader-utils warning (only for loader authors)
+
 ////////////////////////////////////////////////////////////////
 
 let config = {
