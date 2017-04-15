@@ -13,10 +13,7 @@ import { paths, app, proxy, copyGlob } from './config'
 const browser = Browser.create()
 const bundler = webpack(webpackConfig) // devMW + hotMW need same instance
 
-export function reload(done) {
-    return browser.reload()
-    done()
-}
+////////////////////////////////////////////////////////////////
 
 export function server() {
 
@@ -37,8 +34,7 @@ export function server() {
         logFileChanges: false,
         files: [
             paths.dest.css + '/*.css',
-            paths.dest.img + '/**/*',
-            paths.dest.assets + '/icons.svg'
+            paths.dest.img + '/**/*'
         ],
         server: proxy ? false : paths.dest.root,
         middleware
@@ -57,7 +53,7 @@ export function server() {
     // Watch Icons
     gulp.watch(paths.src.icons, icons)
         .on('change', () => browser.reload())
-        //.on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
+        .on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
 
 
     // Watch Misc + Inject Images

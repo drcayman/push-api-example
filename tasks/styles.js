@@ -2,18 +2,17 @@ import gulp     from 'gulp'
 import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
+import hashing  from 'gulp-hash' 
 import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
 
-const browser = Browser.create()
-
 import { paths, hash, prefixerConfig, hashConfig } from './config'
 
-//////////////////////////////////
+const browser = Browser.create()
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
-if( hash ) var hashing = require('gulp-hash')
+//////////////////////////////////
 
 export function styles() {
 

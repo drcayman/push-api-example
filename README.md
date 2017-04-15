@@ -6,7 +6,7 @@ _https://github.com/pascalaoms/boilerplate_
 ![dev dependencies check](https://david-dm.org/pascalaoms/boilerplate/dev-status.svg)
 ## Usage
 ```
-project new <name>  
+project new <name>
 
 yarn
 npm run dev  
@@ -16,21 +16,21 @@ npm run build
 For WordPress create `style.css` in root.
 
 ---
-### VueJS
-**Set app variable in project.config to true.**  
+### Vue
+**Set app variable in tasks/config to true.**  
 Add app dependencies with `installAppDependencies`.
-Add hash dependencies with `installHashDependencies` (runs automatically when WordPress project).
 
 * Live Reloading
 * Hot Module Reloading  
-* VueJS Templating
+* Vue Templating
 No Sass import in JS hence the missing of Sass loaders. Using own Sass modules.  
 
 ### Icons
-* save single icon SVG in **src/assets/icons**  
+* Save single icon SVG in **src/assets/icons**  
 * Gulp task combines icons into single icon in **build/assets/icons.svg**
-* If icons go inline, put them in **_Mat/img** and paste manually.
-* Webpack alias for assets  
+* If icons go inline, put them in **assets/img/img** and paste manually.
+* Webpack alias for assets available
+
 Reference icons like this:
 ```html
 <use xlink:href="assets/icons.svg#squirrel"></use>
