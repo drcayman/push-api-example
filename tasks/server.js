@@ -36,7 +36,8 @@ export function server() {
         notify: false,
         logFileChanges: false,
         files: [
-            paths.dest.css + '/*.css'
+            paths.dest.css + '/*.css',
+            paths.dest.img + '/**/*'
         ],
         server: proxy ? false : paths.dest.root,
         middleware
@@ -56,9 +57,14 @@ export function server() {
     gulp.watch(paths.src.icons, icons)
         .on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
 
-    // Watch Misc
+
+    // Watch Misc + Inject Images
     gulp.watch(copyGlob, copy)
-        .on('unlink', (path, stats) => del(path.replace(paths.src.root, paths.dest.root)))
+        .on('change', path => browser.reload(path))
+        .on('unlink', path => {
+            del(path.replace(paths.src.root, paths.dest.root))
+            browser.reload()
+        })
 
 
     // Watch Laravel Views

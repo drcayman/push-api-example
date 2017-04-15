@@ -15,14 +15,7 @@ export function copy() {
     return gulp.src(copyGlob, { dot: true })
         .pipe(changed(paths.dest.root))
         .pipe(gulp.dest(paths.dest.root))
-        .pipe(browser.reload({ stream: true }))
 }
-
-// export function copyImages() {
-//     return gulp.src(paths.src.img, { dot: true })
-//         .pipe(changed(paths.dest.img))
-//         .pipe(gulp.dest(paths.dest.img))
-// }
 
 ////////////////////////////////////////////////////////////////
 
