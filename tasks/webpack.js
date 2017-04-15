@@ -1,18 +1,18 @@
-import path            from 'path'
-import webpack         from 'webpack'
-import process         from 'process'
-import merge           from 'webpack-merge'
-import NotifierPlugin  from 'webpack-notifier'
-import WriteFilePlugin from 'write-file-webpack-plugin'
+import path    from 'path'
+import webpack from 'webpack'
+import process from 'process'
+import merge   from 'webpack-merge'
+import NotifierPlugin    from 'webpack-notifier'
+import WriteFilePlugin   from 'write-file-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-import { paths, app, hash, chunkhash, uglifyConfig } from './config'
+import { paths, app, chunkhash, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
 ////////////////////////////////////////////////////////////////
-// DEVELOPMENT
-let commonDev = {
+
+let config = {
 
     entry: {
         main: ['./js/main.js']
@@ -87,7 +87,7 @@ let commonDev = {
 ////////////////////////////////
 
 if( app && !isProduction ) {
-    module.exports = merge(commonDev, {
+    config = merge(config, {
 
         entry: {
             main: ['webpack/hot/dev-server', 'webpack-hot-middleware/client']
@@ -98,13 +98,11 @@ if( app && !isProduction ) {
 
     })
 }
-else if( !isProduction ) module.exports = commonDev
-
 
 ////////////////////////////////
 
 if( isProduction ) {
-    module.exports = merge(commonDev, {
+    config = merge(config, {
         output: {
             filename: '[name]' + chunkhash + '.js',
             path: path.resolve(__dirname, '../' + paths.dest.js)
@@ -119,3 +117,22 @@ if( isProduction ) {
         ]
     })
 }
+
+function scripts() {
+
+    return new Promise(resolve => webpack(config, (err, stats) => {
+
+        if( err ) console.log('Webpack', err)
+
+        console.log(stats.toString({
+            hash: false,
+            timings: false,
+            version: false,
+            chunks: false
+        }).green)
+
+        resolve()
+    }))
+}
+
+module.exports = { config, scripts }

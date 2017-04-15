@@ -2,7 +2,7 @@ import del  from 'del'
 import gulp from 'gulp'
 
 import { styles }  from './tasks/styles'
-import { scripts } from './tasks/scripts'
+import { scripts } from './tasks/webpack'
 import { server }  from './tasks/server'
 
 import { copy, icons, inject }  from './tasks/misc'

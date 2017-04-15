@@ -7,7 +7,7 @@ import webpackDevMiddleware  from 'webpack-dev-middleware'
 import { styles } from './styles'
 import { copy, icons } from './misc'
 
-import webpackConfig from './webpack.config'
+import { config as webpackConfig } from './webpack'
 import { paths, app, proxy, copyGlob } from './config'
 
 const browser = Browser.create()

@@ -1,16 +1,13 @@
-'use strict';
-
 import gulp     from 'gulp'
 import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
 import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
-import path from 'path'
 
 const browser = Browser.create()
 
-import { paths, hash, prefixerConfig, hashConfig, cwd } from './config'
+import { paths, hash, prefixerConfig, hashConfig } from './config'
 
 //////////////////////////////////
 
