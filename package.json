@@ -37,26 +37,18 @@
     "gulp-autoprefixer": "^3.1.0",
     "gulp-changed": "^2.0.0",
     "gulp-hash": "^4.1.1",
-    "gulp-inject": "^4.2.0",
     "gulp-notify": "^3.0.0",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-svgmin": "^1.2.2",
     "gulp-svgstore": "^6.0.0",
     "inquirer": "^3.0.6",
-    "loader-utils": "^1.1.0",
     "node-sass": "^4.5.2",
     "progress-bar-webpack-plugin": "^1.9.3",
-    "stream-series": "^0.1.1",
-    "vue-hot-reload-api": "^2.0.11",
-    "vue-html-loader": "^1.2.4",
-    "vue-loader": "^11.3.4",
-    "vue-template-compiler": "^2.2.6",
     "webpack": "^2.4.1",
     "webpack-dev-middleware": "^1.10.1",
-    "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0",
     "webpack-notifier": "^1.4.1",
-    "write-file-webpack-plugin": "^4.0.0"
+    "write-file-webpack-plugin": "^4.0.2"
   }
 }
