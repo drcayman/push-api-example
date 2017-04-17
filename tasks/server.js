@@ -1,7 +1,7 @@
-import gulp     from 'gulp'
 import del      from 'del'
-import Browser  from 'browser-sync'
+import gulp     from 'gulp'
 import webpack  from 'webpack'
+import Browser  from 'browser-sync'
 import webpackDevMiddleware  from 'webpack-dev-middleware'
 
 import { styles } from './styles'
