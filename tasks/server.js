@@ -37,7 +37,15 @@ export function server() {
             paths.dest.img + '/**/*'
         ],
         server: proxy ? false : paths.dest.root,
-        middleware
+        middleware,
+        snippetOptions: {    // add script above stylesheet
+            rule: {          // to be able to remove body tag
+                match: /<link.*rel="stylesheet".*/i,
+                fn(snippet, match) {
+                    return snippet + match;
+                }
+            }
+        }
     }
 
     // Start Server
