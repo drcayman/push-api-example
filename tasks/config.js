@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////
 
-const app   = false     // add specfic dependencies + HMR
+const app   = true     // add specfic dependencies + HMR
 const hash  = false 	// add specfic dependencies for hash in file name: main.e4d.js
-const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 const webp  = true 	    // convert images to webp (set Apache config for delivery)
+const proxy = 'http://boilerplate.dev' // false || MAMP/Valet DNS
 
 ////////////////////////////////////////////////////////////////
 
@@ -18,7 +18,7 @@ const uglifyConfig = {
 		drop_console: true,
 		warnings: false
 	},
-	sourceMap: true // just in case
+	sourceMap: true // just in case Webpack dev tools enabled
 }
 
 ////////////////////////////////////////////////////////////////
@@ -49,10 +49,11 @@ const paths = {		// Laravel => src: resources | dest: public
 
 const copyGlob = [
     `${paths.src.root}/**`,
-    `!${paths.src.js}/**`, 		// JS folder for WP enqueue
-    `!${paths.src.css}`,  `!${paths.src.css }/**`, 	   // Sass gets compiled
-    //`!${paths.src.img}`, `!${paths.src.img}/**`, 	   // Images get processed
-    `!${paths.src.icons}`, `!${paths.src.icons}/**`,   // Icons get processed
+	// Folder 						 // Folder Content
+    								 `!${paths.src.js}/**`, 	         // JS folder needed for WP enqueue
+    `!${paths.src.css}`,             `!${paths.src.css}/**`,             // Sass gets compiled
+	//`!${paths.src.img}`,             `!${paths.src.img}/**`, 	   		 // Images copied own their own (webp)
+    `!${paths.src.icons}`,           `!${paths.src.icons}/**`,   		 // Icons get processed
     `!${paths.src.root}/views`,      `!${paths.src.root}/views/**`,      // Laravel
     `!${paths.src.root}/lang`,       `!${paths.src.root}/lang/**`,       // Laravel
 	`!${paths.src.root}/components`, `!${paths.src.root}/components/**`, // Vue
@@ -62,7 +63,7 @@ const copyGlob = [
 
 module.exports = {
 	app,
-	hash,
+	hash, webp,
 	prefixerConfig, uglifyConfig, hashConfig,
 	paths, chunkhash,
 	copyGlob, proxy

@@ -1,13 +1,13 @@
 import del      from 'del'
 import gulp     from 'gulp'
 import path     from 'path'
-import webp     from 'gulp-webp'
+import Webp     from 'gulp-webp'
 import svgmin   from 'gulp-svgmin'
 import Browser  from 'browser-sync'
 import changed  from 'gulp-changed'
 import svgstore from 'gulp-svgstore'
 
-import { paths, app, hash, copyGlob } from './config'
+import { paths, app, hash, webp, copyGlob } from './config'
 
 const browser = Browser.create()
 
