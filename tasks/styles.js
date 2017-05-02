@@ -2,7 +2,7 @@ import gulp     from 'gulp'
 import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
-import hashing  from 'gulp-hash' 
+import hashing  from 'gulp-hash'
 import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
 

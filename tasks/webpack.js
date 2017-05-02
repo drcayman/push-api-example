@@ -1,4 +1,5 @@
 import path    from 'path'
+import colors  from 'colors'
 import webpack from 'webpack'
 import process from 'process'
 import merge   from 'webpack-merge'
@@ -34,7 +35,7 @@ let config = {
             'vue$': 'vue/dist/vue.esm.js',
             'Img': path.resolve(__dirname, '../' + paths.src.img),
             'Icons': path.resolve(__dirname, '../' + paths.src.icons),
-            '@': path.join(__dirname, '..', paths.src.js + '/components')
+            '@': path.join(__dirname, '..', paths.src.js)
 
         }
     },
@@ -54,13 +55,17 @@ let config = {
         },
         {
             test: /\.svg/,
-            loader: 'svg-url-loader'
+            loader: 'svg-url-loader?noquotes'
         },
         {
             test: /\.(png|jpe?g|gif)(\?.*)?$/,
             loader: 'url-loader',
-            options: { limit: 10000, name: 'assets/img/[name].[ext]' }
-
+            options: { limit: 15000, name: '[path][name].[ext]' }
+        },
+        {
+            test: /\.(mp4|webm)(\?.*)?$/,
+            loader: 'url-loader',
+            options: { name: '[path][name].[ext]' }
         },
         {
             test: /\.vue$/,
@@ -106,8 +111,8 @@ if( app && !isProduction ) {
 if( isProduction ) {
     config = merge(config, {
         output: {
-            filename: '[name]' + chunkhash + '.js',
-            path: path.resolve(__dirname, '../' + paths.dest.js)
+            filename: 'js/[name]' + chunkhash + '.js',
+            path: path.resolve(__dirname, '../' + paths.dest.root)
         },
         plugins: [
             new webpack.DefinePlugin({
@@ -115,7 +120,7 @@ if( isProduction ) {
             }),
 
             new webpack.optimize.UglifyJsPlugin(uglifyConfig),
-            new ProgressBarPlugin()
+            new ProgressBarPlugin({ summary: false })
         ]
     })
 }
@@ -124,16 +129,16 @@ function scripts() {
 
     return new Promise(resolve => webpack(config, (err, stats) => {
 
-        if( err ) console.log('Webpack', err)
-
         console.log(stats.toString({
+            assets: false,
             hash: false,
             timings: false,
             version: false,
-            chunks: false
+            chunkModules: false
         }).green)
 
         resolve()
+
     }))
 }
 

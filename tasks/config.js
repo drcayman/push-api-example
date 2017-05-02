@@ -28,6 +28,7 @@ const paths = {		// Laravel => src: resources | dest: public
 		root: 'src',
 		  js: 'src/js',
          css: 'src/scss',
+	  assets: 'src/assets',
          img: 'src/assets/img',
        icons: 'src/assets/icons',
        fonts: 'src/assets/fonts',

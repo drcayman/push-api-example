@@ -19,6 +19,15 @@ export function copy() {
         .pipe(gulp.dest(paths.dest.root))
 }
 
+export function copyInjectionRecipients() {
+    return gulp.src([
+            `${paths.src.root}/**/*.html`,
+            `${paths.src.root}/**/head*.php`,
+            `${paths.src.root}/**/footer.php`,
+        ])
+        .pipe(gulp.dest(paths.dest.root))
+}
+
 ////////////////////////////////////////////////////////////////
 
 export function icons() {
@@ -52,8 +61,8 @@ export function inject() {
 
     return gulp.src([
         `${paths.dest.root}/**/*.html`,
-        `${paths.dest.root}/**/head*.php`, // for non-WorPress PHP files
-        `${paths.dest.root}/**/footer.php`,
+        `${paths.dest.root}/**/head*.php`,  // for non-WorPress
+        `${paths.dest.root}/**/footer.php`, // for non-WorPress
     ])
         .pipe(Inject(series(styles, vendor, scripts), {
             relative: true,

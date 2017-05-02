@@ -19,25 +19,23 @@ export default function({
             elOffset = element.offsetTop,
             elScrollDistance = elHeight + elOffset
 
-
         window.addEventListener('scroll', setParallax)
+    }
 
 
-        function setParallax() {
+    function setParallax() {
 
-            let wScroll = window.pageYOffset
+        let wScroll = window.pageYOffset
 
-             function animate() {
-                 element.style[attr] = Math.ceil(wScroll / speed) + unit
-             }
+         function animate() {
+             element.style[attr] = Math.ceil(wScroll / speed) + unit
+         }
 
-             if (wScroll <= elScrollDistance) {
+         if (wScroll <= elScrollDistance) {
 
-                window.requestAnimationFrame(animate)
+            window.requestAnimationFrame(animate)
 
-             }
-
-        }
+         }
 
     }
 

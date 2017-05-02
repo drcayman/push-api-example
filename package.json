@@ -3,11 +3,12 @@
   "version": "2.4.2",
   "description": "Personal Boilerplate",
   "scripts": {
-    "dev": "gulp",
-    "build": "NODE_ENV=production gulp build",
-    "css": "NODE_ENV=production gulp css",
-    "js": "NODE_ENV=production gulp js",
-    "readme": "node tasks/readme.js"
+    "dev": "gulp --require babel-register --gulpfile tasks",
+    "build": "NODE_ENV=production gulp build --require babel-register --gulpfile tasks",
+    "css": "NODE_ENV=production gulp css --require babel-register --gulpfile tasks",
+    "js": "NODE_ENV=production gulp js --require babel-register --gulpfile tasks",
+    "readme": "node tasks/readme.js --require babel-register --gulpfile tasks",
+    "live": "push-dir --dir=build --local-branch-name=live --cleanup --branch=master --remote=ssh://"
   },
   "license": "MIT",
   "repository": {
@@ -23,19 +24,17 @@
   "dependencies": {
     "dynamic-polyfill": "^1.0.0",
     "jquery": "^3.2.1",
-    "svg4everybody": "^2.1.7",
-    "vue": "^2.2.6",
-    "vue-router": "^2.4.0"
+    "svg4everybody": "^2.1.7"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
-    "babel-loader": "^6.4.1",
+    "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.18.8",
     "del": "^2.2.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.0",
-    "gulp-changed": "^2.0.0",
+    "gulp-changed": "^3.0.0",
     "gulp-hash": "^4.1.1",
     "gulp-notify": "^3.0.0",
     "gulp-sass": "^3.1.0",
@@ -46,7 +45,7 @@
     "node-sass": "^4.5.2",
     "progress-bar-webpack-plugin": "^1.9.3",
     "webpack": "^2.4.1",
-    "webpack-dev-middleware": "^1.10.1",
+    "webpack-dev-middleware": "^1.10.2",
     "webpack-merge": "^4.1.0",
     "webpack-notifier": "^1.4.1",
     "write-file-webpack-plugin": "^4.0.2"

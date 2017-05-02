@@ -8,7 +8,7 @@ let scrollHeight = window.scrollY,
     scrollMargin,
     scrollInterval = setInterval(() => {
 
-        if ( window.scrollY != 0 ) {
+        if ( window.scrollY !== 0 ) {
             scrollCount = scrollCount + 1
             scrollMargin = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep )
             window.scrollTo( 0, ( scrollHeight - scrollMargin ) )

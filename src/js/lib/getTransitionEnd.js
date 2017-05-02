@@ -3,19 +3,15 @@ export function transitionEnd() {
 
     var s = document.body || document.documentElement, s = s.style, /*prefixAnimation = '',*/ prefixTransition = '';
 
-    if( s.WebkitTransition == '' )	prefixTransition = '-webkit-';
-    if( s.MozTransition == '' )		prefixTransition = '-moz-';
-    if( s.OTransition == '' )		prefixTransition = '-o-';
+    if( s.WebkitTransition === '' )	prefixTransition = '-webkit-';
 
     Object.prototype.onCSSTransitionEnd = function( callback ) {
 
         var runOnce = function( e ){ callback(); e.target.removeEventListener( e.type, runOnce ); };
         this.addEventListener( 'webkitTransitionEnd', runOnce );
-        this.addEventListener( 'mozTransitionEnd', runOnce );
-        this.addEventListener( 'oTransitionEnd', runOnce );
         this.addEventListener( 'transitionend', runOnce );
         this.addEventListener( 'transitionend', runOnce );
-        if( ( prefixTransition == '' && !( 'transition' in s ) ) /*|| getComputedStyle( this )[ prefixAnimation + 'transition-duration' ] == '0s'*/ ) callback();
+        if( ( prefixTransition === '' && !( 'transition' in s ) ) /*|| getComputedStyle( this )[ prefixAnimation + 'transition-duration' ] == '0s'*/ ) callback();
         return this;
 
     };
