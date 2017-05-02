@@ -1,6 +1,6 @@
 {
   "name": "boilerplate",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Personal Boilerplate",
   "scripts": {
     "dev": "gulp --require babel-register --gulpfile tasks",
