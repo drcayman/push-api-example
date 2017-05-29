@@ -1,3 +1,4 @@
+import fs       from 'fs'
 import gulp     from 'gulp'
 import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
@@ -5,6 +6,7 @@ import notify   from 'gulp-notify'
 import hashing  from 'gulp-hash'
 import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
+import critical from 'critical'
 
 import { paths, hash, prefixerConfig, hashConfig } from './config'
 
@@ -35,4 +37,41 @@ export function styles() {
     return stylesTask
         .pipe(maps.write('./'))
         .pipe(gulp.dest(paths.dest.css))
+}
+
+
+
+export function criticalStyles() {
+
+    let cssFiles = []
+
+    fs.readdirSync(paths.dest.css).forEach(file => {
+        if( file.indexOf('.map') === -1 )
+            cssFiles.push(paths.dest.css + '/' + file)
+    })
+
+    console.log(cssFiles);
+
+    return new Promise(resolve => {
+
+        critical.generate({
+                inline: true,
+                base: paths.dest.root,
+                src: 'index.html',
+                dest: 'index.html',
+                css: cssFiles,
+                minify: true,
+                include: [
+                    'main',
+                    '.component-wrapper',
+                    '.index',
+                    '.branding'
+                ],
+                ignore: [/nav[\-\_]/] // nav- nav_
+            })
+
+        resolve()
+    })
+
+
 }
