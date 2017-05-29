@@ -1,26 +1,17 @@
 ////////////////////////////////////////////////////////////////
 
-const app   = true // add specfic dependencies + HMR
-const hash  = true // add specfic dependencies for hash in file name: main.e4d.js
-const webp  = false // convert images to webp (set Apache config for delivery)
-const proxy = false // false || MAMP/Valet DNS
-const critical = false // inject critical CSS
+const wp   = false // add hashing, disable injection
+const app  = true // add specfic dependencies + HMR
+const webp = true // convert images to webp (set Apache config for delivery)
+
+const proxy    = false // false || MAMP/Valet DNS
+const critical = true // inject critical CSS
 
 ////////////////////////////////////////////////////////////////
 
+const hashLength = 5
+
 const prefixerConfig = { browsers: ['android >= 4.2', '> 0.2%', 'not ie <= 8'] }
-
-const hashConfig = { hashLength: 3, template: '<%= name %>.<%= hash %><%= ext %>' }
-
-const chunkhash = hash ? '.[chunkhash:3]' : ''
-
-const uglifyConfig = {
-	compress: {
-		drop_console: true,
-		warnings: false
-	},
-	sourceMap: true // just in case Webpack dev tools enabled
-}
 
 ////////////////////////////////////////////////////////////////
 
@@ -63,9 +54,6 @@ const copyGlob = [
 ////////////////////////////////////////////////////////////////
 
 module.exports = {
-	app, webp,
-	hash, critical,
-	prefixerConfig, uglifyConfig, hashConfig,
-	paths, chunkhash,
-	copyGlob, proxy
+	app, webp, wp, critical, prefixerConfig,
+	paths, hashLength, copyGlob, proxy
 }

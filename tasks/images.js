@@ -1,11 +1,11 @@
 import gulp from 'gulp'
 import Webp from 'gulp-webp'
-import { paths, webp } from './config'
+import { paths, webp as convertWebp } from './config'
 
 
-export function images() {
+export function webp() {
 
-    if( webp ) {
+    if( convertWebp ) {
 
         let glob = [
             `${paths.src.img}/**/*`,
@@ -15,9 +15,11 @@ export function images() {
         return gulp.src(glob)
             .pipe(Webp())
             .pipe(gulp.dest(paths.dest.img))
-
     }
 
-    return new Promise(resolve => console.log('WebP disabled.'.green), resolve())
+    return new Promise(resolve => {
+        console.log('WebP disabled.'.yellow)
+        resolve()
+    })
 
 }

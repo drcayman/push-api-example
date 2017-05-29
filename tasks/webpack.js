@@ -7,7 +7,7 @@ import NotifierPlugin    from 'webpack-notifier'
 import WriteFilePlugin   from 'write-file-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-import { paths, app, chunkhash, uglifyConfig } from './config'
+import { paths, app, wp, hashLength, uglifyConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
@@ -109,6 +109,9 @@ if( app && !isProduction ) {
 ////////////////////////////////
 
 if( isProduction ) {
+
+    let chunkhash = (wp || app) ? `.[chunkhash:${hashLength}]` : ''
+
     config = merge(config, {
         output: {
             filename: 'js/[name]' + chunkhash + '.js',
@@ -119,7 +122,13 @@ if( isProduction ) {
                 'process.env.NODE_ENV': '"production"'
             }),
 
-            new webpack.optimize.UglifyJsPlugin(uglifyConfig),
+            new webpack.optimize.UglifyJsPlugin({
+            	compress: {
+                    warnings: false,
+            		drop_console: true
+            	},
+            	sourceMap: true // just in case Webpack dev tools enabled
+            }),
             new ProgressBarPlugin({ summary: false })
         ]
     })

@@ -6,7 +6,7 @@ import Browser  from 'browser-sync'
 import changed  from 'gulp-changed'
 import svgstore from 'gulp-svgstore'
 
-import { paths, app, hash, copyGlob } from './config'
+import { paths, app, wp, copyGlob } from './config'
 
 const browser = Browser.create()
 
@@ -45,7 +45,7 @@ export function icons() {
 
 export function inject() {
 
-    if( hash && app ) {
+    if( !wp && app ) {
 
         var series = require('stream-series'),
             Inject = require('gulp-inject')
@@ -55,7 +55,7 @@ export function inject() {
             scripts = gulp.src(`${paths.dest.js}/main.*.js`,   { read: false })
 
 
-        let injectTask = gulp.src([
+        return gulp.src([
                 `${paths.src.root}/**/*.html`,
                 `${paths.src.root}/**/head*.php`,  // for non-WorPress
                 `${paths.src.root}/**/footer.php`, // for non-WorPress
@@ -65,9 +65,11 @@ export function inject() {
                 ignorePath: '../build',
                 removeTags: true
             }))
-
-        return injectTask.pipe(gulp.dest(paths.dest.root))
+            .pipe(gulp.dest(paths.dest.root))
     }
 
-    new Promise(resolve => console.log('Injection not necessary').green, resolve())
+    return new Promise(resolve => {
+        console.log('File Path Injection not active'.green)
+        resolve()
+    })
 }
