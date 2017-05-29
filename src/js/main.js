@@ -1,5 +1,7 @@
 import Polyfill from 'dynamic-polyfill'
 import onResize from './lib/onResize'
+import WebFont  from 'webfontloader'
+import serviceWorker from './modules/service-worker-setup'
 
 import Nav from './modules/nav'
 
@@ -21,19 +23,10 @@ function main() {
 
 }
 
+WebFont.load({
+    google: {
+        families: ['Roboto:400,700']
+    }
+})
 
-
-// window.addEventListener('load', () => {
-//
-//     if( 'serviceWorker' in navigator ) {
-//
-//         navigator.serviceWorker.register('/serviceWorker.js')
-//             .then(registration => {
-//                 console.log('SW Reg successfull.', registration.scope);
-//             }, err => {
-//                 console.log('SW failed.', err);
-//             })
-//
-//     }
-//
-// })
+serviceWorker()
