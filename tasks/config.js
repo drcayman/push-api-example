@@ -4,6 +4,7 @@ const app   = true // add specfic dependencies + HMR
 const hash  = true // add specfic dependencies for hash in file name: main.e4d.js
 const webp  = false // convert images to webp (set Apache config for delivery)
 const proxy = false // false || MAMP/Valet DNS
+const critical = false // inject critical CSS
 
 ////////////////////////////////////////////////////////////////
 
@@ -62,8 +63,8 @@ const copyGlob = [
 ////////////////////////////////////////////////////////////////
 
 module.exports = {
-	app,
-	hash, webp,
+	app, webp,
+	hash, critical,
 	prefixerConfig, uglifyConfig, hashConfig,
 	paths, chunkhash,
 	copyGlob, proxy

@@ -2,10 +2,6 @@ import gulp from 'gulp'
 import Webp from 'gulp-webp'
 import { paths, webp } from './config'
 
-/*
-* Convert .png/.jpg to .webp
-* If disabled return promise
-*/
 
 export function images() {
 
@@ -22,6 +18,6 @@ export function images() {
 
     }
 
-    return new Promise(resolve => resolve())
+    return new Promise(resolve => console.log('WebP disabled.'.green), resolve())
 
 }

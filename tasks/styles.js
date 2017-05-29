@@ -4,13 +4,10 @@ import sass	    from 'gulp-sass'
 import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
 import hashing  from 'gulp-hash'
-import Browser  from 'browser-sync'
 import prefixer from 'gulp-autoprefixer'
-import critical from 'critical'
+import criticalCSS from 'critical'
 
-import { paths, hash, prefixerConfig, hashConfig } from './config'
-
-const browser = Browser.create()
+import { paths, hash, critical, prefixerConfig, hashConfig } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
@@ -31,6 +28,9 @@ export function styles() {
     if( isProduction )
         stylesTask = stylesTask.pipe(prefixer(prefixerConfig))
 
+    if( isProduction )
+        stylesTask = stylesTask.pipe(prefixer(prefixerConfig))
+
     if( isProduction && hash )
         stylesTask = stylesTask.pipe(hashing(hashConfig))
 
@@ -41,36 +41,38 @@ export function styles() {
 
 
 
-export function criticalStyles() {
-
-    let cssFiles = []
-
-    fs.readdirSync(paths.dest.css).forEach(file => {
-        if( file.indexOf('.map') === -1 )
-            cssFiles.push(paths.dest.css + '/' + file)
-    })
-
-    console.log(cssFiles);
+export function injectCritical() {
 
     return new Promise(resolve => {
 
-        critical.generate({
-                inline: true,
-                base: paths.dest.root,
-                src: 'index.html',
-                dest: 'index.html',
-                css: cssFiles,
-                minify: true,
-                include: [
-                    'main',
-                    '.component-wrapper',
-                    '.index',
-                    '.branding'
-                ],
-                ignore: [/nav[\-\_]/] // nav- nav_
+        let cssFiles = []
+
+        if( critical ) {
+
+            fs.readdirSync(paths.dest.css).forEach(file => {
+                if( file.indexOf('.map') === -1 )
+                    cssFiles.push(paths.dest.css + '/' + file)
             })
 
+            criticalCSS.generate({
+                    base: paths.dest.root,
+                    src: 'index.html',
+                    dest: 'index.html',
+                    css: cssFiles,
+                    inline: true,
+                    minify: true,
+                    include: [],
+                    ignore: [/nav[\-\_]/] // nav- nav_
+                })
+        }
+
+        console.log(
+            critical ? `Critical CSS injected from ${cssFiles}`.green
+                     : 'Critical CSS disabled.'.yellow
+        )
+
         resolve()
+
     })
 
 
