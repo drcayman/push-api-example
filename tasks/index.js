@@ -7,7 +7,8 @@ import { scripts } from './webpack'
 import { server }  from './server'
 import { webp }  from './images'
 
-import { copy, icons, inject, DEL } from './misc'
+import { copy, icons, DEL } from './misc'
+import { inject, resourceHints } from './injection'
 import { paths, app, wp } from './config'
 
 
@@ -22,15 +23,15 @@ export const dev = gulp.series(DEL( paths.dest.root),
 
 
 
-export const css = (solo && !wp)
+export const css = (solo && app && !wp)
                         ? gulp.series(DEL(paths.dest.css), styles, inject, injectCritical)
                         : gulp.series(DEL(paths.dest.css), styles )
 
-export const js  = (solo && !wp)
+export const js  = (solo && app && !wp)
                         ? gulp.series(DEL(paths.dest.js), scripts, inject)
                         : gulp.series(DEL(paths.dest.js), scripts )
 
-export const build = (app && !wp)
+export const build = (app && app && !wp)
                         ? gulp.series(css, js, webp, inject, injectCritical)
                         : gulp.series(css, js) // not parallel due to progress
 

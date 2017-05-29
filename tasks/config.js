@@ -2,10 +2,10 @@
 
 const wp   = false // add hashing, disable injection
 const app  = true // add specfic dependencies + HMR
-const webp = true // convert images to webp (set Apache config for delivery)
+const webp = false // convert images to webp (set Apache config for delivery)
 
 const proxy    = false // false || MAMP/Valet DNS
-const critical = true // inject critical CSS
+const critical = false // inject critical CSS
 
 ////////////////////////////////////////////////////////////////
 
@@ -42,9 +42,8 @@ const paths = {		// Laravel => src: resources | dest: public
 const copyGlob = [
     `${paths.src.root}/**`,
 	// Folder 						 // Folder Content
-    								 `!${paths.src.js}/**`, 	         // JS folder needed for WP enqueue
+    								// `!${paths.src.js}/**`, 	         // JS folder needed for WP enqueue
     `!${paths.src.css}`,             `!${paths.src.css}/**`,             // Sass gets compiled
-	//`!${paths.src.img}`,             `!${paths.src.img}/**`, 	   		 // Images copied own their own (webp)
     `!${paths.src.icons}`,           `!${paths.src.icons}/**`,   		 // Icons get processed
     `!${paths.src.root}/views`,      `!${paths.src.root}/views/**`,      // Laravel
     `!${paths.src.root}/lang`,       `!${paths.src.root}/lang/**`,       // Laravel

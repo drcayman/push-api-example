@@ -1,7 +1,7 @@
 import Polyfill from 'dynamic-polyfill'
 import onResize from './lib/onResize'
 import WebFont  from 'webfontloader'
-import serviceWorker from './modules/service-worker-setup'
+//import './modules/service-worker-setup'
 
 import Nav from './modules/nav'
 
@@ -28,5 +28,3 @@ WebFont.load({
         families: ['Roboto:400,700']
     }
 })
-
-serviceWorker()

@@ -115,6 +115,8 @@ if( isProduction ) {
     config = merge(config, {
         output: {
             filename: 'js/[name]' + chunkhash + '.js',
+            // no chunkfile = no hash for async modules
+            // https://github.com/soundcloud/chunk-manifest-webpack-plugin
             path: path.resolve(__dirname, '../' + paths.dest.root)
         },
         plugins: [
