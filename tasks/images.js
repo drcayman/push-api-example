@@ -7,12 +7,12 @@ export function webp() {
 
     if( convertWebp ) {
 
-        let glob = [
+        let filesToConvert = [
             `${paths.src.img}/**/*`,
             `!${paths.src.img}/favicon*`
         ]
 
-        return gulp.src(glob)
+        return gulp.src(filesToConvert)
             .pipe(Webp())
             .pipe(gulp.dest(paths.dest.img))
     }
