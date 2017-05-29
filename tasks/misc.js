@@ -19,14 +19,6 @@ export function copy() {
         .pipe(gulp.dest(paths.dest.root))
 }
 
-export function copyInjectionRecipients() {
-    return gulp.src([
-            `${paths.src.root}/**/*.html`,
-            `${paths.src.root}/**/head*.php`,
-            `${paths.src.root}/**/footer.php`,
-        ])
-        .pipe(gulp.dest(paths.dest.root))
-}
 
 ////////////////////////////////////////////////////////////////
 
@@ -60,15 +52,14 @@ export function inject() {
         scripts = gulp.src(`${paths.dest.js}/main.*.js`,   { read: false })
 
     return gulp.src([
-        `${paths.dest.root}/**/*.html`,
-        `${paths.dest.root}/**/head*.php`,  // for non-WorPress
-        `${paths.dest.root}/**/footer.php`, // for non-WorPress
+        `${paths.src.root}/**/*.html`,
+        `${paths.src.root}/**/head*.php`,  // for non-WorPress
+        `${paths.src.root}/**/footer.php`, // for non-WorPress
     ])
         .pipe(Inject(series(styles, vendor, scripts), {
             relative: true,
+            ignorePath: '../build',
             removeTags: true
         }))
         .pipe(gulp.dest(paths.dest.root))
 }
-
-////////////////////////////////////////////////////////////////

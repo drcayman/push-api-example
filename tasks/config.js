@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 
-const app   = false // add specfic dependencies + HMR
-const hash  = false // add specfic dependencies for hash in file name: main.e4d.js
+const app   = true // add specfic dependencies + HMR
+const hash  = true // add specfic dependencies for hash in file name: main.e4d.js
 const webp  = false // convert images to webp (set Apache config for delivery)
 const proxy = false // false || MAMP/Valet DNS
 
