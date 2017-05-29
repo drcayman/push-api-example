@@ -70,20 +70,3 @@ self.addEventListener('fetch', event => {
             })
     )
 })
-
-
-
-window.addEventListener('load', () => {
-
-    if( 'serviceWorker' in navigator ) {
-
-        navigator.serviceWorker.register('/serviceWorker.js')
-            .then(registration => {
-                console.log('SW Reg successfull.', registration.scope);
-            }, err => {
-                console.log('SW failed.', err);
-            })
-
-    }
-
-})
