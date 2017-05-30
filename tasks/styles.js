@@ -7,7 +7,7 @@ import hashing  from 'gulp-hash'
 import prefixer from 'gulp-autoprefixer'
 import criticalCSS from 'critical'
 
-import { paths, app, wp, critical, prefixerConfig, hashLength } from './config'
+import { paths, app, wp, critical, hashLength } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
@@ -26,10 +26,10 @@ export function styles() {
         })))
 
     if( isProduction )
-        stylesTask = stylesTask.pipe(prefixer(prefixerConfig))
+        stylesTask = stylesTask.pipe(prefixer())
 
     if( isProduction && app || isProduction && wp )
-        stylesTask = stylesTask.pipe(hashing({ hashLength, template: '<%= name %>.<%= hash %><%= ext %>' }))
+        stylesTask = stylesTask.pipe(hashing({ hashLength: 5, template: '<%= name %>.<%= hash %><%= ext %>' }))
 
     return stylesTask
         .pipe(maps.write('./'))

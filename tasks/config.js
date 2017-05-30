@@ -9,11 +9,6 @@ const critical = false // inject critical CSS
 
 ////////////////////////////////////////////////////////////////
 
-const hashLength = 5
-
-const prefixerConfig = { browsers: ['android >= 4.2', '> 0.2%', 'not ie <= 8'] }
-
-////////////////////////////////////////////////////////////////
 
 const paths = {		// Laravel => src: resources | dest: public
 	src: {
@@ -53,6 +48,6 @@ const copyGlob = [
 ////////////////////////////////////////////////////////////////
 
 module.exports = {
-	app, webp, wp, critical, prefixerConfig,
-	paths, hashLength, copyGlob, proxy
+	app, webp, wp, critical,
+	paths, copyGlob, proxy
 }
