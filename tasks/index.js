@@ -8,7 +8,7 @@ import { server }  from './server'
 import { webp }  from './images'
 
 import { copy, icons, DEL } from './misc'
-import { inject, resourceHints } from './injection'
+import { inject } from './injection'
 import { paths, app, wp } from './config'
 
 

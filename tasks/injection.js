@@ -1,8 +1,8 @@
 import fs   from 'fs'
 import gulp from 'gulp'
 import path from 'path'
-import series from 'stream-series'
 import Inject from 'gulp-inject'
+import series from 'stream-series'
 
 import { paths } from './config'
 
@@ -13,94 +13,75 @@ export function inject() {
             scripts = gulp.src(`${paths.dest.js}/main.*.js`,   { read: false })
 
         let hintSources = gulp.src([
-                `${paths.dest.fonts}/*.woff2`,
-                `${paths.dest.css}/*.css`,
-                `${paths.dest.js}/*.js`,
-            ], { read: false })
-
-
-        return gulp.src([
-                `${paths.src.root}/**/*.html`,
-                `${paths.src.root}/**/head*.php`,  // for non-WorPress
-                `${paths.src.root}/**/footer.php`, // for non-WorPress
-            ])
-            .pipe(Inject(series(styles, vendor, scripts), {
-                relative: true,
-                removeTags: true,
-                ignorePath: '../build'
-            }))
-            .pipe(Inject(hintSources, {
-                relative: true,
-                removeTags: true,
-                ignorePath: '../build',
-                starttag: '<!-- inject:resourcehints -->',
-                transform(path, file) {
-
-                    console.log(path);
-
-                    // vendor[.hash].js | main[.hash].css
-                    if( path.match(/(vendor|main)(\..*)?\.(js|css)/) ) {
-                        return `<link rel="preload" as="${path.match(/\.css$/) ? 'style':'script'}" href="${path}">\n\t`
-                    }
-
-                    else if( path.match(/\.js$/) ) {
-                        return `<link rel="prefetch" as="script" href="${path}" >\n\t`
-                    }
-
-                    else if( path.match(/\.woff2$/) ) {
-                        return `<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="${path}" >\n\t`
-                    }
-
-                }
-            }))
-
-            .pipe(gulp.dest(paths.dest.root))
-
-}
-
-////////////////////////////////////////////////////////////////
-
-export function resourceHints() {
-
-    // let styles  = [],
-    //     scripts = []
-
-    // fs.readdirSync(paths.dest.js).forEach(file => {
-    //     if( file.indexOf('main.js') !== -1 || file.indexOf('vendor.js') !== -1 )
-    //         scripts.push(paths.dest.js + '/' + file)
-    // })
-
-    let sources = gulp.src([
+            `${paths.dest.fonts}/*.woff2`,
             `${paths.dest.css}/*.css`,
             `${paths.dest.js}/*.js`,
         ], { read: false })
 
+        // for logging
+        let injectedFiles = [],
+            loopRound = 0,
+            injectedMain  = [],
+            injectedHints = []
 
-    return gulp.src([
-            `${paths.dest.root}/**/*.html`,
-            `${paths.dest.root}/**/head*.php`,  // for non-WorPress
-            `${paths.dest.root}/**/footer.php`, // for non-WorPress
+        let injectionTask = gulp.src([
+            `${paths.src.root}/**/*.html`,
+            `${paths.src.root}/**/head*.php`,  // for non-WorPress
+            `${paths.src.root}/**/footer.php`, // for non-WorPress
         ])
-        .pipe(Inject(sources, {
+
+
+        // Inject hashed scripts/styles
+        injectionTask.pipe(Inject(series(styles, vendor, scripts), {
             relative: true,
             removeTags: true,
-            ignorePath: 'build',
-            starttag: '<!-- inject:resourcehints -->',
-            transform(path, file) {
+            ignorePath: '../build',
+            quiet: true
+        }))
 
-                console.log(path);
+
+        // Inject resource hints
+        injectionTask.pipe(Inject(hintSources, {
+            relative: true,
+            removeTags: true,
+            ignorePath: '../build',
+            quiet: true,
+            starttag: '<!-- inject:resourcehints -->',
+            transform(path, file, i, length) {
+
+                loopRound += 1
+
+                if( path.match(/(vendor|main)(\..*)?\.(js|css)/) ) {
+                    injectedMain.push(path)
+                }
+                else {
+                    injectedHints.push(path)
+                }
+
+                if( loopRound === length ) {
+                    console.log(`Injected Files:\n${injectedMain.join('\n')}`.green)
+                    console.log(`\nAdditional Resource Hints:\n${injectedHints.join('\n')}`.cyan)
+                }
+
 
                 // vendor[.hash].js | main[.hash].css
                 if( path.match(/(vendor|main)(\..*)?\.(js|css)/) ) {
                     return `<link rel="preload" as="${path.match(/\.css$/) ? 'style':'script'}" href="${path}">\n\t`
                 }
 
+                // Webpack dynamic imports
                 else if( path.match(/\.js$/) ) {
                     return `<link rel="prefetch" as="script" href="${path}" >\n\t`
                 }
 
+                // Fonts
+                else if( path.match(/\.woff2$/) ) {
+                    return `<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="${path}" >\n\t`
+                }
+
+                return
             }
         }))
-        .pipe(gulp.dest(paths.dest.root))
 
+        return injectionTask.pipe(gulp.dest(paths.dest.root))
 }
