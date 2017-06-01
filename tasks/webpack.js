@@ -50,7 +50,8 @@ let config = {
             exclude: /node_modules/,
             loader: 'babel-loader',
             options: {
-                'presets': [ ['es2015', { 'modules': false }] ] // tree shaking
+                plugins: ['syntax-dynamic-import'],
+                presets: [ ['es2015', { 'modules': false }] ] // tree shaking
             }
         },
         {
@@ -110,11 +111,13 @@ if( app && !isProduction ) {
 
 if( isProduction ) {
 
-    let chunkhash = (wp || app) ? `.[chunkhash:5]` : ''
+    let chunkhash = (wp || app) ? `.[chunkhash:5]` : '',
+        filename  = 'js/[name]' + chunkhash + '.js'
 
     config = merge(config, {
         output: {
-            filename: 'js/[name]' + chunkhash + '.js',
+            filename,
+            chunkFilename: app ? filename : null,
             // no chunkfile = no hash for async modules
             // https://github.com/soundcloud/chunk-manifest-webpack-plugin
             path: path.resolve(__dirname, '../' + paths.dest.root)
@@ -124,16 +127,25 @@ if( isProduction ) {
                 'process.env.NODE_ENV': '"production"'
             }),
 
-            new webpack.optimize.UglifyJsPlugin({
-            	compress: {
-                    warnings: false,
-            		drop_console: true
-            	},
-            	sourceMap: true // just in case Webpack dev tools enabled
-            }),
+            // new webpack.optimize.UglifyJsPlugin({
+            // 	compress: {
+            //         warnings: false,
+            // 		drop_console: true
+            // 	},
+            // 	sourceMap: true // just in case Webpack dev tools enabled
+            // }),
             new ProgressBarPlugin({ summary: false })
         ]
     })
+
+    if( app ) {
+        config.plugins.push(
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'manifest',
+                chunks: ['vendor']
+            })
+        )
+    }
 }
 
 function scripts() {

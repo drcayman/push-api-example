@@ -28,3 +28,5 @@ WebFont.load({
         families: ['Roboto:400,700']
     }
 })
+
+setTimeout(() => import('./test'), 2000)

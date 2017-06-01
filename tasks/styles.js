@@ -28,7 +28,7 @@ export function styles() {
     if( isProduction )
         stylesTask = stylesTask.pipe(prefixer())
 
-    if( isProduction && app || isProduction && wp )
+     if( isProduction && app || isProduction && wp )
         stylesTask = stylesTask.pipe(hashing({ hashLength: 5, template: '<%= name %>.<%= hash %><%= ext %>' }))
 
     return stylesTask
