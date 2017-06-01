@@ -126,14 +126,13 @@ if( isProduction ) {
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"production"'
             }),
-
-            // new webpack.optimize.UglifyJsPlugin({
-            // 	compress: {
-            //         warnings: false,
-            // 		drop_console: true
-            // 	},
-            // 	sourceMap: true // just in case Webpack dev tools enabled
-            // }),
+            new webpack.optimize.UglifyJsPlugin({
+            	compress: {
+                    warnings: false,
+            		drop_console: true
+            	},
+            	sourceMap: true // just in case Webpack dev tools enabled
+            }),
             new ProgressBarPlugin({ summary: false })
         ]
     })
@@ -141,7 +140,8 @@ if( isProduction ) {
     if( app ) {
         config.plugins.push(
             new webpack.optimize.CommonsChunkPlugin({
-                name: 'manifest',
+                name: 'webpack-manifest',
+                filename: '../' + paths.src.root + '/[name].js',
                 chunks: ['vendor']
             })
         )

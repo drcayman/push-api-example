@@ -1,11 +1,14 @@
 ////////////////////////////////////////////////////////////////
 
-const wp   = false // add hashing, disable injection
-const app  = true // add specfic dependencies + HMR
-const webp = false // convert images to webp (set Apache config for delivery)
+const wp  = false // hashing, disable injection, remove WP files
+const app = true // hsahing, HMR, injection
 
-const proxy    = false // false || MAMP/Valet DNS
-const critical = false // inject critical CSS
+const proxy = false // false || MAMP/Valet DNS
+
+const webp = false // images to webp (set htaccess)
+const hash = app || false // CSS/JS hashing, injection
+
+const critical = true // inject critical CSS | npm i critical -D
 
 ////////////////////////////////////////////////////////////////
 
@@ -48,6 +51,6 @@ const copyGlob = [
 ////////////////////////////////////////////////////////////////
 
 module.exports = {
-	app, webp, wp, critical,
+	app, webp, wp, hash, critical,
 	paths, copyGlob, proxy
 }

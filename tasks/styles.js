@@ -5,7 +5,6 @@ import maps     from 'gulp-sourcemaps'
 import notify   from 'gulp-notify'
 import hashing  from 'gulp-hash'
 import prefixer from 'gulp-autoprefixer'
-import criticalCSS from 'critical'
 
 import { paths, app, wp, critical, hashLength } from './config'
 
@@ -45,6 +44,8 @@ export function injectCritical() {
         let cssFiles = []
 
         if( critical ) {
+
+            const criticalCSS = require('critical')
 
             fs.readdirSync(paths.dest.css).forEach(file => {
                 if( file.indexOf('.map') === -1 )

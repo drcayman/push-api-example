@@ -29,4 +29,5 @@ WebFont.load({
     }
 })
 
-setTimeout(() => import('./test'), 2000)
+setTimeout(() => import(/* webpackChunkName: "my-chunk-name" */ './test'), 2000)
+setTimeout(() => import('./test2'), 2000)
