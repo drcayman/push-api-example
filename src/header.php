@@ -21,6 +21,8 @@
     <link rel="apple-touch-icon" href="assets/img/favicon.png">
 
 	<?php wp_head(); ?>
+
+	<!-- inject:manifest --><!-- endinject -->
 </head>
 <body>
 

@@ -2,7 +2,7 @@ import del      from 'del'
 import gulp     from 'gulp'
 import webpack  from 'webpack'
 import Browser  from 'browser-sync'
-import webpackDevMiddleware  from 'webpack-dev-middleware'
+import wpDevMW from 'webpack-dev-middleware'
 
 import { styles } from './styles'
 import { copy, icons } from './misc'
@@ -18,13 +18,11 @@ const bundler = webpack(webpackConfig) // devMW + hotMW need same instance
 export function server() {
 
     let middleware = [
-        webpackDevMiddleware(bundler, {
-            stats: webpackConfig.stats
-        })
+        wpDevMW(bundler, { stats: webpackConfig.stats })
     ]
 
     if( app )
-        middleware.push( require('webpack-hot-middleware')( bundler ) )
+        middleware.push( require('webpack-hot-middleware')(bundler) )
 
     let config = {
         open: false,
@@ -51,12 +49,18 @@ export function server() {
     // Start Server
     browser.init(config);
 
-    // Watch JS
-    gulp.watch(`${paths.src.js}/**/*.js`)
-        .on('change', () => browser.reload())
 
     // Watch Sass
     gulp.watch(`${paths.src.css}/**/*.scss`, styles)
+
+
+    // Reload JS|Laravel Views
+    gulp.watch([
+            `${paths.src.js}/**/*.js`,
+            `${paths.src.root}/views/**/*.blade.php`
+        ])
+        .on('change', () => browser.reload())
+
 
     // Watch Icons
     gulp.watch(paths.src.icons, icons)
@@ -71,10 +75,5 @@ export function server() {
             del(path.replace(paths.src.root, paths.dest.root))
             browser.reload()
         })
-
-
-    // Watch Laravel Views
-    gulp.watch(`${paths.src.root}/views/**/*.blade.php`)
-        .on('change', () => browser.reload())
 
 }

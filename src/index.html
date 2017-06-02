@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
     <meta charset="utf-8">
 
 	<meta name="viewport"     content="width=device-width, initial-scale=1.0">
@@ -12,17 +11,14 @@
 
 	<meta property="og:title" content="__TITLE__">
 	<meta property="og:type"  content="website">
-    <meta property="og:image" content="//__DOMAIN__/assets/img/opengraph.jpg">  <!-- 1200x630 (1.91:1), <1MB -->
+    <meta property="og:image" content="//__DOMAIN__/assets/img/opengraph.jpg">
 	<meta property="og:url"   content="__URL__" >
 
-    <link rel="icon" href="assets/img/favicon.png" sizes="16x16 32x32 64x64 128x128" type="image/png">
-
-    <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:400,700" as="style">
+    <link rel="icon" href="assets/img/favicon.png" sizes="16x16 32x32" type="image/png">
 
     <!-- inject:resourcehints --><!-- endinject -->
 
-    <!-- inject:manifest --><!-- endinject -->
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
     <!-- inject:css -->
     <link rel="stylesheet" href="css/main.css">
     <!-- endinject -->
@@ -95,7 +91,14 @@
             <div class="row">
 
 
-                <app></app>
+                <div id="app">
+
+                    <router-link to="/">Home</router-link>
+                    <router-link to="/test">Test</router-link>
+
+                    <router-view></router-view>
+
+                </div>
             </div>
 
         </div>
@@ -113,7 +116,7 @@
     </footer>
 
 
-
+    <!-- inject:manifest --><!-- endinject -->
     <!-- inject:js -->
     <script src="js/vendor.js"></script>
     <script src="js/main.js"></script>

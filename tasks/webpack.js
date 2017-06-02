@@ -7,11 +7,9 @@ import NotifierPlugin    from 'webpack-notifier'
 import WriteFilePlugin   from 'write-file-webpack-plugin'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 
-import { paths, app, wp, uglifyConfig } from './config'
+import { paths, app, hash } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
-
-process.noDeprecation = true // ignore loader-utils warning (only for loader authors)
 
 ////////////////////////////////////////////////////////////////
 
@@ -111,15 +109,14 @@ if( app && !isProduction ) {
 
 if( isProduction ) {
 
-    let chunkhash = (wp || app) ? `.[chunkhash:5]` : '',
+    let chunkhash = hash ? `.[chunkhash:5]` : '',
         filename  = 'js/[name]' + chunkhash + '.js'
 
     config = merge(config, {
         output: {
             filename,
-            chunkFilename: app ? filename : null,
-            // no chunkfile = no hash for async modules
-            // https://github.com/soundcloud/chunk-manifest-webpack-plugin
+            chunkFilename: filename,
+            // chunkFilename: app ? filename : 'js/[name]',
             path: path.resolve(__dirname, '../' + paths.dest.root)
         },
         plugins: [
@@ -137,11 +134,11 @@ if( isProduction ) {
         ]
     })
 
-    if( app ) {
+    if( hash ) {
         config.plugins.push(
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'webpack-manifest',
-                filename: '../' + paths.src.root + '/[name].js',
+                filename: '[name].js',
                 chunks: ['vendor']
             })
         )

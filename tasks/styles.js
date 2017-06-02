@@ -6,7 +6,7 @@ import notify   from 'gulp-notify'
 import hashing  from 'gulp-hash'
 import prefixer from 'gulp-autoprefixer'
 
-import { paths, app, wp, critical, hashLength } from './config'
+import { paths, app, hash, critical, hashLength } from './config'
 
 const isProduction = (process.env.NODE_ENV === 'production')
 
@@ -27,7 +27,7 @@ export function styles() {
     if( isProduction )
         stylesTask = stylesTask.pipe(prefixer())
 
-     if( isProduction && app || isProduction && wp )
+     if( isProduction && app || isProduction && hash )
         stylesTask = stylesTask.pipe(hashing({ hashLength: 5, template: '<%= name %>.<%= hash %><%= ext %>' }))
 
     return stylesTask

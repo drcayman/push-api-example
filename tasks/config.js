@@ -6,12 +6,11 @@ const app = true // hsahing, HMR, injection
 const proxy = false // false || MAMP/Valet DNS
 
 const webp = false // images to webp (set htaccess)
-const hash = app || false // CSS/JS hashing, injection
+const hash = app || wp || false // CSS/JS hashing, injection
 
-const critical = true // inject critical CSS | npm i critical -D
+const critical = !wp && false // inject critical CSS | npm i critical -D
 
 ////////////////////////////////////////////////////////////////
-
 
 const paths = {		// Laravel => src: resources | dest: public
 	src: {
@@ -40,7 +39,7 @@ const paths = {		// Laravel => src: resources | dest: public
 const copyGlob = [
     `${paths.src.root}/**`,
 	// Folder 						 // Folder Content
-    								// `!${paths.src.js}/**`, 	         // JS folder needed for WP enqueue
+    								 `!${paths.src.js}/**`, 	         // JS folder needed for WP enqueue
     `!${paths.src.css}`,             `!${paths.src.css}/**`,             // Sass gets compiled
     `!${paths.src.icons}`,           `!${paths.src.icons}/**`,   		 // Icons get processed
     `!${paths.src.root}/views`,      `!${paths.src.root}/views/**`,      // Laravel
