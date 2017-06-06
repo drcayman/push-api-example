@@ -47,7 +47,22 @@ export function server() {
     }
 
     // Start Server
-    browser.init(config);
+    if( php ) {
+        const php = require('gulp-connect-php')
+
+        let address = proxy ? proxy : 'http://localhost'
+        console.log(`For PHP use this URL: ${address}:8000`.yellow);
+
+        php.server({ base: 'build', stdio: 'ignore', open: false }, () => {
+            Browser({
+                open: false,
+                proxy: proxy ? proxy : 'http://localhost:8000'
+            })
+        })
+    }
+    else {
+        browser.init(config);
+    }
 
 
     // Watch Sass

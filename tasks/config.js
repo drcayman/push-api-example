@@ -2,6 +2,7 @@
 
 const wp  = false // hashing, disable injection, remove WP files
 const app = true // hsahing, HMR, injection
+const php = false // run PHP server
 
 const proxy = false // false || MAMP/Valet DNS
 
