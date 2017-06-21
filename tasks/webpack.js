@@ -130,7 +130,8 @@ if( isProduction ) {
             	},
             	sourceMap: true // just in case Webpack dev tools enabled
             }),
-            new ProgressBarPlugin({ summary: false })
+            new ProgressBarPlugin({ summary: false }),
+            new webpack.optimize.ModuleConcatenationPlugin() // scope hoisting
         ]
     })
 
