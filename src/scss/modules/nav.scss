@@ -157,7 +157,8 @@
 		right: 0;
 		background: $white;
 		box-shadow: -1px 0 4px rgba(0,0,0,.3);
-		transform: translate(100%, 0);
+		transform: translate(102%, 0); // 102% due to shadow
+		will-change: transform;
 		transition: transform .4s $ease-out-quad;
 
 		&.is-visible {
