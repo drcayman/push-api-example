@@ -1,11 +1,12 @@
 import gulp from 'gulp'
-import Webp from 'gulp-webp'
 import { paths, webp as convertWebp } from './config'
 
 
 export function webp() {
 
     if( convertWebp ) {
+
+        const Webp = require('gulp-webp')
 
         let filesToConvert = [
             `${paths.src.img}/**/*`,

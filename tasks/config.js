@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 
 const wp  = false // hashing, disable injection, remove WP files
-const app = true // hsahing, HMR, injection
+const app = false // hsahing, HMR, injection
 const php = false // run PHP server
 
 const proxy = false // false || MAMP/Valet DNS
@@ -51,6 +51,6 @@ const copyGlob = [
 ////////////////////////////////////////////////////////////////
 
 module.exports = {
-	app, webp, wp, hash, critical,
-	paths, copyGlob, proxy
+	app, webp, wp, php, hash,
+	critical, paths, copyGlob, proxy
 }

@@ -8,7 +8,7 @@ import { styles } from './styles'
 import { copy, icons } from './misc'
 
 import { config as webpackConfig } from './webpack'
-import { paths, app, proxy, copyGlob } from './config'
+import { paths, app, php, proxy, copyGlob } from './config'
 
 const browser = Browser.create()
 const bundler = webpack(webpackConfig) // devMW + hotMW need same instance
