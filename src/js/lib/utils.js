@@ -6,15 +6,12 @@ String.prototype.capitalize = function() {
 }
 
 
-// Wait for CSS Background Images for be loaded
-export function getLoadedBackground(src, cb) {
+// Delay function call
+export function throttle(cb, delay) {
+    let timer
 
-    let url = src.match(/\((.*?)\)/)[1].replace(/('|")/g,''),
-        img = new Image()
-
-    img.onload = () => cb()
-
-    img.src = url
-    if( img.complete ) img.onload()
-
+    return () => {
+        clearTimeout(timer)
+        timer = setTimeout(() => cb(), delay)
+    }
 }

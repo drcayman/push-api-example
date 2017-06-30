@@ -28,7 +28,10 @@ main {
 }
 
 // HEADINGS
-h1 { font-size: 4em; margin-bottom: 50px; }
+h1 {
+    font-size: 4em;
+    margin-bottom: 50px;
+}
 h2 { font-size: 3.2em; margin-bottom: 2vw; }
     h2 small { font-size: .7em; }
 h3 { font-size: 2.8em; margin-bottom: 1.5vw; }
@@ -62,8 +65,8 @@ ul, ol { padding-left: 0; list-style: none; }
 	li {
         position: relative;
 
-		&:before {
-            content: "■";
+		&::before {
+            content: "■"; // ● →
             color: $prim-color;
             left: -15px;
             font-size: 1em;
