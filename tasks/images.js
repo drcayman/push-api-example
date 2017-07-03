@@ -1,8 +1,8 @@
-import gulp from 'gulp'
 import { paths, webp as convertWebp } from './config'
+import { src, dest, watch, parallel, series } from 'gulp'
 
 
-export function webp() {
+export const webp = () => {
 
     if( convertWebp ) {
 
@@ -13,9 +13,9 @@ export function webp() {
             `!${paths.src.img}/favicon*`
         ]
 
-        return gulp.src(filesToConvert)
+        return src(filesToConvert)
             .pipe(Webp())
-            .pipe(gulp.dest(paths.dest.img))
+            .pipe(dest(paths.dest.img))
     }
 
     return new Promise(resolve => {

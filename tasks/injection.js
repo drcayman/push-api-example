@@ -1,11 +1,11 @@
 import fs   from 'fs'
-import gulp from 'gulp'
+import del from 'del'
 import path from 'path'
 
 import { paths, wp, hash, critical } from './config'
-import del from 'del'
+import { src, dest, watch, parallel, series } from 'gulp'
 
-export function inject() {
+export const inject = () => {
 
     if( hash ) { // no main file injection + resource hints
 
@@ -14,12 +14,12 @@ export function inject() {
 
 
         // Main CSS + JS files
-        let styles  = gulp.src(`${paths.dest.css}/main.*.css`, { read: false }),
-            vendor  = gulp.src(`${paths.dest.js}/vendor.*.js`, { read: false }),
-            scripts = gulp.src(`${paths.dest.js}/main.*.js`,   { read: false })
+        let styles  = src(`${paths.dest.css}/main.*.css`, { read: false }),
+            vendor  = src(`${paths.dest.js}/vendor.*.js`, { read: false }),
+            scripts = src(`${paths.dest.js}/main.*.js`,   { read: false })
 
         // Resource hinted files
-        let hintSources = gulp.src([
+        let hintSources = src([
             `${paths.dest.fonts}/*.woff2`,
             `${paths.dest.css}/*.css`,
             `${paths.dest.js}/*.js`,
@@ -32,7 +32,7 @@ export function inject() {
             loopRound = 0
 
         // Injection recipients
-        let injectionTask = gulp.src([
+        let injectionTask = src([
             `${paths.src.root}/**/*.html`,
             `${paths.src.root}/**/head*.php`,  // for non-WorPress
             `${paths.src.root}/**/footer.php`, // for non-WorPress
@@ -93,7 +93,7 @@ export function inject() {
 
         // Inject Webpack manifest
         injectionTask.pipe(Inject(
-            gulp.src(paths.dest.root + '/webpack-manifest.js'), {
+            src(paths.dest.root + '/webpack-manifest.js'), {
                 removeTags: true,
                 quiet: true,
                 starttag: '<!-- inject:manifest -->',
@@ -106,7 +106,7 @@ export function inject() {
         del(path.resolve(__dirname, '../build/webpack-manifest.js'))
         console.log('Injected Webpack Manifest.\n'.cyan)
 
-        return injectionTask.pipe(gulp.dest(paths.dest.root))
+        return injectionTask.pipe(dest(paths.dest.root))
 
     } // end hash
 

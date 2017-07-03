@@ -1,5 +1,4 @@
 import del      from 'del'
-import gulp     from 'gulp'
 import webpack  from 'webpack'
 import Browser  from 'browser-sync'
 import wpDevMW from 'webpack-dev-middleware'
@@ -8,14 +7,15 @@ import { styles } from './styles'
 import { copy, icons } from './misc'
 
 import { config as webpackConfig } from './webpack'
-import { paths, app, php, proxy, copyGlob } from './config'
+import { paths, app, proxy, copyGlob } from './config'
+import { src, dest, watch, parallel, series } from 'gulp'
 
 const browser = Browser.create()
 const bundler = webpack(webpackConfig) // devMW + hotMW need same instance
 
 ////////////////////////////////////////////////////////////////
 
-export function server() {
+export const server = () => {
 
     let middleware = [
         wpDevMW(bundler, { stats: webpackConfig.stats })
@@ -46,31 +46,15 @@ export function server() {
         }
     }
 
-    // Start Server
-    if( php ) {
-        const php = require('gulp-connect-php')
-
-        let address = proxy ? proxy : 'http://localhost'
-        console.log(`For PHP use this URL: ${address}:8000`.yellow);
-
-        php.server({ base: 'build', stdio: 'ignore', open: false }, () => {
-            Browser({
-                open: false,
-                proxy: proxy ? proxy : 'http://localhost:8000'
-            })
-        })
-    }
-    else {
-        browser.init(config);
-    }
+    browser.init(config);
 
 
     // Watch Sass
-    gulp.watch(`${paths.src.css}/**/*.scss`, styles)
+    watch(`${paths.src.css}/**/*.scss`, styles)
 
 
     // Reload JS|Laravel Views
-    gulp.watch([
+    watch([
             `${paths.src.js}/**/*.js`,
             `${paths.src.root}/views/**/*.blade.php`
         ])
@@ -78,14 +62,17 @@ export function server() {
 
 
     // Watch Icons
-    gulp.watch(paths.src.icons, icons)
+    watch(paths.src.icons, icons)
         .on('change', () => browser.reload())
         .on('unlink', () => del(`${paths.dest.assets}/icons.svg`))
 
 
     // Watch Misc + Inject Images
-    gulp.watch(copyGlob, copy)
-        .on('change', path => browser.reload(path))
+    watch(copyGlob)
+        .on('change', path => {
+            copy()
+            setTimeout(() => browser.reload(), 100);
+        })
         .on('unlink', path => {
             del(path.replace(paths.src.root, paths.dest.root))
             browser.reload()

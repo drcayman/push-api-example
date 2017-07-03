@@ -146,9 +146,9 @@ if( isProduction ) {
     }
 }
 
-function scripts() {
+const scripts = () => new Promise(resolve => {
 
-    return new Promise(resolve => webpack(config, (err, stats) => {
+    webpack(config, (err, stats) => {
 
         console.log(stats.toString({
             assets: false,
@@ -160,7 +160,8 @@ function scripts() {
 
         resolve()
 
-    }))
-}
+    })
+})
+
 
 module.exports = { config, scripts }

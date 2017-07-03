@@ -1,5 +1,4 @@
 import del  from 'del'
-import gulp from 'gulp'
 import process from 'process'
 
 import { styles, injectCritical }  from './styles'
@@ -10,20 +9,21 @@ import { webp }  from './images'
 import { copy, icons, DEL } from './misc'
 import { inject } from './injection'
 import { paths, app, wp, hash } from './config'
+import { src, dest, watch, parallel, series } from 'gulp'
 
 
 
-export const dev = gulp.series(
+export const dev = series(
                         DEL(paths.dest.root),
-                        gulp.parallel(copy, styles, icons),
+                        parallel(copy, styles, icons),
                         server
                     )
 
-export const css = gulp.series(DEL(paths.dest.css), styles )
+export const css = series(DEL(paths.dest.css), styles )
 
-export const js  = gulp.series(DEL(paths.dest.js), scripts, inject)
+export const js  = series(DEL(paths.dest.js), scripts, inject)
 
-export const build = gulp.series(
+export const build = series(
                             DEL([paths.dest.css, paths.dest.js]),
                             styles,
                             scripts,
