@@ -35,6 +35,10 @@ export const server = () => {
             paths.dest.img + '/**/*'
         ],
         server: proxy ? false : paths.dest.root,
+        https: {
+            key: process.env.HOME + '/.valet/Certificates/boilerplate.dev.key',
+            cert: process.env.HOME + '/.valet/Certificates/boilerplate.dev.crt',
+        },
         middleware,
         snippetOptions: {    // add script above stylesheet
             rule: {          // to be able to remove body tag

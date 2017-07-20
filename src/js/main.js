@@ -1,22 +1,25 @@
-import Polyfill from 'dynamic-polyfill'
-import onResize from './lib/onResize'
-//import './modules/service-worker-setup'
+import firebase from 'firebase/app'
+import 'firebase/database'
 
-import Nav from './modules/nav'
+import './modules/sw'
 
 
-Polyfill({
-    fills: ['fetch', 'Promise'],
-    options: ['gated'],
-    afterFill() {
-        main()
-    }
-})
 
-function main() {
+const postBtn = document.getElementById('add-post')
+const list = document.getElementById('list')
 
-    Nav()
+function saveToDB() {
+    firebase.database().ref('posts').push('Post Title')
 
-    onResize()
+    firebase.database().ref('device_ids').once('value')
+        .then(snap => console.log(snap.val()))
 
 }
+
+postBtn.addEventListener('click', () => {
+    const listItem = document.createElement('li')
+    listItem.innerHTML = 'Post Title'
+    list.append(listItem)
+
+    saveToDB()
+})

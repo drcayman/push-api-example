@@ -9,6 +9,8 @@
 
 	<title>__TITLE__</title>
 
+    <link rel="manifest" href="/manifest.json">
+
 	<meta property="og:title" content="__TITLE__">
 	<meta property="og:type"  content="website">
     <meta property="og:image" content="//__DOMAIN__/assets/img/opengraph.jpg">
@@ -25,83 +27,13 @@
 </head>
 <body>
 
-    <div class="header-sticky">
-    <header class="header">
-
-    	<div class="flex container">
-
-            <div class="logo">
-    		    <a href="/">
-                    <img src="assets/img/logo.svg" alt="__TITLE__">
-                </a>
-            </div>
-    		<!-- <h1>__TITLE__</h1> -->
-
-    		<div id="nav-handler" class="nav-handler">
-    			<span></span>
-    			<span></span>
-    			<span></span>
-    		</div>
-
-            <div class="nav-overlay"></div> <!-- for mobile nav -->
-
-    		<nav id="nav-main" class="nav">
-    			<ul>
-    				<li class="nav__item">
-                        <a href="#0">Item</a>
-                    </li>
-
-    				<li class="nav-drop nav__item">
-                        <a>Item Has Sub</a>
-
-    					<ul class="nav-sub">
-    						<li class="nav-sub__item">
-                                <a  href="#0">Sub Item</a>
-                            </li>
-
-    						<li class="nav-drop nav-sub__item">
-                                <a href="#0">Sub Item Has Deep</a>
-
-    							<ul class="nav-deep">
-    								<li class="nav-deep__item">
-                                        <a href="#0">Deep Item</a>
-                                    </li>
-    							</ul>
-
-    						</li>
-    					</ul>
-
-    				</li>
-
-                    <li class="nav__item">
-                        <a href="#0">Item</a>
-                    </li>
-    			</ul>
-    		</nav>
-    	</div>
-
-    </header>
-    </div>
-
-
     <main id="content"> <!-- content -->
 
-        <div class="container">
+        <button id="push-button" disabled>Subscribe</button>
 
-            <div class="row">
+        <button id="add-post">Add Post</button>
 
-
-                <div id="app">
-
-                    <router-link to="/">Home</router-link>
-                    <router-link to="/test">Test</router-link>
-
-                    <router-view></router-view>
-
-                </div>
-            </div>
-
-        </div>
+        <ul id="list"></ul>
 
     </main> <!-- end content -->
 
@@ -116,6 +48,9 @@
     </footer>
 
 
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-messaging.js"></script>
     <!-- inject:manifest --><!-- endinject -->
     <!-- inject:js -->
     <script src="js/vendor.js"></script>

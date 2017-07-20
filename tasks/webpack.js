@@ -16,7 +16,7 @@ const isProduction = (process.env.NODE_ENV === 'production')
 let config = {
 
     entry: {
-        main: ['./js/main.js']
+        main: ['./js/main.js'],
     },
 
     output: {

@@ -14,3 +14,12 @@
 
 // MODULES
 'modules/nav';
+
+#list {
+    background: #eee;
+    padding: 20px;
+}
+
+.list-item + .list-item {
+    margin-top: 20px;
+}
