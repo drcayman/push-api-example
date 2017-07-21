@@ -54,6 +54,7 @@
     "stream-series": "^0.1.1",
     "webpack": "^3.3.0",
     "webpack-dev-middleware": "^1.11.0",
+    "webpack-hot-middleware": "^2.18.2",
     "webpack-merge": "^4.1.0",
     "webpack-notifier": "^1.4.1",
     "worker-loader": "^0.8.1",

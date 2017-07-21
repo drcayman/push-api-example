@@ -6,7 +6,7 @@ export default function(payload) {
 
     console.log('snack payload', payload);
     let data = {
-        message: payload.notification,
+        message: payload.notification.title,
         timeout: 5000,
         actionHandler(event) {
             location.reload()
