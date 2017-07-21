@@ -27,70 +27,6 @@ self.addEventListener('install', event => {
 })
 
 
-// Phase out old SW after update
-// self.addEventListener('activate', event => {
-//
-//     event.waitUntil(
-//         caches.keys()
-//             .then(keys => Promise.all(
-//                 keys.filter(key => !key.startsWith(VERSION))
-//                        .map(key => caches.delete(key))
-//             ))
-//             .then(() => console.log('WORKER: activated'))
-//     )
-//
-// })
-
-
-// Save files in cache
-// self.addEventListener('fetch', event => {
-//
-//     event.respondWith(
-//         caches.match(event.request)
-//             .then(response => {
-//
-//                 if( response )
-//                     return response
-//
-//                 // clone stream one for cache + one for browser
-//                 let fetchRequest = event.request.clone()
-//
-//                 return fetch(fetchRequest)
-//                     .then(response => {
-//
-//                         if( !response || response.status !== 200 )
-//                             return response
-//
-//                         // clone stream one for cache + one for browser
-//                         let responseToCache = response.clone()
-//
-//                         caches.open(BASIC_CACHE)
-//                             .then(cache => {
-//                                 cache.put(event.request, responseToCache)
-//                             })
-//
-//                         return response
-//
-//                     })
-//             })
-//     )
-// })
-
-
-// SENT PUSH NOTIFICATION
-// self.addEventListener('push', event => {
-//
-//     const title   = 'You are subscribed.'
-//     const options = {
-//         body: 'Click to read the latest article',
-//         icon: 'https://push.artofmyself.com/assets/img/push-icon.png',
-//         tag: 'new-article'
-//     }
-//
-//     event.waitUntil(self.registration.showNotification(title, options))
-// })
-
-
 // ON NOTIFICATION CLICK
 self.addEventListener('notificationclick', event => {
     console.log(event)
@@ -103,9 +39,6 @@ self.addEventListener('notificationclick', event => {
 })
 
 
-
-
-
 firebase.initializeApp({
     apiKey: "AIzaSyCNWf72UrEdxbzu1YnW4Yd3zfzQIKtXl94",
     authDomain: "push-test-75834.firebaseapp.com",
@@ -116,13 +49,3 @@ firebase.initializeApp({
 })
 
 const messaging = firebase.messaging()
-
-// // SHOW NOTIFICATION WHEN WEBSITE IS IN BACKGROUND
-// firebase.messaging().setBackgroundMessageHandler(payload => {
-//     const title = "Hello World"
-//     const options = {
-//         body: 'Custom Body'
-//         // body: payload.data.status
-//     }
-//     return self.registration.showNotification(title, options)
-// })
