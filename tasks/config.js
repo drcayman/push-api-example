@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 
 const wp  = false // hashing, disable injection, remove WP files
-const app = false // hashing, HMR, injection
+const app = true // hashing, HMR, injection
 
 const proxy = 'https://push.dev' // false || MAMP/Valet DNS
 
