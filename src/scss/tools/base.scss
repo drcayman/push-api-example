@@ -79,20 +79,20 @@ ul, ol { padding-left: 0; list-style: none; }
 
 
 // BUTTON
-button, .btn {
-    background: $prim-color;
-    border: 0;
-    color: $white;
-    display: inline-block;
-    font-size: 1.6em;
-    padding: 0.313em 0.626em;    // 5px 10px
-    transition: .2s;
-
-    &:hover, &:active, &:focus {
-        color: $white;
-        background: lighten($prim-color, 10%);
-    }
-}
+// button, .btn {
+//     background: $prim-color;
+//     border: 0;
+//     color: $white;
+//     display: inline-block;
+//     font-size: 1.6em;
+//     padding: 0.313em 0.626em;    // 5px 10px
+//     transition: .2s;
+//
+//     &:hover, &:active, &:focus {
+//         color: $white;
+//         background: lighten($prim-color, 10%);
+//     }
+// }
 
 
 // TABLE

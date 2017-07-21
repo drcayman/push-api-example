@@ -1,6 +1,8 @@
-import firebase from 'firebase/app'
-import 'firebase/database'
-import 'firebase/messaging'
+// import firebase from 'firebase/app'
+// import 'firebase/database'
+// import 'firebase/messaging'
+
+import snackbar from './snackbar'
 
 
 firebase.initializeApp({
@@ -17,32 +19,15 @@ const database = firebase.database()
 const messaging = firebase.messaging()
 
 
-const applicationServerPublicKey = 'AAAAx-861yE:APA91bEuwfs9GkkS4xq2zmZX-mafVCyP1F9AVV9OLjd-4IEYASX5NmWqXsTnJoz3ROZ9iTG6VUaHolu6NhlrlThFBm0bpgr2zrJscdc6bwgA4ufQ2AeoxWgRDqAz7fe3EgUVX-HEcLK8'
-
-let isSubscribed   = false,
+let userToken = null,
+    isSubscribed = false,
     swRegistration = null
 
 
-    messaging.onMessage(payload => {
-        console.log('onMessage', payload)
-    })
+messaging.onMessage(payload => {
+    snackbar(payload)
+})
 
-
-// CONVERT APP KEY TO Uint8Array (Push API needs binary string)
-function urlB64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4)
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/')
-
-    const rawData = window.atob(base64)
-    const outputArray = new Uint8Array(rawData.length)
-
-    for( let i = 0; i < rawData.length; ++i ) {
-        outputArray[i] = rawData.charCodeAt(i)
-    }
-    return outputArray
-}
 
 // UPADTE SUBSCRIPTION BUTTON
 function updateBtn() {
@@ -56,26 +41,42 @@ function updateBtn() {
     pushBtn.disabled = false
 }
 
-// UPDATE SUBSCRIPTION ON SERVER
-function updateSubscriptionOnServer(subscription) {
-    //const uid = subscription.endpoint.split('gcm/send/')[1]
-    const uid = subscription // firebase token
 
-    console.log(uid)
+// UPDATE SUBSCRIPTION ON SERVER
+function updateSubscriptionOnServer(token) {
+    //const token = subscription.endpoint.split('gcm/send/')[1]
+
+    console.log('update', token);
 
     if( isSubscribed ) {
         return database.ref('device_ids')
                 .orderByValue()
-                .equalTo(uid)
+                .equalTo(token)
                 .on('child_added', snapshot => snapshot.ref.remove())
     }
 
-    return database.ref('device_ids').push(uid)
+    database.ref('device_ids').once('value')
+        .then(snapshots => {
+            let deviceExists = false
+
+            snapshots.forEach(childSnapshot => {
+                if( childSnapshot.val() === token ) {
+                    deviceExists = true
+                    return console.log('Device already registered.');
+                }
+
+            })
+
+            if( !deviceExists ) {
+                console.log('Device subscribed');
+                return database.ref('device_ids').push(token)
+            }
+        })
 }
+
 
 // SUBSCRIBE
 function subscribeUser() {
-    //const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey)
 
     messaging.requestPermission()
         .then(() => messaging.getToken())
@@ -83,38 +84,25 @@ function subscribeUser() {
 
             updateSubscriptionOnServer(token)
             isSubscribed = true
+            userToken = token
+            localStorage.setItem('pushToken', token)
             updateBtn()
         })
-        .catch(err => console.log('Denied'))
-
-    // swRegistration.pushManager.subscribe({
-    //     userVisibleOnly: true,
-    //     //applicationServerKey
-    // })
-    // .then(subscription => {
-    //
-    //     updateSubscriptionOnServer(subscription)
-    //
-    //     isSubscribed = true
-    //
-    //     updateBtn()
-    // })
-    // .catch(err => {
-    //     console.log('Failed to subscribe.', err)
-    //     updateBtn()
-    // })
-
+        .catch(err => console.log('Denied', err))
 }
 
+
+// UNSUBSCRIBE
 function unsubscribeUser() {
-    swRegistration.pushManager.getSubscription()
-        .then(subscription => {
-            subscription.unsubscribe()
-                .then(() => {
-                    updateSubscriptionOnServer(subscription)
-                    isSubscribed = false
-                    updateBtn()
-                })
+
+    messaging.deleteToken(userToken)
+        .then(token => {
+            console.log(token);
+            updateSubscriptionOnServer(userToken) // token === true
+            isSubscribed = false
+            userToken = null
+            localStorage.removeItem('pushToken')
+            updateBtn()
         })
         .catch(err => console.log('Error unsubscribing', err))
 }
@@ -123,30 +111,27 @@ function unsubscribeUser() {
 // INIT PUSH
 function initializePush() {
 
+    // CHECK IF ALREADY SUBSCRIBED
+    const token = localStorage.getItem('pushToken')
+
+    userToken = token
+    isSubscribed = token !== null
+    updateBtn()
+
+    if( 'is subscribed: ', isSubscribed ) {
+        console.log('User is subscribed.');
+    } else {
+        console.log('User is NOT subscribed.');
+    }
+
+    // CHANGE SUBSCRIPTION ON CLICK
     pushBtn.addEventListener('click', () => {
         pushBtn.disabled = true
 
-        if( isSubscribed )
-            return unsubscribeUser()
+        if( isSubscribed ) return unsubscribeUser()
 
         return subscribeUser()
     })
-
-    // CHECK IF ALREADY SUBSCRIBED
-    swRegistration.pushManager.getSubscription()
-        .then(subscription => {
-            isSubscribed = subscription !== null
-
-            console.log(isSubscribed)
-
-            if( 'is subscribed: ', isSubscribed ) {
-                console.log('User is subscribed.');
-            } else {
-                console.log('User is NOT subscribed.');
-            }
-
-            updateBtn()
-        })
 }
 
 
@@ -156,15 +141,14 @@ window.addEventListener('load', () => {
     if( 'serviceWorker' in navigator ) {
 
         navigator.serviceWorker.register('/service-worker.js')
-            .then(register => {
-                console.log('SW Reg successfull.', register.scope)
+            .then(registration => {
+                console.log('SW Reg successfull.', registration.scope)
 
-                swRegistration = register
+                swRegistration = registration
 
-                // For Firebase Messaging use seperate firebase-messaging-sw.js
+                messaging.useServiceWorker(registration)
 
                 initializePush()
-
 
             })
             .catch(err => console.log('Service Worker Error', err))
