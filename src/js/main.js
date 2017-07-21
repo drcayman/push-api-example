@@ -9,13 +9,16 @@ function saveToDB(title) {
 }
 
 postBtn.addEventListener('click', () => {
-    const inputVal = document.getElementById('input-title').value
+    const input = document.getElementById('input-title')
+    const inputWrap = document.querySelector('.mdl-textfield')
     const listItem = document.createElement('li')
 
-    listItem.innerHTML = inputVal
+    listItem.innerHTML = input.value
     list.append(listItem)
 
-    saveToDB(inputVal)
+    saveToDB(input.value)
+    input.value = ''
+    inputWrap.classList.remove('is-dirty')
 })
 
 loadPosts()
