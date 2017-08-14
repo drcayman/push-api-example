@@ -1,7 +1,7 @@
 
 # Push API Example
 ---
-[Live Demo](https://push.artofmyself.com)
+[Live Demo](https://pascalaoms.github.io/push-api-example/)
 
 1. Click the subscribe button.
 2. Write and publish a post.
