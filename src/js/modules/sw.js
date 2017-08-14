@@ -14,14 +14,13 @@ firebase.initializeApp({
     messagingSenderId: "858712102689"
 })
 
-const pushBtn  = document.getElementById('push-button')
-const database = firebase.database()
-const messaging = firebase.messaging()
+const pushBtn   = document.getElementById('push-button'),
+      database  = firebase.database(),
+      messaging = firebase.messaging()
 
 
-let userToken = null,
+let userToken    = null,
     isSubscribed = false
-    // swRegistration = null
 
 
 messaging.onMessage(payload => {
@@ -32,7 +31,7 @@ messaging.onMessage(payload => {
 // UPADTE SUBSCRIPTION BUTTON
 function updateBtn() {
 
-    if( Notification.permission === 'denied' ) {
+    if (Notification.permission === 'denied') {
         pushBtn.textContent = 'Subscription blocked'
         return
     }
@@ -44,13 +43,9 @@ function updateBtn() {
 
 // UPDATE SUBSCRIPTION ON SERVER
 function updateSubscriptionOnServer(token) {
-    //const token = subscription.endpoint.split('gcm/send/')[1]
 
-    console.log('update', token);
-
-    if( isSubscribed ) {
+    if (isSubscribed) {
         return database.ref('device_ids')
-                .orderByValue()
                 .equalTo(token)
                 .on('child_added', snapshot => snapshot.ref.remove())
     }
@@ -60,14 +55,13 @@ function updateSubscriptionOnServer(token) {
             let deviceExists = false
 
             snapshots.forEach(childSnapshot => {
-                if( childSnapshot.val() === token ) {
+                if (childSnapshot.val() === token) {
                     deviceExists = true
                     return console.log('Device already registered.');
                 }
-
             })
 
-            if( !deviceExists ) {
+            if (!deviceExists) {
                 console.log('Device subscribed');
                 return database.ref('device_ids').push(token)
             }
@@ -96,8 +90,7 @@ function subscribeUser() {
 function unsubscribeUser() {
 
     messaging.deleteToken(userToken)
-        .then(token => {
-            console.log(token);
+        .then(() => {
             updateSubscriptionOnServer(userToken) // token === true
             isSubscribed = false
             userToken = null
@@ -111,24 +104,16 @@ function unsubscribeUser() {
 // INIT PUSH
 function initializePush() {
 
-    // CHECK IF ALREADY SUBSCRIBED
-    const token = localStorage.getItem('pushToken')
+    userToken = localStorage.getItem('pushToken')
 
-    userToken = token
-    isSubscribed = token !== null
+    isSubscribed = userToken !== null
     updateBtn()
-
-    if( 'is subscribed: ', isSubscribed ) {
-        console.log('User is subscribed.');
-    } else {
-        console.log('User is NOT subscribed.');
-    }
 
     // CHANGE SUBSCRIPTION ON CLICK
     pushBtn.addEventListener('click', () => {
         pushBtn.disabled = true
 
-        if( isSubscribed ) return unsubscribeUser()
+        if (isSubscribed) return unsubscribeUser()
 
         return subscribeUser()
     })
@@ -138,13 +123,10 @@ function initializePush() {
 // REGISTER SW
 window.addEventListener('load', () => {
 
-    if( 'serviceWorker' in navigator ) {
+    if ('serviceWorker' in navigator) {
 
         navigator.serviceWorker.register('/service-worker.js')
             .then(registration => {
-                console.log('SW Reg successfull.', registration.scope)
-
-                // swRegistration = registration
 
                 messaging.useServiceWorker(registration)
 
@@ -154,7 +136,6 @@ window.addEventListener('load', () => {
             .catch(err => console.log('Service Worker Error', err))
 
     } else {
-        console.warn('Push messaging is not supported')
         pushBtn.textContent = 'Push not supported.'
     }
 
