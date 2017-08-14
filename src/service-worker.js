@@ -34,7 +34,7 @@ self.addEventListener('notificationclick', event => {
     event.notification.close()
 
     event.waitUntil(
-        self.clients.openWindow('https://push.artofmyself.com')
+        self.clients.openWindow('https://pascalaoms.github.io/push-api-example')
     )
 })
 
