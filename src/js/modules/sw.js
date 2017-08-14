@@ -20,8 +20,8 @@ const messaging = firebase.messaging()
 
 
 let userToken = null,
-    isSubscribed = false,
-    swRegistration = null
+    isSubscribed = false
+    // swRegistration = null
 
 
 messaging.onMessage(payload => {
@@ -33,7 +33,7 @@ messaging.onMessage(payload => {
 function updateBtn() {
 
     if( Notification.permission === 'denied' ) {
-        pushBtn.textContent = 'Subscription blocked.'
+        pushBtn.textContent = 'Subscription blocked'
         return
     }
 
@@ -144,7 +144,7 @@ window.addEventListener('load', () => {
             .then(registration => {
                 console.log('SW Reg successfull.', registration.scope)
 
-                swRegistration = registration
+                // swRegistration = registration
 
                 messaging.useServiceWorker(registration)
 
