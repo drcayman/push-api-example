@@ -36,8 +36,8 @@ export const server = () => {
         ],
         server: proxy ? false : paths.dest.root,
         https: {
-            key: process.env.HOME + '/.valet/Certificates/push.dev.key',
-            cert: process.env.HOME + '/.valet/Certificates/push.dev.crt',
+            key: process.env.HOME + '/.valet/Certificates/push-api-example.dev.key',
+            cert: process.env.HOME + '/.valet/Certificates/push-api-example.dev.crt',
         },
         middleware,
         snippetOptions: {    // add script above stylesheet
